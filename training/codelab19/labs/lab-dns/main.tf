@@ -108,7 +108,7 @@ resource "google_compute_address" "vpc_demo_vpngw_ip_us_c1" {
 
 # VPNGW and Tunnel in US Centra1
 module "vpc_demo_vpn_us_c1" {
-  source                   = "/home/salawu/tf/training/codelab19/modules/vpn"
+  source                   = "../../modules/vpn"
   project_id               = "${var.project_id}"
   prefix                   = "${local.prefix}"
   network                  = "${module.vpc_demo.network_self_link}"
@@ -199,7 +199,7 @@ resource "google_compute_address" "vpc_onprem_vpngw_ip_us_c1" {
 
 module "vpc_onprem_vpn_us_c1" {
   #source              = "github.com/kaysal/modules.git//gcp/vpn?ref=v1.0"
-  source             = "/home/salawu/tf/training/codelab19/modules/vpn"
+  source             = "../../modules/vpn"
   project_id         = "${var.project_id}"
   prefix             = "${local.prefix}"
   network            = "${module.vpc_onprem.network_self_link}"
