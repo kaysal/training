@@ -18,25 +18,6 @@ cd sme-academy-ny/
 ./terraform-install.sh
 ```
 
-## Set up the environment
-
-1. Set the project, replace `YOUR_PROJECT` with your project ID:
-
-```
-PROJECT=YOUR_PROJECT
-```
-
-```sh
-gcloud config set project ${PROJECT}
-```
-
-2. Configure the environment for Terraform:
-
-```sh
-[[ $CLOUD_SHELL ]] || gcloud auth application-default login
-export GOOGLE_PROJECT=$(gcloud config get-value project)
-```
-
 ## Run Terraform for a Lab Scenario
 1. Clone the Git Repository for the Lab scenarios
 ```sh
