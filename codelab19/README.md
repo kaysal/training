@@ -62,7 +62,7 @@ The directory structure is as follows:
 └── tf_destroy.sh
 ```
 
-This shows 2 labs (lab-security and lab-dns) together with modules and other relevant terraform scripts.
+These shows 2 labs (lab-security and lab-dns) together with modules and other relevant terraform scripts.
 
 3. Run the following commands to launch a lab - for example; the security lab template in the *labs/lab-security* directory
 ```sh
