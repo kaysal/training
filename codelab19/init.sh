@@ -16,10 +16,10 @@ done
 LAB=$item
 echo -e "\nYou selected [$LAB]"
 sleep 1
-read -p "Are you sure you want to load [$LAB]? (Y/N | Yes/No):"
+read -p "\nAre you sure you want to load [$LAB]? (Y/N | Yes/No):"
 if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     exit 1
 fi
 echo -e "\nConfiguring the base template for [$LAB]...\n"
-sh tf_apply.sh -d labs/$LAB
+sh tf_apply.sh -d "labs/${LAB}"

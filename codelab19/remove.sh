@@ -24,4 +24,4 @@ then
     exit 1
 fi
 echo -e "\nRemoving the base template for [$LAB]...\n"
-sh tf_destroy.sh -d labs/$LAB
+sh tf_destroy.sh -d "labs/${LAB}"
