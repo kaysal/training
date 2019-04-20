@@ -16,7 +16,7 @@ done
 LAB=$item
 echo -e "\nYou selected [$LAB]"
 sleep 1
-read -p "Are you sure you want to load [$LAB?] (Y/N | Yes/No):"
+read -p "Are you sure you want to load [$LAB]? (Y/N | Yes/No):"
 if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     exit 1

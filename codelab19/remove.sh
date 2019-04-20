@@ -17,7 +17,7 @@ LAB=$item
 echo -e "\nYou selected [$LAB]"
 sleep 1
 
-read -p "Are you sure you want to remove [$LAB?] (Y/N | Yes/No):"
+read -p "Are you sure you want to remove [$LAB]? (Y/N | Yes/No):"
 echo    # (optional) move to a new line
 if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
 then
