@@ -41,12 +41,6 @@ gcloud config set project ${PROJECT}
 export GOOGLE_PROJECT=$(gcloud config get-value project)
 ```
 
-## Run Terraform
-
-```
-terraform init
-terraform apply
-```
 
 ## Run Terraform for a Lab Scenario
 1. Clone the Git Repository for the Lab scenarios
@@ -102,7 +96,7 @@ terraform init
 terraform plan -var project_id=$project_id
 terraform apply -var project_id=$project_id
 ```
-4. To delete the lab template run
+4. To delete the lab template; run the following command:
 ```
 terraform destroy -var project_id=$project_id
 ```
