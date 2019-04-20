@@ -13,7 +13,7 @@ do
 esac
 done
 
-function tf_destroy() {
+tf_destroy() {
   cd $FOLDER
   terraform destroy -var project_id=$project_id
 }

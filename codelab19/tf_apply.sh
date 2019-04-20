@@ -13,7 +13,7 @@ do
 esac
 done
 
-function tf_apply() {
+tf_apply() {
   cd $FOLDER
   terraform init -input=false
   terraform plan -input=false -out tfplan -var project_id=$project_id
