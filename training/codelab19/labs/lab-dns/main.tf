@@ -137,7 +137,6 @@ locals {
 module "vpc_onprem" {
   source  = "terraform-google-modules/network/google"
   version = "0.6.0"
-
   project_id   = "${var.project_id}"
   network_name = "${local.prefix}vpc-onprem"
   routing_mode = "GLOBAL"
@@ -198,7 +197,6 @@ resource "google_compute_address" "vpc_onprem_vpngw_ip_us_c1" {
 }
 
 module "vpc_onprem_vpn_us_c1" {
-  #source              = "github.com/kaysal/modules.git//gcp/vpn?ref=v1.0"
   source             = "../../modules/vpn"
   project_id         = "${var.project_id}"
   prefix             = "${local.prefix}"
