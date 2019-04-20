@@ -13,9 +13,9 @@ do
 esac
 done
 
-function terraform_destroy {
+function tf_destroy() {
   cd $FOLDER
   terraform destroy -var project_id=$project_id
 }
 
-terraform_destroy
+tf_destroy
