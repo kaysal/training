@@ -4,7 +4,6 @@ export TF_WARN_OUTPUT_ERRORS=1
 export GOOGLE_PROJECT=$(gcloud config get-value project)
 export TF_VAR_project_id=$(gcloud config get-value project)
 
-IFS=$'\n'
 while getopts d:h: option
 do
   case "${option}" in
@@ -14,7 +13,7 @@ esac
 done
 
 tf_apply() {
-  pushd ${FOLDER}
+  cd $FOLDER
   terraform init -input=false
   terraform plan -input=false -out tfplan -var project_id=$project_id
   terraform apply -input=false tfplan
