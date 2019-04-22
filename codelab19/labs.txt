@@ -1,2 +1,2 @@
-lab-security
-lab-dns
+lab_security
+lab_dns
