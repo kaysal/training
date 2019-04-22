@@ -14,7 +14,7 @@ esac
 done
 
 tf_apply() {
-  cd ${FOLDER}
+  pushd ${FOLDER}
   terraform init -input=false
   terraform plan -input=false -out tfplan -var project_id=$project_id
   terraform apply -input=false tfplan
