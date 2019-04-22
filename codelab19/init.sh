@@ -14,12 +14,16 @@ select answer in "${LABS[@]}"; do
   done
 done
 LAB=$item
-echo -e "\nYou selected [$LAB]"
+echo ""
+echo "You selected [$LAB]"
 sleep 1
-read -p "\nAre you sure you want to load [$LAB]? (Y/N | Yes/No):"
+echo ""
+read -p "Are you sure you want to load [$LAB]? (Y/N | Yes/No):"
 if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     exit 1
 fi
-echo -e "\nConfiguring the base template for [$LAB]...\n"
+echo ""
+echo "Configuring the base template for [$LAB]..."
+echo ""
 sh tf_apply.sh -d "labs/${LAB}/"
