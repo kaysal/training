@@ -134,25 +134,31 @@ module "vpc_onprem" {
   }
 }
 
-resource "google_compute_firewall" "vpc_onprem_fw_rule" {
+resource "google_compute_firewall" "vpc_onprem_ssh" {
   provider    = "google-beta"
-  name        = "${local.prefix}vpc-onprem-fw-rule"
-  description = "VPC Onprem FW rules"
+  name        = "${local.prefix}vpc-onprem-ssh"
+  description = "VPC onprem SSH FW rule"
   network     = "${module.vpc_onprem.network_self_link}"
 
   allow {
     protocol = "tcp"
+    ports    = [22]
   }
 
-  allow {
-    protocol = "udp"
-  }
+  source_ranges = ["0.0.0.0/0"]
+}
+
+resource "google_compute_firewall" "vpc_onprem_icmp" {
+  provider    = "google-beta"
+  name        = "${local.prefix}vpc-onprem-icmp"
+  description = "VPC onprem ICMP FW rule"
+  network     = "${module.vpc_onprem.network_self_link}"
 
   allow {
     protocol = "icmp"
   }
 
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges = ["10.0.0.0/8"]
 }
 
 # VM Instance
