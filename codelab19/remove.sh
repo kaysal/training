@@ -15,15 +15,15 @@ select answer in "${LABS[@]}"; do
 done
 LAB=$item
 echo ""
-echo "You selected [$LAB]"
+echo "You selected $LAB"
 sleep 1
 echo ""
-read -p "Are you sure you want to remove [$LAB]? (Y/N | Yes/No):"
+read -p "Are you sure you want to remove $LAB? (Y/N | Yes/No):"
 if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     exit 1
 fi
 echo ""
-echo "Removing the base template for [$LAB]..."
+echo "Removing the base template for $LAB..."
 echo ""
 sh tf_destroy.sh -d "labs/${LAB}/"

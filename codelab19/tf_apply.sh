@@ -20,15 +20,15 @@ done
 
 tf_apply() {
   cd $FOLDER
-  echo "Running 'terraform init'..."
+  echo "Running terraform init in $FOLDER..."
   echo ""
   terraform init -input=false
-
-  echo "Running 'terraform plan'..."
+  echo ""
+  echo "Running terraform plan in $FOLDER..."
   echo ""
   terraform plan -input=false -out tfplan -var project_id=$project_id
-
-  echo "Running 'terraform apply'..."
+  echo ""
+  echo "Running terraform apply in $FOLDER..."
   echo ""
   terraform apply -input=false tfplan
 
@@ -37,4 +37,4 @@ tf_apply() {
   fi
 }
 
-#tf_apply
+tf_apply

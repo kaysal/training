@@ -1,4 +1,4 @@
-Labs 1-5: VPC
-Labs 11-15: ILB & Istio
-Labs 21-26: Security
-Labs 31-32: GKE
+labs_1-5_vpc
+labs_11-15_ilb_&_istio
+labs_21-26_security
+labs_31-32_gke
