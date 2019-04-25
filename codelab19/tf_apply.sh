@@ -1,12 +1,21 @@
 #!/bin/bash
 
+red=`tput setaf 1`
+green=`tput setaf 2`
+yellow=`tput setaf 3`
+blue=`tput setaf 4`
+magenta=`tput setaf 5`
+white_bg=`tput setab 7`
+bold=$(tput bold)
+reset=`tput sgr0`
+
 export TF_WARN_OUTPUT_ERRORS=1
 export GOOGLE_PROJECT=$(gcloud config get-value project)
-echo "GOOGLE_PROJECT variable set as active project [$GOOGLE_PROJECT] "
+echo "${blue}${bold}GOOGLE_PROJECT${reset} variable set as active project ${blue}${bold}[$GOOGLE_PROJECT]${reset}"
 echo ""
 
 export TF_VAR_project_id=$(gcloud config get-value project)
-echo "TF_VAR_project_id variable set as active project [$TF_VAR_project_id] "
+echo "${blue}${bold}TF_VAR_project_id${reset} variable set as active project ${blue}${bold}[$TF_VAR_project_id]${reset}"
 echo ""
 
 while getopts d:h: option
@@ -19,15 +28,15 @@ done
 
 tf_apply() {
   cd $FOLDER
-  echo "Running terraform init in $FOLDER..."
+  echo "Running ${green}${bold}terraform init${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
   echo ""
   terraform init -input=false
   echo ""
-  echo "Running terraform plan in $FOLDER..."
+  echo "Running ${green}${bold}terraform plan${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
   echo ""
   terraform plan -input=false -out tfplan -var project_id=$project_id
   echo ""
-  echo "Running terraform apply in $FOLDER..."
+  echo "Running ${green}${bold}terraform apply${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
   echo ""
   terraform apply -input=false tfplan
 
