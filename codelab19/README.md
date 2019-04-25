@@ -1,38 +1,27 @@
-This example configures the base template for various labs - security, DNS etc
-
-## Change to the example directory
-
-## Install Terraform
-
-1. Clone the GitHub repo for the script to install terraform
+# Cloudnet 19 SME Academy
+### Prerequisites
+1. Create a Google Cloud Project.
+2. Activate `Compute Engine API` in your Project if you are using Compute Engine for the first time.
+If the API is not activated, you might get an error similar to the following when running the labs using the terraform script:
 ```sh
-git clone https://github.com/emanuelemazza/sme-academy-ny
+* google_compute_network.network: Error creating Network: googleapi: Error 403: Access Not Configured. Compute Engine API has not been used in project [PROJECT_ID] before or it is disabled...
 ```
-2. Change to the directory of the cloned repository
-```sh
-cd sme-academy-ny/
-```
-3. Install Terraform if it is not already installed (visit [terraform.io](https://terraform.io) for other distributions):
-
-```sh
-./terraform-install.sh
-```
-4. Reload your bashrc to pick up the changes made
-```sh
-source ~/.bashrc
-```
-
-## Download the Lab base configuration from Github
-1. Clone the Git Repository for the Lab scenarios
+Not to worry! Just enable the Compute API and re-rerun the script.
+Depending on the GCP cloud services tested in the labs, you might need to enable other APIs in your project.
+3. [Launch a Cloud Shell](https://cloud.google.com/shell/docs/starting-cloud-shell) terminal to be used for the remaining steps.
+### Clone GitHub Repository for Codelabs
+1. Clone the Git Repository for the Labs
 ```sh
 git clone https://github.com/kaysal/training.git
 ```
-2. Change to the directory of the cloned repository
-```sh
-cd training/codelab19/
-```
+This repository contains the following scripts:
+- `terraform-install.sh` - taken from https://github.com/emanuelemazza/sme-academy-ny
+- `init.sh` script for installing lab base configuration
+- `remove.sh` script for removing installed lab templates
+
 The directory structure is as follows:
 ```
+.
 ├── init.sh
 ├── labs
 │   ├── lab-dns
@@ -62,16 +51,33 @@ The directory structure is as follows:
 │       └── variables.tf
 ├── README.md
 ├── remove.sh
+├── terraform-install.sh
 ├── tf_apply.sh
 └── tf_destroy.sh
 ```
+2. Change to the directory of the cloned repository
+```sh
+cd training/codelab19/
+```
+The `labs/` directory lists the base configs for the labs; `lab-security` and `lab-dns`. The directory tree also shows the modules and other relevant terraform scripts.
 
-These shows 2 labs (lab-security and lab-dns) together with modules and other relevant terraform scripts.
+## Install Terraform
+1. Install Terraform if it is not already installed (visit [terraform.io](https://terraform.io) for other distributions). In the `training/codelab19/` directory, run the following script:
 
-## Run Terraform for a Lab Scenario (Script Automation)
-
+```sh
+./terraform-install.sh
+```
+2. Run the following to reload your `PATH` with terraform:
+```sh
+source ~/.bashrc
+```
+That's it! You now have terraform installed.
+Next step is to deploy a lab base configuration.
+## Run Terraform for a Lab Scenario
+The `init.sh` script lets yo select a given lab and then configures terraform with the Project ID of the Project where the Cloud Shell is launched.
 1. Run the `init.sh` script in the `~/training/codelab19` directory.
-2. Select a lab and follow the script prompts to provision a lab base configuration scenario:
+2. Select a lab and follow the script prompts to provision a lab base configuration scenario.
+An example is shown below:
 ```sh
 $ . init.sh
 List of Labs
@@ -109,7 +115,8 @@ Apply complete! Resources: 40 added, 0 changed, 0 destroyed.
 ```sh
 terraform destroy -var project_id=$project_id
 ```
-NOTE: `terraform destroy` will not work if you make manual changes to your infrastructure outside terraform; and those changes have a dependency on initial infrastrcuture created by terraform. You will have to manually remove all additional infrastructure added outside terraform and then run `terraform destroy` again.
+NOTE:
+`terraform destroy` will not work if you make manual changes to your infrastructure outside terraform; and those changes have a dependency on initial infrastructure created by terraform. You will have to manually remove all additional infrastructure added outside terraform; and then run `terraform destroy` again.
 
 
 ## Run Terraform for a Lab Scenario (Manual Deployment)

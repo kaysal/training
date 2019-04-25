@@ -1,2 +1,4 @@
-lab-security
-lab-dns
+Labs 1-5: VPC
+Labs 11-15: ILB & Istio
+Labs 21-26: Security
+Labs 31-32: GKE
