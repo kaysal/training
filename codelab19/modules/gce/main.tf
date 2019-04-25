@@ -15,6 +15,7 @@ resource "google_compute_instance" "instance" {
   network_interface {
     subnetwork_project = "${var.subnetwork_project}"
     subnetwork         = "${var.subnetwork}"
+    access_config {}
   }
 
   service_account {

@@ -3,7 +3,7 @@ provider "google" {}
 provider "google-beta" {}
 
 locals {
-  prefix       = "sec-"
+  prefix       = ""
   image        = "projects/ubuntu-os-cloud/global/images/ubuntu-1804-bionic-v20190404"
   machine_type = "f1-micro"
 }

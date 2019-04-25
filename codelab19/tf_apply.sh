@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export TF_WARN_OUTPUT_ERRORS=1
-
+[[ $CLOUD_SHELL ]] || gcloud auth application-default login
 export GOOGLE_PROJECT=$(gcloud config get-value project)
 echo "GOOGLE_PROJECT variable set as active project [$GOOGLE_PROJECT] "
 echo ""
