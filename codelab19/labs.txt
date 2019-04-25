@@ -1,3 +1,4 @@
+lab_advanced_vpc_peering
 lab_dns
 lab_gke
 lab_ha_vpn
