@@ -42,24 +42,36 @@ module "vpc_demo" {
   }
 }
 
-resource "google_compute_firewall" "vpc_demo_fw_rule" {
+resource "google_compute_firewall" "vpc_demo_ssh" {
   provider    = "google-beta"
-  name        = "${local.prefix}vpc-demo-fw-rule"
-  description = "VPC demo FW rules"
+  name        = "${local.prefix}vpc-demo-ssh"
+  description = "VPC demo SSH FW rule"
   network     = "${module.vpc_demo.network_self_link}"
 
   allow {
     protocol = "tcp"
+    ports    = [22]
   }
-  allow {
-    protocol = "udp"
-  }
-  allow {
-    protocol = "icmp"
-  }
+
   source_ranges = ["0.0.0.0/0"]
 }
 
+resource "google_compute_firewall" "vpc_demo_icmp" {
+  provider    = "google-beta"
+  name        = "${local.prefix}vpc-demo-icmp"
+  description = "VPC demo ICMP FW rule"
+  network     = "${module.vpc_demo.network_self_link}"
+
+  allow {
+    protocol = "icmp"
+  }
+
+  source_ranges = [
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16",
+  ]
+}
 
 # VM Instance
 #-----------------------------------
