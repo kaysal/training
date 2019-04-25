@@ -8,6 +8,7 @@ If the API is not activated, you might get an error similar to the following whe
 ```
 Not to worry! Just enable the Compute API and re-rerun the script.
 Depending on the GCP cloud services tested in the labs, you might need to enable other APIs in your project.
+
 3. Launch a `Cloud Shell` terminal to be used for the remaining steps.
 ### Clone GitHub Repository for Codelabs
 1. Clone the Git Repository for the Labs
