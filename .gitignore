@@ -5,6 +5,7 @@
 *.tfvars
 #*.json
 *backend*
+tfplan
 
 # Module directory
 .terraform/
