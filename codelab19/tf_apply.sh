@@ -7,7 +7,7 @@ echo "GOOGLE_PROJECT variable set as active project [$GOOGLE_PROJECT] "
 echo ""
 
 export TF_VAR_project_id=$(gcloud config get-value project)
-echo "TF_VAR_project_id variable set as active project [$GOOGLE_PROJECT] "
+echo "TF_VAR_project_id variable set as active project [$TF_VAR_project_id] "
 echo ""
 
 while getopts d:h: option
@@ -20,15 +20,17 @@ done
 
 tf_apply() {
   cd $FOLDER
-  terraform init -input=false
   echo "Running 'terraform init'..."
   echo ""
-  terraform plan -input=false -out tfplan -var project_id=$project_id
+  terraform init -input=false
+
   echo "Running 'terraform plan'..."
   echo ""
-  terraform apply -input=false tfplan
+  terraform plan -input=false -out tfplan -var project_id=$project_id
+
   echo "Running 'terraform apply'..."
   echo ""
+  terraform apply -input=false tfplan
 
   if [ -f tfplan ]; then
     rm tfplan
