@@ -11,11 +11,11 @@ reset=`tput sgr0`
 
 export TF_WARN_OUTPUT_ERRORS=1
 export GOOGLE_PROJECT=$(gcloud config get-value project)
-echo "${blue}${bold}GOOGLE_PROJECT${reset} variable set as active project ${blue}${bold}[$GOOGLE_PROJECT]${reset}"
+echo "${bold}GOOGLE_PROJECT${reset} variable set as active project ${yellow}${bold}[$GOOGLE_PROJECT]${reset}"
 echo ""
 
 export TF_VAR_project_id=$(gcloud config get-value project)
-echo "${blue}${bold}TF_VAR_project_id${reset} variable set as active project ${blue}${bold}[$TF_VAR_project_id]${reset}"
+echo "${bold}TF_VAR_project_id${reset} variable set as active project ${yellow}${bold}[$TF_VAR_project_id]${reset}"
 echo ""
 
 while getopts d:h: option

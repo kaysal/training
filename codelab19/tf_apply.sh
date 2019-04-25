@@ -11,11 +11,11 @@ reset=`tput sgr0`
 
 export TF_WARN_OUTPUT_ERRORS=1
 export GOOGLE_PROJECT=$(gcloud config get-value project)
-echo "${blue}${bold}GOOGLE_PROJECT${reset} variable set as active project ${blue}${bold}[$GOOGLE_PROJECT]${reset}"
+echo "${bold}GOOGLE_PROJECT${reset} variable set as active project ${yellow}${bold}[$GOOGLE_PROJECT]${reset}"
 echo ""
 
 export TF_VAR_project_id=$(gcloud config get-value project)
-echo "${blue}${bold}TF_VAR_project_id${reset} variable set as active project ${blue}${bold}[$TF_VAR_project_id]${reset}"
+echo "${bold}TF_VAR_project_id${reset} variable set as active project ${yellow}${bold}[$TF_VAR_project_id]${reset}"
 echo ""
 
 while getopts d:h: option
@@ -28,15 +28,15 @@ done
 
 tf_apply() {
   cd $FOLDER
-  echo "Running ${green}${bold}terraform init${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
+  echo "Running ${bold}terraform init${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
   echo ""
   terraform init -input=false
   echo ""
-  echo "Running ${green}${bold}terraform plan${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
+  echo "Running ${bold}terraform plan${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
   echo ""
   terraform plan -input=false -out tfplan -var project_id=$project_id
   echo ""
-  echo "Running ${green}${bold}terraform apply${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
+  echo "Running ${bold}terraform apply${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
   echo ""
   terraform apply -input=false tfplan
 

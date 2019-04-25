@@ -32,6 +32,6 @@ then
     exit 1
 fi
 echo ""
-echo "Initiating ${magenta}'terraform destroy'${reset} for ${red}${bold}$LAB ${reset}..."
+echo "Removing base template for ${red}${bold}$LAB ${reset}..."
 echo ""
 sh tf_destroy.sh -d "labs/${LAB}/"
