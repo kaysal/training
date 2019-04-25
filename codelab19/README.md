@@ -89,11 +89,11 @@ Your active configuration is: [cloudshell-9010]
 TF_VAR_project_id variable set as active project [PROJECT_ID_DISPLAYED_HERE]
 
 Running terraform init in labs/lab_ilb/...
-... [output truncated]
+...
 Running terraform plan in labs/lab_ilb/...
-... [output truncated]
+...
 Running terraform apply in labs/lab_ilb/...
-... [output truncated]
+...
 Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
 ```
 
@@ -133,7 +133,8 @@ Do you really want to destroy all resources?
   There is no undo. Only 'yes' will be accepted to confirm.
 
   Enter a value: yes
-... [output truncated]
+...
+Apply complete! Resources: 0 added, 0 changed, 6 destroyed.
 
 ```
 
