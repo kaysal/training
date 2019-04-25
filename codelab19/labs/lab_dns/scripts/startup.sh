@@ -1,3 +1,4 @@
 #! /bin/bash
 
-apt-get install dnsutils -y
+apt-get update
+apt-get -y install dnsutils
