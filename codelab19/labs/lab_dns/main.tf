@@ -66,11 +66,7 @@ resource "google_compute_firewall" "vpc_demo_icmp" {
     protocol = "icmp"
   }
 
-  source_ranges = [
-    "10.0.0.0/8",
-    "172.16.0.0/12",
-    "192.168.0.0/16",
-  ]
+  source_ranges = ["10.0.0.0/8"]
 }
 
 # VM Instance
