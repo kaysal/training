@@ -4,11 +4,12 @@
 2. Activate `Compute Engine API` in your Project if you are using Compute Engine for the first time.
 3. Launch a `Cloud Shell` terminal to be used for the remaining steps.
 ### Clone GitHub Repository for Codelabs
+Open a Cloud Shell terminal and run the following command:
 1. Clone the Git Repository for the Labs
 ```sh
 git clone https://github.com/kaysal/training.git
 ```
-This repository contains the following scripts:
+The cloned repository contains the following scripts:
 - `terraform-install.sh` - taken from https://github.com/emanuelemazza/sme-academy-ny
 - `init.sh` script for installing lab base configuration
 - `remove.sh` script for removing installed lab templates
@@ -102,7 +103,6 @@ To delete the installed lab base configuration template, run the `remove.sh` in 
 ./remove.sh
 ```
 ```
-Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
 $ ./remove.sh
 List of Labs
 -----------------------
