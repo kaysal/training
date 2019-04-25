@@ -2,13 +2,6 @@
 ### Prerequisites
 1. Create a Google Cloud Project.
 2. Activate `Compute Engine API` in your Project if you are using Compute Engine for the first time.
-If the API is not activated, you might get an error similar to the following when running the labs using the terraform script:
-```sh
-* google_compute_network.network: Error creating Network: googleapi: Error 403: Access Not Configured. Compute Engine API has not been used in project [PROJECT_ID] before or it is disabled...
-```
-Not to worry! Just enable the Compute API and re-rerun the script.
-Depending on the GCP cloud services tested in the labs, you might need to enable other APIs in your project.
-
 3. Launch a `Cloud Shell` terminal to be used for the remaining steps.
 ### Clone GitHub Repository for Codelabs
 1. Clone the Git Repository for the Labs
@@ -136,5 +129,12 @@ Do you really want to destroy all resources?
 ... [output truncated]
 
 ```
-NOTE:
-`terraform destroy` command in the `remove.sh` script might not work if you make manual changes to your infrastructure outside terraform; and those changes have a dependency on initial infrastructure created by terraform. You will have to manually remove all additional infrastructure added outside terraform; and then run the `remove.sh` script again.
+
+### Troubleshooting
+1. `terraform destroy` command in the `remove.sh` script might not work if you make manual changes to your infrastructure outside terraform; and those changes have a dependency on initial infrastructure created by terraform. You will have to manually remove all additional infrastructure added outside terraform; and then run the `remove.sh` script again.
+2. Terraform API call error `googleapi: Error 403: Access Not Configured`
+If all required APIs are not activated, you might get an error similar to the following when running the labs using the terraform script:
+```
+* google_compute_network.network: Error creating Network: googleapi: Error 403: Access Not Configured. Compute Engine API has not been used in project [PROJECT_ID] before or it is disabled...
+```
+In this case, the Compute API was not enabled during step 2 of the prerequisites section. Not to worry! Just enable the Compute API (in this example) and re-rerun the `init.sh` script. Depending on the GCP cloud services tested in the labs, you might need to enable other APIs in your project.
