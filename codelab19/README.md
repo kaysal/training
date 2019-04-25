@@ -131,8 +131,8 @@ Do you really want to destroy all resources?
 ```
 
 ### Troubleshooting
-1. `terraform destroy` command in the `remove.sh` script might not work if you make manual changes to your infrastructure outside terraform; and those changes have a dependency on initial infrastructure created by terraform. You will have to manually remove all additional infrastructure added outside terraform; and then run the `remove.sh` script again.
-2. Terraform API call error `googleapi: Error 403: Access Not Configured`
+1. `terraform destroy` command in the `remove.sh` script will generally not work after GCP resources are added to the lab base config deployed by terraform. To fix this, complete the lab cleanup section to remove all configuration deployed for the lab and then run the `remove.sh` script again.
+2. Terraform API call error `googleapi: Error 403: Access Not Configured`.
 If all required APIs are not activated, you might get an error similar to the following when running the labs using the terraform script:
 ```
 * google_compute_network.network: Error creating Network: googleapi: Error 403: Access Not Configured. Compute Engine API has not been used in project [PROJECT_ID] before or it is disabled...
