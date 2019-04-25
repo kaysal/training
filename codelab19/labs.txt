@@ -1,3 +1,5 @@
 lab_dns
+lab_gke
 lab_ha_vpn
+lab_ilb
 lab_security
