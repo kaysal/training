@@ -24,9 +24,9 @@ select answer in "${LABS[@]}"; do
 done
 LAB=$item
 echo ""
-printf "You selected ${blue}${bold} $LAB ${reset}"
+printf "You selected ${green}${bold}$LAB${reset}"
 echo ""
-read -p "Are you sure you want to load ${blue}${bold}$LAB${reset}? (Y/N | Yes/No):"
+read -p "Are you sure you want to load ${green}${bold}$LAB${reset}? (Y/N | Yes/No):"
 if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     exit 1
