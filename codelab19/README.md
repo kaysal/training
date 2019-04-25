@@ -29,20 +29,21 @@ The directory structure is as follows:
 .
 ├── init.sh
 ├── labs
-│   ├── labs_1-5_vpc
-│   ├── labs_11-15_ilb_&_istio
-│   ├── labs_21-26_security
-│   └── labs_31-32_gke
+│   ├── lab_dns
+│   ├── lab_gke
+│   ├── lab_ha_vpn
+│   ├── lab_ilb
+│   └── lab_security
 ├── labs.txt
 ├── modules
 │   ├── bind
-│   ├── gce
+│   ├── gce-private
+│   ├── gce-public
 │   ├── gke
 │   └── vpn
 ├── README.md
 ├── remove.sh
 ├── terraform-install.sh
-├── terraform.tfstate
 ├── tf_apply.sh
 └── tf_destroy.sh
 
