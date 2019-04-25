@@ -33,4 +33,4 @@ tf_destroy() {
   terraform destroy -var project_id=$project_id
 }
 
-#tf_destroy
+tf_destroy
