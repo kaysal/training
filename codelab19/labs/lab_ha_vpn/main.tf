@@ -59,16 +59,15 @@ resource "google_compute_firewall" "vpc_demo_fw_rule" {
 
   allow {
     protocol = "tcp"
+    ports    = [22]
   }
-  allow {
-    protocol = "udp"
-  }
+
   allow {
     protocol = "icmp"
   }
+
   source_ranges = ["0.0.0.0/0"]
 }
-
 
 # VM Instance
 #-----------------------------------
@@ -105,8 +104,8 @@ locals {
 }
 
 module "vpc_onprem" {
-  source  = "terraform-google-modules/network/google"
-  version = "0.6.0"
+  source       = "terraform-google-modules/network/google"
+  version      = "0.6.0"
   project_id   = "${var.project_id}"
   network_name = "${local.prefix}vpc-onprem"
   routing_mode = "GLOBAL"
@@ -135,12 +134,15 @@ resource "google_compute_firewall" "vpc_onprem_fw_rule" {
   allow {
     protocol = "tcp"
   }
+
   allow {
     protocol = "udp"
   }
+
   allow {
     protocol = "icmp"
   }
+
   source_ranges = ["0.0.0.0/0"]
 }
 
