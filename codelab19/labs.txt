@@ -1,4 +1,5 @@
 lab_dns
+lab_ha_vpn
 labs_11-15_ilb_&_istio
 labs_21-26_security
 labs_31-32_gke
