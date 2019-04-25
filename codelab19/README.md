@@ -71,50 +71,69 @@ An example for how to run the lab section VPC:
 $ ./init.sh
 List of Labs
 -----------------------
-1) labs_1-5_vpc            3) labs_21-26_security
-2) labs_11-15_ilb_&_istio  4) labs_31-32_gke
-Select a Lab template [Press CRTL+C to exit]: 1
+1) lab_dns
+2) lab_gke
+3) lab_ha_vpn
+4) lab_ilb
+5) lab_security
+Select a Lab template [Press CRTL+C to exit]: 4
 
-You selected labs_1-5_vpc
+You selected lab_ilb
 
-Are you sure you want to load labs_1-5_vpc? (Y/N | Yes/No):y
+Are you sure you want to load lab_ilb? (Y/N | Yes/No):y
 
-Configuring the base template for labs_1-5_vpc...
+Configuring the base template for lab_ilb...
 
-Running terraform init in labs/labs_1-5_vpc/...
-...
-[output truncated for brevity]
-...
-Apply complete! Resources: 26 added, 0 changed, 0 destroyed.
+Your active configuration is: [cloudshell-9010]
+GOOGLE_PROJECT variable set as active project [PROJECT_ID_DISPLAYED_HERE]
+
+Your active configuration is: [cloudshell-9010]
+TF_VAR_project_id variable set as active project [PROJECT_ID_DISPLAYED_HERE]
+
+Running terraform init in labs/lab_ilb/...
+... [output truncated]
+Running terraform plan in labs/lab_ilb/...
+... [output truncated]
+Running terraform apply in labs/lab_ilb/...
+... [output truncated]
+Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
 ```
 
 ### Remove a Lab Base Configuration
 To delete the installed lab base configuration template, run the `remove.sh` in the `~/training/codelab19` directory and follow the screen prompts:
 ```
+Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
 $ ./remove.sh
 List of Labs
 -----------------------
-1) labs_1-5_vpc            3) labs_21-26_security
-2) labs_11-15_ilb_&_istio  4) labs_31-32_gke
-Select a Lab template [Press CRTL+C to exit]: 1
+1) lab_dns
+2) lab_gke
+3) lab_ha_vpn
+4) lab_ilb
+5) lab_security
+Select a Lab template [Press CRTL+C to exit]: 4
 
-You selected labs_1-5_vpc
+You selected lab_ilb
 
-Are you sure you want to remove labs_1-5_vpc? (Y/N | Yes/No):y
+Are you sure you want to remove lab_ilb? (Y/N | Yes/No):y
 
-Removing the base template for labs_1-5_vpc...
-...
-[output truncated for brevity]
-Plan: 0 to add, 0 to change, 26 to destroy.
+Removing the base template for lab_ilb...
+
+Your active configuration is: [cloudshell-9010]
+GOOGLE_PROJECT variable set as active project [kayode-salawu3]
+
+Your active configuration is: [cloudshell-9010]
+TF_VAR_project_id variable set as active project [kayode-salawu3]
+... [output truncated]
+Plan: 0 to add, 0 to change, 6 to destroy.
 
 Do you really want to destroy all resources?
   Terraform will destroy all your managed infrastructure, as shown above.
   There is no undo. Only 'yes' will be accepted to confirm.
 
   Enter a value: yes
-  ...
-[output truncated for brevity]
-Destroy complete! Resources: 26 destroyed.
+... [output truncated]
+
 ```
 NOTE:
 `terraform destroy` command in the `remove.sh` script might not work if you make manual changes to your infrastructure outside terraform; and those changes have a dependency on initial infrastructure created by terraform. You will have to manually remove all additional infrastructure added outside terraform; and then run the `remove.sh` script again.
