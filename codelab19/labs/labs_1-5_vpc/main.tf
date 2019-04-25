@@ -129,7 +129,7 @@ module "vpc_onprem" {
 resource "google_compute_firewall" "vpc_onprem_fw_rules" {
   provider    = "google-beta"
   name        = "${local.prefix}vpc-onprem-fw-rules"
-  description = "VPC demo FW rules"
+  description = "VPC Onprem FW rules"
   network     = "${module.vpc_onprem.network_self_link}"
 
   allow {
@@ -191,7 +191,7 @@ module "vpc_saas" {
 resource "google_compute_firewall" "vpc_saas_fw_rules" {
   provider    = "google-beta"
   name        = "${local.prefix}vpc-saas-fw-rules"
-  description = "VPC demo FW rules"
+  description = "VPC SAAS FW rules"
   network     = "${module.vpc_saas.network_self_link}"
 
   allow {
