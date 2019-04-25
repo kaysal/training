@@ -64,7 +64,7 @@ resource "google_compute_firewall" "vpc_demo_fw_rule" {
 # VM Instance
 #-----------------------------------
 module "vpc_demo_vm_10_1_1" {
-  source                  = "../../modules/gce"
+  source                  = "../../modules/gce-public"
   project                 = "${var.project_id}"
   name                    = "${local.prefix}vpc-demo-vm-10-1-1"
   machine_type            = "${local.machine_type}"

@@ -73,7 +73,7 @@ module "vpc_demo" {
 # vm
 #-----------------------------------
 module "vpc_demo_vm_10_1_1" {
-  source                  = "../../modules/gce"
+  source                  = "../../modules/gce-private"
   project                 = "${var.project_id}"
   name                    = "${local.prefix}vpc-demo-vm-10-1-1"
   machine_type            = "${local.machine_type}"
@@ -85,7 +85,7 @@ module "vpc_demo_vm_10_1_1" {
 }
 
 module "vpc_demo_vm_10_2_1" {
-  source                  = "../../modules/gce"
+  source                  = "../../modules/gce-private"
   project                 = "${var.project_id}"
   name                    = "${local.prefix}vpc-demo-vm-10-2-1"
   machine_type            = "${local.machine_type}"
@@ -97,7 +97,7 @@ module "vpc_demo_vm_10_2_1" {
 }
 
 module "vpc_demo_vm_10_3_1" {
-  source                  = "../../modules/gce"
+  source                  = "../../modules/gce-private"
   project                 = "${var.project_id}"
   name                    = "${local.prefix}vpc-demo-vm-10-3-1"
   machine_type            = "${local.machine_type}"
@@ -232,7 +232,7 @@ module "vpc_onprem" {
 # VM Instance
 #-----------------------------------
 module "vpc_onprem_vm_10_10_10" {
-  source                  = "../../modules/gce"
+  source                  = "../../modules/gce-private"
   project                 = "${var.project_id}"
   name                    = "${local.prefix}vpc-onprem-vm-10-10-10"
   machine_type            = "${local.machine_type}"
