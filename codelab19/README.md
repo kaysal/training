@@ -59,6 +59,9 @@ Next step is to deploy a lab base configuration.
 ### Deploy a Lab Base Configuration
 The `init.sh` script lets you select a given lab and then configures terraform with the `Project ID` of the Project where the Cloud Shell is launched.
 1. Run the `init.sh` script in the `~/training/codelab19` directory.
+```sh
+./init.sh
+```
 2. Select a lab section and follow the script prompts to provision a lab base configuration.
 An example for how to run the lab section VPC:
 ```
@@ -95,6 +98,9 @@ Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
 
 ### Remove a Lab Base Configuration
 To delete the installed lab base configuration template, run the `remove.sh` in the `~/training/codelab19` directory and follow the screen prompts:
+```sh
+./remove.sh
+```
 ```
 Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
 $ ./remove.sh
