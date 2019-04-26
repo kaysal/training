@@ -18,11 +18,11 @@ export TF_VAR_project_id=$(gcloud config get-value project)
 echo "${bold}TF_VAR_project_id${reset} variable set as active project ${yellow}${bold}[$TF_VAR_project_id]${reset}"
 echo ""
 
-while getopts d:h: option
+while getopts d:l: option
 do
   case "${option}" in
     d) FOLDER=$OPTARG;;
-    h) HELP=$OPTARG;;
+    l) LAB_DEPLOYED=$OPTARG;;
 esac
 done
 
@@ -34,3 +34,8 @@ tf_destroy() {
 }
 
 tf_destroy
+
+cd ../..
+if [ -f labs_deployed.txt ]; then
+  sed -i "s|$LAB_DEPLOYED||" labs_deployed.txt
+fi

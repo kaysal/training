@@ -18,11 +18,11 @@ export TF_VAR_project_id=$(gcloud config get-value project)
 echo "${bold}TF_VAR_project_id${reset} variable set as active project ${yellow}${bold}[$TF_VAR_project_id]${reset}"
 echo ""
 
-while getopts d:h: option
+while getopts d:l: option
 do
   case "${option}" in
     d) FOLDER=$OPTARG;;
-    h) HELP=$OPTARG;;
+    l) LAB=$OPTARG;;
 esac
 done
 
@@ -46,3 +46,9 @@ tf_apply() {
 }
 
 tf_apply
+
+cd ../..
+if [ ! -f labs_deployed.txt ]; then
+  touch labs_deployed.txt
+fi
+echo ${LAB} >> labs_deployed.txt

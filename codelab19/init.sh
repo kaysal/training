@@ -9,6 +9,7 @@ white_bg=`tput setab 7`
 bold=$(tput bold)
 reset=`tput sgr0`
 
+echo ""
 echo "List of Labs"
 echo "-----------------------"
 IFS=$'\n'
@@ -34,4 +35,4 @@ fi
 echo ""
 echo "Setting up the base template for ${blue}${bold}$LAB ${reset}..."
 echo ""
-sh tf_apply.sh -d "labs/${LAB}/"
+time sh tf_apply.sh -d "labs/${LAB}/" -l ${LAB}
