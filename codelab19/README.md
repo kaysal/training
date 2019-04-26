@@ -92,7 +92,7 @@ real    1m46.601s
 user    0m3.803s
 sys     0m0.754s
 ```
-The timer value `real` displays how long it took to deploy the lab.
+The timer value `real` displays the time taken to deploy the lab.
 
 ### Remove a deployed Lab
 To delete the installed lab base configuration template, run the `remove.sh` in the `~/training/codelab19` directory and follow the screen prompts:
@@ -129,7 +129,7 @@ user    0m1.885s
 sys     0m0.495s
 
 ```
-The timer value `real` displays time taken to delete the lab.
+The timer value `real` displays the time taken to delete the lab.
 
 ### Troubleshooting
 1. `terraform destroy` command in the `remove.sh` script will generally not work after GCP resources are added to the lab base config deployed by terraform. To fix this, complete the lab cleanup section to remove all configuration deployed for the lab and then run the `remove.sh` script again.
