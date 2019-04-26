@@ -1,6 +1,7 @@
-lab_advanced_vpc_peering
-lab_dns
-lab_gke
-lab_ha_vpn
-lab_ilb
-lab_security
+nat
+vpc_peering
+ha_vpn
+dns
+ilb
+security
+gke
