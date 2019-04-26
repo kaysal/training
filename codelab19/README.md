@@ -129,7 +129,7 @@ user    0m1.885s
 sys     0m0.495s
 
 ```
-The timer value `real` displays how long it took to delete the lab.
+The timer value `real` displays time taken to delete the lab.
 
 ### Troubleshooting
 1. `terraform destroy` command in the `remove.sh` script will generally not work after GCP resources are added to the lab base config deployed by terraform. To fix this, complete the lab cleanup section to remove all configuration deployed for the lab and then run the `remove.sh` script again.
