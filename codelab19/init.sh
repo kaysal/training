@@ -33,6 +33,6 @@ then
     exit 1
 fi
 echo ""
-echo "Setting up the base template for ${blue}${bold}$LAB ${reset}..."
+echo "Setting up the base template for ${green}${bold}$LAB ${reset}..."
 echo ""
 time sh tf_apply.sh -d "labs/${LAB}/" -l ${LAB}

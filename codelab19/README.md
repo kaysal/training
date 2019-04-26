@@ -23,11 +23,13 @@ The directory structure is as follows:
 .
 ├── init.sh
 ├── labs
-│   ├── lab_dns
-│   ├── lab_gke
-│   ├── lab_ha_vpn
-│   ├── lab_ilb
-│   └── lab_security
+│   ├── DNS
+│   ├── HA_VPN
+│   ├── ILB
+│   ├── NAT
+│   ├── Security
+│   └── VPC_Peering
+├── labs_deployed.txt
 ├── labs.txt
 ├── modules
 │   ├── bind
@@ -66,77 +68,68 @@ The `init.sh` script lets you select a given lab and then configures terraform w
 2. Select a lab section and follow the script prompts to provision a lab base configuration.
 The example below shows how to setup the ILB lab environment.
 ```
-$ ./init.sh
+~$ . init.sh
+
 List of Labs
 -----------------------
-1) lab_dns
-2) lab_gke
-3) lab_ha_vpn
-4) lab_ilb
-5) lab_security
-Select a Lab template [Press CRTL+C to exit]: 4
+1) NAT
+2) VPC_Peering
+3) HA_VPN
+4) DNS
+5) ILB
+6) Security
+7) GKE
+Select a Lab template number [Press CRTL+C to exit]: 5
 
-You selected lab_ilb
+You selected ILB
+Are you sure you want to load ILB? (Y/N | Yes/No):y
 
-Are you sure you want to load lab_ilb? (Y/N | Yes/No):y
-
-Configuring the base template for lab_ilb...
-
-Your active configuration is: [cloudshell-9010]
-GOOGLE_PROJECT variable set as active project [PROJECT_ID_DISPLAYED_HERE]
-
-Your active configuration is: [cloudshell-9010]
-TF_VAR_project_id variable set as active project [PROJECT_ID_DISPLAYED_HERE]
-
-Running terraform init in labs/lab_ilb/...
+Setting up the base template for ILB ...
 ...
-Running terraform plan in labs/lab_ilb/...
-...
-Running terraform apply in labs/lab_ilb/...
-...
-Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
+Apply complete! Resources: 7 added, 0 changed, 0 destroyed.
+
+real    1m46.601s
+user    0m3.803s
+sys     0m0.754s
 ```
+The timer value `real` display how long it took to deploy the lab.
 
 ### Remove a deployed Lab
 To delete the installed lab base configuration template, run the `remove.sh` in the `~/training/codelab19` directory and follow the screen prompts:
 ```sh
 ./remove.sh
 ```
-The example below shows how to remove the ILB lab environment.
+The example below shows how to remove the ILB lab deployed.
 ```
-$ ./remove.sh
-List of Labs
+~$ . remove.sh
+
+List of Deployed Labs
 -----------------------
-1) lab_dns
-2) lab_gke
-3) lab_ha_vpn
-4) lab_ilb
-5) lab_security
-Select a Lab template [Press CRTL+C to exit]: 4
+1) ILB
+Select a Lab template number [Press CRTL+C to exit]: 1
 
-You selected lab_ilb
+You selected ILB
 
-Are you sure you want to remove lab_ilb? (Y/N | Yes/No):y
+Are you sure you want to remove ILB? (Y/N | Yes/No):y
 
-Removing the base template for lab_ilb...
+Removing base template for ILB ...
 
-Your active configuration is: [cloudshell-9010]
-GOOGLE_PROJECT variable set as active project [kayode-salawu3]
+Your active configuration is: [cloudshell-3142]
+GOOGLE_PROJECT variable set as active project [kayode-salawu]
 
-Your active configuration is: [cloudshell-9010]
-TF_VAR_project_id variable set as active project [kayode-salawu3]
-... [output truncated]
-Plan: 0 to add, 0 to change, 6 to destroy.
+Your active configuration is: [cloudshell-3142]
+TF_VAR_project_id variable set as active project [kayode-salawu]
 
-Do you really want to destroy all resources?
-  Terraform will destroy all your managed infrastructure, as shown above.
-  There is no undo. Only 'yes' will be accepted to confirm.
-
-  Enter a value: yes
+Running terraform destroy in directory labs/ILB/...
 ...
-Apply complete! Resources: 0 added, 0 changed, 6 destroyed.
+Destroy complete! Resources: 7 destroyed.
+
+real    3m49.335s
+user    0m1.885s
+sys     0m0.495s
 
 ```
+The timer value `real` display how long it took to delete the lab.
 
 ### Troubleshooting
 1. `terraform destroy` command in the `remove.sh` script will generally not work after GCP resources are added to the lab base config deployed by terraform. To fix this, complete the lab cleanup section to remove all configuration deployed for the lab and then run the `remove.sh` script again.
