@@ -9,25 +9,11 @@ white_bg=`tput setab 7`
 bold=$(tput bold)
 reset=`tput sgr0`
 
+export LAB_DEPLOYED=($(cat lab_deployed.txt))
 echo ""
-echo "List of Deployed Labs"
-echo "-----------------------"
-IFS=$'\n'
-export LABS_DEPLOYED=($(cat labs_deployed.txt))
-
-PS3="Select a Lab template number [Press CRTL+C to exit]: "
-select answer in "${LABS_DEPLOYED[@]}"; do
-  for item in "${LABS_DEPLOYED[@]}"; do
-    if [[ $item == $answer ]]; then
-      break 2
-    fi
-  done
-done
-LAB_DEPLOYED=$item
+echo "${red}${bold}$LAB_DEPLOYED${reset} lab is currently deployed"
 echo ""
-echo "You selected ${red}${bold}$LAB_DEPLOYED${reset}"
-echo ""
-read -p "Are you sure you want to remove ${red}${bold}$LAB_DEPLOYED${reset}? (Y/N | Yes/No):"
+read -p "Are you sure you want to remove ${red}${bold}$LAB_DEPLOYED${reset} lab? (Y/N | Yes/No):"
 if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     exit 1

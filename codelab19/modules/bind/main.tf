@@ -40,7 +40,7 @@ resource "google_compute_instance" "bind" {
     subnetwork_project = "${var.network_project}"
     subnetwork         = "${var.subnetwork}"
     network_ip         = "${var.local_name_server_ip}"
-    access_config {}
+    access_config      = {}
   }
 
   metadata_startup_script = "${data.template_file.bind_init.rendered}"

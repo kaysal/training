@@ -368,3 +368,4 @@ module "gke" {
   zones              = ["us-central1-a", "us-central1-b", "us-central1-c"]
   min_master_version = "1.11.8-gke.6"
 }*/
+
