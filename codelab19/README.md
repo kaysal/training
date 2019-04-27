@@ -29,7 +29,6 @@ The directory structure is as follows:
 │   ├── NAT
 │   ├── Security
 │   └── VPC_Peering
-├── labs_deployed.txt
 ├── labs.txt
 ├── modules
 │   ├── bind
