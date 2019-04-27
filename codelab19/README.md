@@ -95,7 +95,7 @@ sys     0m0.754s
 The timer value `real` displays the time taken to deploy the lab.
 
 ### Remove a deployed Lab
-To delete the installed lab base configuration template, run the `remove.sh` in the `~/training/codelab19` directory and follow the screen prompts:
+To delete the installed lab base configuration template, run the `remove.sh` script in the `~/training/codelab19` directory and follow the screen prompts:
 ```sh
 ./remove.sh
 ```
