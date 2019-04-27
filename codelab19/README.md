@@ -112,13 +112,7 @@ You selected ILB
 Are you sure you want to remove ILB? (Y/N | Yes/No):y
 
 Removing base template for ILB ...
-
-Your active configuration is: [cloudshell-3142]
-GOOGLE_PROJECT variable set as active project [kayode-salawu]
-
-Your active configuration is: [cloudshell-3142]
-TF_VAR_project_id variable set as active project [kayode-salawu]
-
+...
 Running terraform destroy in directory labs/ILB/...
 ...
 Destroy complete! Resources: 7 destroyed.
