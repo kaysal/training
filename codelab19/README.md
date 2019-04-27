@@ -64,8 +64,7 @@ The `init.sh` script lets you select a given lab and then configures terraform w
 ```sh
 ./init.sh
 ```
-2. Select a lab section and follow the script prompts to provision a lab base configuration.
-The example below shows how to setup the ILB lab environment.
+2. Select a lab section and follow the instructions. The example below shows how to setup the ILB lab environment.
 ```
 ~$ . init.sh
 
@@ -98,7 +97,7 @@ To delete the installed lab base configuration template, run the `remove.sh` scr
 ```sh
 ./remove.sh
 ```
-The example below shows how to remove the ILB lab deployed.
+The example below shows how to remove the ILB lab deployed above.
 ```
 ~$ . remove.sh
 
