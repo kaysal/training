@@ -46,9 +46,3 @@ tf_apply() {
 }
 
 tf_apply
-
-cd ../..
-if [ ! -f lab_deployed.txt ]; then
-  touch lab_deployed.txt
-fi
-echo ${LAB} > lab_deployed.txt

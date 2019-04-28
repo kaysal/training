@@ -34,9 +34,3 @@ tf_destroy() {
 }
 
 tf_destroy
-
-cd ../..
-if [ -f lab_deployed.txt ]; then
-  #sed -i "s|$LAB_DEPLOYED||" labs_deployed.txt
-  rm lab_deployed.txt
-fi
