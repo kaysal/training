@@ -36,7 +36,7 @@ echo ""
 echo "Setting up the base template for ${green}${bold}$LAB ${reset}..."
 echo ""
 
-time sh tf_apply.sh -d "labs/${LAB}/" -l ${LAB}
+time ./tf_apply.sh -d "labs/${LAB}/" -l ${LAB}
 
 if [ ! -f lab_deployed.txt ]; then
   touch lab_deployed.txt
