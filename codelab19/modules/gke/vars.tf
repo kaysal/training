@@ -1,16 +1,6 @@
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+variable "project_id" {
+  description = "Cluster project."
+}
 
 variable "name" {
   description = "Cluster name."
@@ -20,9 +10,9 @@ variable "location" {
   description = "Cluster region."
 }
 
-variable "node_locations" {
-  description = "Cluster zones."
-  type        = "list"
+variable "remove_default_node_pool" {
+  description = "remove default node pool"
+  default = false
 }
 
 variable "network" {
@@ -33,16 +23,12 @@ variable "subnetwork" {
   description = "Cluster subnetwork."
 }
 
-variable "pods_range" {
+variable "pods_range_name" {
   description = "Name of the alias IP range for pods."
 }
 
-variable "services_range" {
+variable "services_range_name" {
   description = "Name of the alias IP range for services."
-}
-
-variable "project_id" {
-  description = "Cluster project."
 }
 
 variable "min_master_version" {
@@ -50,9 +36,14 @@ variable "min_master_version" {
   default     = "1.10.5-gke.3"
 }
 
-variable "maintenance_window_utc" {
-  description = "Maintenance window of the cluster itself, in UTC time."
-  default     = "04:00"
+variable "logging_service" {
+  description = "logging service"
+  default     = "logging.googleapis.com/kubernetes"
+}
+
+variable "monitoring_service" {
+  description = "monitoring service"
+  default     = "monitoring.googleapis.com/kubernetes"
 }
 
 variable "cluster_labels" {
@@ -71,11 +62,6 @@ variable "node_labels" {
   default = {
     component = "gke"
   }
-}
-
-variable "node_count" {
-  description = "Initial node count."
-  default     = 1
 }
 
 # node configuration attributes here
@@ -154,4 +140,23 @@ variable "istio_config_disabled" {
 variable "node_metadata" {
   description = "how to expose node metadata to pods"
   default     = "SECURE"
+}
+
+variable "enable_private_endpoint" {
+  description = "enable private endpoint"
+  default     = false
+}
+
+variable "enable_private_nodes" {
+  description = "enable private nodes"
+  default     = true
+}
+
+variable "master_ipv4_cidr_block" {
+  description = "enable private nodes"
+}
+
+variable "node_count" {
+  description = "node count"
+  default     = 1
 }

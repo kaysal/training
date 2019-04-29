@@ -16,27 +16,27 @@ resource "google_container_cluster" "cluster" {
   provider                    = "google-beta"
   project                     = "${var.project_id}"
   name                        = "${var.name}"
-  location                    = "${var.location}"
-  node_locations              = ["${var.node_locations}"]
+  min_master_version          = "${var.min_master_version}"
   network                     = "${var.network}"
   subnetwork                  = "${var.subnetwork}"
-  min_master_version          = "${var.min_master_version}"
-  initial_node_count          = "${var.node_count}"
-  logging_service             = "logging.googleapis.com/kubernetes"
-  monitoring_service          = "monitoring.googleapis.com/kubernetes"
-  resource_labels             = "${var.cluster_labels}"
+  location                    = "${var.location}"
   default_max_pods_per_node   = "${var.default_max_pods_per_node}"
+  remove_default_node_pool    = "${var.remove_default_node_pool}"
+  logging_service             = "${var.logging_service}"
+  monitoring_service          = "${var.monitoring_service}"
   enable_binary_authorization = "${var.enable_binary_authorization}"
+  initial_node_count          = "${var.node_count}"
+  resource_labels             = "${var.cluster_labels}"
 
-  ip_allocation_policy {
-    cluster_secondary_range_name  = "${var.pods_range}"
-    services_secondary_range_name = "${var.services_range}"
+  private_cluster_config {
+    enable_private_endpoint = "${var.enable_private_endpoint}"
+    enable_private_nodes    = "${var.enable_private_nodes}"
+    master_ipv4_cidr_block  = "${var.master_ipv4_cidr_block}"
   }
 
-  maintenance_policy {
-    daily_maintenance_window {
-      start_time = "${var.maintenance_window_utc}"
-    }
+  ip_allocation_policy {
+    cluster_secondary_range_name  = "${var.pods_range_name}"
+    services_secondary_range_name = "${var.services_range_name}"
   }
 
   addons_config {
@@ -92,7 +92,6 @@ resource "google_container_node_pool" "node_pool" {
     tags            = ["${var.network_tags}"]
     oauth_scopes    = ["${var.oauth_scopes}"]
     labels          = "${var.node_labels}"
-    taint           = "${var.node_taints}"
 
     workload_metadata_config {
       node_metadata = "${var.node_metadata}"

@@ -299,6 +299,7 @@ module "vpc_onprem_vm_10_10_10" {
   image                   = "${local.image}"
   subnetwork_project      = "${var.project_id}"
   subnetwork              = "${module.vpc_onprem.subnets_self_links[0]}"
+  tags                    = []
 }
 
 # Create vpc-onprem Cloud Router
@@ -357,30 +358,41 @@ module "vpc_onprem_vpn_us_c1" {
 #============================================
 
 module "gke" {
-  source                         = "../../modules/gke"
-  project_id                     = "${var.project_id}"
+  source     = "../../modules/gke"
+  project_id = "${var.project_id}"
+
+  # cluster
   name                           = "${local.prefix}vpc-demo-cluster"
-  location                       = "us-central1"
-  node_locations                 = ["us-central1-a", "us-central1-b", "us-central1-c"]
-  node_count                     = 1
+  enable_private_endpoint        = false
+  enable_private_nodes           = true
+  master_ipv4_cidr_block         = "172.16.0.0/28"
+  min_master_version             = "1.11.8-gke.6"
   network                        = "${module.vpc_demo.network_self_link}"
   subnetwork                     = "${module.vpc_demo.subnets_self_links[0]}"
   min_master_version             = "1.11.8-gke.6"
-  machine_type                   = "n1-standard-2"
+  pods_range_name                = "pod-range"
+  services_range_name            = "svc-range"
+  location                       = "europe-west1"
   default_max_pods_per_node      = 16
+  remove_default_node_pool       = false
+  logging_service                = "logging.googleapis.com/kubernetes"
+  monitoring_service             = "monitoring.googleapis.com/kubernetes"
   enable_binary_authorization    = false
-  pods_range                     = "pod-range"
-  services_range                 = "svc-range"
-  network_tags                   = []
   network_policy_enabled         = false
   network_policy_config_disabled = true
   kubernetes_dashboard_disabled  = true
   istio_config_disabled          = true
-  node_metadata                  = "SECURE"
 
   cluster_labels = {
     component = "gke"
   }
+
+  # node
+  node_count      = 1
+  machine_type    = "n1-standard-2"
+  service_account = "default"
+  network_tags    = []
+  node_metadata   = "SECURE"
 
   node_labels = {
     component = "gke"
