@@ -99,7 +99,7 @@ To delete the installed lab base configuration template, run the `remove.sh` scr
 ```
 The example below shows how to remove the ILB lab deployed above.
 ```
-~$ . remove.sh
+~$ ./remove.sh
 
 ILB lab is currently deployed
 
