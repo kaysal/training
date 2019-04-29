@@ -121,23 +121,24 @@ The timer value `real` displays the time taken to delete the lab - in this case,
 
 ### Troubleshooting
 1. `terraform destroy` command in the `remove.sh` script will generally not work after GCP resources are added to the lab base config deployed by terraform. To fix this, complete the lab cleanup section to remove all configuration deployed for the lab and then run the `remove.sh` script again.
+
 2. Terraform API call error `googleapi: Error 403: Access Not Configured`.
 If all required APIs are not activated, you might get an error similar to the following when running the labs using the terraform script:
 ```
 * google_compute_network.network: Error creating Network: googleapi: Error 403: Access Not Configured. Compute Engine API has not been used in project [PROJECT_ID] before or it is disabled...
 ```
 In this case, the Compute API was not enabled during step 2 of the prerequisites section. Not to worry! Just enable the Compute API (in this example) and re-rerun the `init.sh` script. Depending on the GCP cloud services tested in the labs, you might need to enable other APIs in your project.
-3. The `terraform-install.sh` script requires `jq` and `unzip` applications are already installed on your linux OS. If not installed it might give any of the following errors:
+
+3. The `terraform-install.sh` script requires that `jq` and `unzip` applications are already installed on your linux OS. If not installed it might give any of the following errors:
 ```
 $ ./terraform-install.sh
 ./terraform-install.sh: line 5: jq: command not found
 ```
-Or
 ```
 $ ./terraform-install.sh
 ./terraform-install.sh: line 9: unzip: command not found
 ```
-The applications should already be available in GCP Cloudshell. In case you are using a different environment or for some reason your Cloudshell throws any errors, then just install the applications:
+The applications should already be available in GCP Cloudshell. In case you are using a different linux distribution, or for some reason, your Cloudshell throws any of the above errors, then just install the applications:
 ```
 $ sudo apt install jq unzip -y
 ```
