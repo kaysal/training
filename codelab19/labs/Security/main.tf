@@ -9,7 +9,7 @@ locals {
 }
 
 #============================================
-# VPC Demo Configurationsssss
+# VPC Demo Configuration
 #============================================
 
 # VPC Demo Network
