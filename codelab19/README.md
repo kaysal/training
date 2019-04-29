@@ -125,7 +125,8 @@ The timer value `real` displays the time taken to delete the lab - in this case,
 2. Terraform API call error `googleapi: Error 403: Access Not Configured`.
 If all required APIs are not activated, you might get an error similar to the following when running the labs using the terraform script:
 ```
-* google_compute_network.network: Error creating Network: googleapi: Error 403: Access Not Configured. Compute Engine API has not been used in project [PROJECT_ID] before or it is disabled...
+* google_compute_network.network: Error creating Network: googleapi: Error 403: Access Not Configured.
+Compute Engine API has not been used in project [PROJECT_ID] before or it is disabled...
 ```
 In this case, the Compute API was not enabled during step 2 of the prerequisites section. Not to worry! Just enable the Compute API (in this example) and re-rerun the `init.sh` script. Depending on the GCP cloud services tested in the labs, you might need to enable other APIs in your project.
 
