@@ -356,7 +356,7 @@ module "vpc_onprem_vpn_us_c1" {
 #============================================
 # GKE Cluster
 #============================================
-
+/*
 module "gke" {
   source     = "../../modules/gke"
   project_id = "${var.project_id}"
@@ -404,4 +404,4 @@ module "gke" {
     "https://www.googleapis.com/auth/logging.write",
     "https://www.googleapis.com/auth/monitoring",
   ]
-}
+}*/
