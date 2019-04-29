@@ -355,17 +355,41 @@ module "vpc_onprem_vpn_us_c1" {
 #============================================
 # GKE Cluster
 #============================================
-/*
-module "gke" {
-  source             = "../../modules/gke"
-  project_id         = "${var.project_id}"
-  region             = "us-central1"
-  name               = "${local.prefix}vpc-demo-cluster"
-  network            = "${module.vpc_demo.network_self_link}"
-  subnetwork         = "${module.vpc_demo.subnets_self_links[0]}"
-  pods_range         = "pod-range"
-  services_range     = "svc-range"
-  zones              = ["us-central1-a", "us-central1-b", "us-central1-c"]
-  min_master_version = "1.11.8-gke.6"
-}*/
 
+module "gke" {
+  source                         = "../../modules/gke"
+  project_id                     = "${var.project_id}"
+  name                           = "${local.prefix}vpc-demo-cluster"
+  location                       = "us-central1"
+  node_locations                 = ["us-central1-a", "us-central1-b", "us-central1-c"]
+  node_count                     = 1
+  network                        = "${module.vpc_demo.network_self_link}"
+  subnetwork                     = "${module.vpc_demo.subnets_self_links[0]}"
+  min_master_version             = "1.11.8-gke.6"
+  machine_type                   = "n1-standard-2"
+  default_max_pods_per_node      = 16
+  enable_binary_authorization    = false
+  pods_range                     = "pod-range"
+  services_range                 = "svc-range"
+  network_tags                   = []
+  network_policy_enabled         = false
+  network_policy_config_disabled = true
+  kubernetes_dashboard_disabled  = true
+  istio_config_disabled          = true
+  node_metadata                  = "SECURE"
+
+  cluster_labels = {
+    component = "gke"
+  }
+
+  node_labels = {
+    component = "gke"
+  }
+
+  oauth_scopes = [
+    "https://www.googleapis.com/auth/compute",
+    "https://www.googleapis.com/auth/devstorage.read_only",
+    "https://www.googleapis.com/auth/logging.write",
+    "https://www.googleapis.com/auth/monitoring",
+  ]
+}

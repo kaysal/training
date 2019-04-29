@@ -101,14 +101,9 @@ The example below shows how to remove the ILB lab deployed above.
 ```
 ~$ . remove.sh
 
-List of Deployed Labs
------------------------
-1) ILB
-Select a Lab template number [Press CRTL+C to exit]: 1
+ILB lab is currently deployed
 
-You selected ILB
-
-Are you sure you want to remove ILB? (Y/N | Yes/No):y
+Are you sure you want to remove ILB lab? (Y/N | Yes/No):y
 
 Removing base template for ILB ...
 ...
@@ -121,7 +116,7 @@ user    0m1.885s
 sys     0m0.495s
 
 ```
-The timer value `real` displays the time taken to delete the lab.
+The timer value `real` displays the time taken to delete the lab - in this case, 3 mins 49s.
 
 ### Troubleshooting
 1. `terraform destroy` command in the `remove.sh` script will generally not work after GCP resources are added to the lab base config deployed by terraform. To fix this, complete the lab cleanup section to remove all configuration deployed for the lab and then run the `remove.sh` script again.

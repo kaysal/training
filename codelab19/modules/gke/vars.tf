@@ -16,11 +16,11 @@ variable "name" {
   description = "Cluster name."
 }
 
-variable "region" {
+variable "location" {
   description = "Cluster region."
 }
 
-variable "zones" {
+variable "node_locations" {
   description = "Cluster zones."
   type        = "list"
 }
@@ -50,11 +50,6 @@ variable "min_master_version" {
   default     = "1.10.5-gke.3"
 }
 
-variable "network_policy" {
-  description = "Enable network policy."
-  default     = false
-}
-
 variable "maintenance_window_utc" {
   description = "Maintenance window of the cluster itself, in UTC time."
   default     = "04:00"
@@ -63,6 +58,15 @@ variable "maintenance_window_utc" {
 variable "cluster_labels" {
   type        = "map"
   description = "Labels to be attached to the cluster."
+
+  default = {
+    component = "gke"
+  }
+}
+
+variable "node_labels" {
+  type        = "map"
+  description = "Labels to be attached to the nodes."
 
   default = {
     component = "gke"
@@ -110,4 +114,44 @@ variable "node_taints" {
   type        = "list"
   description = "Taints applied to default nodes. List of maps."
   default     = []
+}
+
+variable "default_max_pods_per_node" {
+  description = "number of pods per node"
+  default     = 16
+}
+
+variable "enable_binary_authorization" {
+  description = "enable binary authorization"
+  default     = false
+}
+
+variable "machine_type" {
+  description = "Node machine type"
+  default     = "n1-standard-1"
+}
+
+variable "network_policy_enabled" {
+  description = "network policy for the cluster"
+  default     = false
+}
+
+variable "network_policy_config_disabled" {
+  description = "network policy addon for the master"
+  default     = true
+}
+
+variable "kubernetes_dashboard_disabled" {
+  description = "kubernetes Dashboard is enabled for this cluster"
+  default     = true
+}
+
+variable "istio_config_disabled" {
+  description = "status of the Istio addon"
+  default     = true
+}
+
+variable "node_metadata" {
+  description = "how to expose node metadata to pods"
+  default     = "SECURE"
 }

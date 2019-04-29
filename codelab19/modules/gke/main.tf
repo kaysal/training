@@ -13,51 +13,53 @@
 # limitations under the License.
 
 resource "google_container_cluster" "cluster" {
-  provider           = "google-beta"
-  name               = "${var.name}"
-  region             = "${var.region}"
-  additional_zones   = ["${var.zones}"]
-  network            = "${var.network}"
-  subnetwork         = "${var.subnetwork}"
-  project            = "${var.project_id}"
-  min_master_version = "${var.min_master_version}"
-  initial_node_count = "${var.node_count}"
-  logging_service    = "logging.googleapis.com/kubernetes"
-  monitoring_service = "monitoring.googleapis.com/kubernetes"
-  resource_labels    = "${var.cluster_labels}"
+  provider                    = "google-beta"
+  project                     = "${var.project_id}"
+  name                        = "${var.name}"
+  location                    = "${var.location}"
+  node_locations              = ["${var.node_locations}"]
+  network                     = "${var.network}"
+  subnetwork                  = "${var.subnetwork}"
+  min_master_version          = "${var.min_master_version}"
+  initial_node_count          = "${var.node_count}"
+  logging_service             = "logging.googleapis.com/kubernetes"
+  monitoring_service          = "monitoring.googleapis.com/kubernetes"
+  resource_labels             = "${var.cluster_labels}"
+  default_max_pods_per_node   = "${var.default_max_pods_per_node}"
+  enable_binary_authorization = "${var.enable_binary_authorization}"
 
   ip_allocation_policy {
     cluster_secondary_range_name  = "${var.pods_range}"
     services_secondary_range_name = "${var.services_range}"
   }
 
-  network_policy {
-    enabled = "${var.network_policy}"
-  }
-
-  # master_authorized_networks_config
-  # master_ipv4_cidr_block
-  # private_cluster
-
-  node_config {
-    service_account = "${var.service_account}"
-    oauth_scopes    = "${var.oauth_scopes}"
-    tags            = "${var.network_tags}"
-    labels          = "${var.cluster_labels}"
-
-    # taints need the google beta provider
-    taint = "${var.node_taints}"
-  }
   maintenance_policy {
     daily_maintenance_window {
       start_time = "${var.maintenance_window_utc}"
     }
   }
+
   addons_config {
+    network_policy_config {
+      disabled = "${var.network_policy_config_disabled}"
+    }
+
     kubernetes_dashboard {
-      disabled = true
+      disabled = "${var.kubernetes_dashboard_disabled}"
+    }
+
+    istio_config {
+      disabled = "${var.istio_config_disabled}"
+
+      #auth = "AUTH_MUTUAL_TLS"
     }
   }
+
+  network_policy {
+    provider = "CALICO"
+    enabled  = "${var.network_policy_enabled}"
+  }
+
   # Disable cert-based + static username based auth
   master_auth {
     client_certificate_config {
@@ -67,6 +69,7 @@ resource "google_container_cluster" "cluster" {
     username = ""
     password = ""
   }
+
   timeouts {
     update = "20m"
     delete = "20m"
@@ -74,4 +77,25 @@ resource "google_container_cluster" "cluster" {
 
   # this breaks on subsequent apply
   # remove_default_node_pool = "${var.node_count == 0 ? true : false}"
+}
+
+resource "google_container_node_pool" "node_pool" {
+  provider   = "google-beta"
+  name       = "${var.name}"
+  cluster    = "${google_container_cluster.cluster.name}"
+  location   = "${var.location}"
+  node_count = "${var.node_count}"
+
+  node_config {
+    machine_type    = "${var.machine_type}"
+    service_account = "${var.service_account}"
+    tags            = ["${var.network_tags}"]
+    oauth_scopes    = ["${var.oauth_scopes}"]
+    labels          = "${var.node_labels}"
+    taint           = "${var.node_taints}"
+
+    workload_metadata_config {
+      node_metadata = "${var.node_metadata}"
+    }
+  }
 }

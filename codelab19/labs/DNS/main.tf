@@ -17,6 +17,7 @@ locals {
 
 locals {
   vpc_demo_subnet_10_1_1 = "${local.prefix}vpc-demo-subnet-10-1-1"
+  vpc_demo_subnet_10_3_1 = "${local.prefix}vpc-demo-subnet-10-3-1"
 }
 
 module "vpc_demo" {
@@ -32,13 +33,21 @@ module "vpc_demo" {
       subnet_name           = "${local.vpc_demo_subnet_10_1_1}"
       subnet_ip             = "10.1.1.0/24"
       subnet_region         = "us-central1"
-      subnet_private_access = true
-      subnet_flow_logs      = true
+      subnet_private_access = false
+      subnet_flow_logs      = false
+    },
+    {
+      subnet_name           = "${local.vpc_demo_subnet_10_3_1}"
+      subnet_ip             = "10.3.1.0/24"
+      subnet_region         = "us-east1"
+      subnet_private_access = false
+      subnet_flow_logs      = false
     },
   ]
 
   secondary_ranges = {
     "${local.vpc_demo_subnet_10_1_1}" = []
+    "${local.vpc_demo_subnet_10_3_1}" = []
   }
 }
 
@@ -81,4 +90,16 @@ module "vpc_demo_vm_10_1_1" {
   image                   = "${local.image}"
   subnetwork_project      = "${var.project_id}"
   subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+}
+
+module "vpc_demo_vm_10_3_1" {
+  source                  = "../../modules/gce-public"
+  project                 = "${var.project_id}"
+  name                    = "${local.prefix}vpc-demo-vm-10-3-1"
+  machine_type            = "${local.machine_type}"
+  zone                    = "us-east1-b"
+  metadata_startup_script = "${file("scripts/startup.sh")}"
+  image                   = "${local.image}"
+  subnetwork_project      = "${var.project_id}"
+  subnetwork              = "${module.vpc_demo.subnets_self_links[1]}"
 }
