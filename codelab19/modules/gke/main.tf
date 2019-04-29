@@ -13,20 +13,21 @@
 # limitations under the License.
 
 resource "google_container_cluster" "cluster" {
-  provider                    = "google-beta"
-  project                     = "${var.project_id}"
-  name                        = "${var.name}"
-  min_master_version          = "${var.min_master_version}"
-  network                     = "${var.network}"
-  subnetwork                  = "${var.subnetwork}"
-  location                    = "${var.location}"
-  default_max_pods_per_node   = "${var.default_max_pods_per_node}"
-  remove_default_node_pool    = "${var.remove_default_node_pool}"
-  logging_service             = "${var.logging_service}"
-  monitoring_service          = "${var.monitoring_service}"
-  enable_binary_authorization = "${var.enable_binary_authorization}"
-  initial_node_count          = "${var.node_count}"
-  resource_labels             = "${var.cluster_labels}"
+  provider                          = "google-beta"
+  project                           = "${var.project_id}"
+  name                              = "${var.name}"
+  min_master_version                = "${var.min_master_version}"
+  network                           = "${var.network}"
+  subnetwork                        = "${var.subnetwork}"
+  location                          = "${var.location}"
+  default_max_pods_per_node         = "${var.default_max_pods_per_node}"
+  remove_default_node_pool          = "${var.remove_default_node_pool}"
+  logging_service                   = "${var.logging_service}"
+  monitoring_service                = "${var.monitoring_service}"
+  enable_binary_authorization       = "${var.enable_binary_authorization}"
+  initial_node_count                = "${var.node_count}"
+  resource_labels                   = "${var.cluster_labels}"
+  master_authorized_networks_config = "${var.master_authorized_networks_config}"
 
   private_cluster_config {
     enable_private_endpoint = "${var.enable_private_endpoint}"
@@ -74,9 +75,6 @@ resource "google_container_cluster" "cluster" {
     update = "20m"
     delete = "20m"
   }
-
-  # this breaks on subsequent apply
-  # remove_default_node_pool = "${var.node_count == 0 ? true : false}"
 }
 
 resource "google_container_node_pool" "node_pool" {

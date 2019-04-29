@@ -362,6 +362,7 @@ module "gke" {
   project_id = "${var.project_id}"
 
   # cluster
+
   name                           = "${local.prefix}vpc-demo-cluster"
   enable_private_endpoint        = false
   enable_private_nodes           = true
@@ -382,22 +383,30 @@ module "gke" {
   network_policy_config_disabled = true
   kubernetes_dashboard_disabled  = true
   istio_config_disabled          = true
-
+  master_authorized_networks_config = [
+    {
+      cidr_blocks = [
+        {
+          cidr_block   = "0.0.0.0/0"
+          display_name = "all-external"
+        },
+      ]
+    }
+  ]
   cluster_labels = {
     component = "gke"
   }
 
   # node
+
   node_count      = 1
   machine_type    = "n1-standard-2"
   service_account = "default"
   network_tags    = []
   node_metadata   = "SECURE"
-
   node_labels = {
     component = "gke"
   }
-
   oauth_scopes = [
     "https://www.googleapis.com/auth/compute",
     "https://www.googleapis.com/auth/devstorage.read_only",

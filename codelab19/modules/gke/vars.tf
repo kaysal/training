@@ -12,7 +12,7 @@ variable "location" {
 
 variable "remove_default_node_pool" {
   description = "remove default node pool"
-  default = false
+  default     = false
 }
 
 variable "network" {
@@ -159,4 +159,20 @@ variable "master_ipv4_cidr_block" {
 variable "node_count" {
   description = "node count"
   default     = 1
+}
+
+variable "master_authorized_networks_config" {
+  type        = "list"
+  description = "master authorized networks"
+
+  default  = [
+    {
+      cidr_blocks = [
+        {
+          cidr_block   = "0.0.0.0/0"
+          display_name = "all-external"
+        },
+      ]
+    }
+  ]
 }
