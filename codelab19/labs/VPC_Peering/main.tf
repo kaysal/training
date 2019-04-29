@@ -16,8 +16,8 @@ locals {
 #------------------------------
 
 locals {
-  vpc_demo_subnet_10_1_1 = "${local.prefix}vpc-demo-subnet-10-1-1"
-  vpc_demo_subnet_10_3_1 = "${local.prefix}vpc-demo-subnet-10-3-1"
+  vpc_demo_subnet1 = "${local.prefix}vpc-demo-subnet1"
+  vpc_demo_subnet2 = "${local.prefix}vpc-demo-subnet2"
 }
 
 module "vpc_demo" {
@@ -30,15 +30,15 @@ module "vpc_demo" {
 
   subnets = [
     {
-      subnet_name           = "${local.vpc_demo_subnet_10_1_1}"
+      subnet_name           = "${local.vpc_demo_subnet1}"
       subnet_ip             = "10.1.1.0/24"
       subnet_region         = "us-central1"
       subnet_private_access = true
       subnet_flow_logs      = true
     },
     {
-      subnet_name           = "${local.vpc_demo_subnet_10_3_1}"
-      subnet_ip             = "10.3.1.0/24"
+      subnet_name           = "${local.vpc_demo_subnet2}"
+      subnet_ip             = "10.2.1.0/24"
       subnet_region         = "us-east1"
       subnet_private_access = true
       subnet_flow_logs      = true
@@ -46,8 +46,8 @@ module "vpc_demo" {
   ]
 
   secondary_ranges = {
-    "${local.vpc_demo_subnet_10_1_1}" = []
-    "${local.vpc_demo_subnet_10_3_1}" = []
+    "${local.vpc_demo_subnet1}" = []
+    "${local.vpc_demo_subnet2}" = []
   }
 }
 
@@ -82,10 +82,10 @@ resource "google_compute_firewall" "vpc_demo_icmp" {
 
 # VM Instance
 #-----------------------------------
-module "vpc_demo_vm_10_1_1" {
+module "vpc_demo_vm1" {
   source                  = "../../modules/gce-public"
   project                 = "${var.project_id}"
-  name                    = "${local.prefix}vpc-demo-vm-10-1-1"
+  name                    = "${local.prefix}vpc-demo-vm1"
   machine_type            = "${local.machine_type}"
   zone                    = "us-central1-a"
   metadata_startup_script = "${file("scripts/startup.sh")}"
@@ -94,10 +94,10 @@ module "vpc_demo_vm_10_1_1" {
   subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
 }
 
-module "vpc_demo_vm_10_3_1" {
+module "vpc_demo_vm2" {
   source                  = "../../modules/gce-public"
   project                 = "${var.project_id}"
-  name                    = "${local.prefix}vpc-demo-vm-10-3-1"
+  name                    = "${local.prefix}vpc-demo-vm2"
   machine_type            = "${local.machine_type}"
   zone                    = "us-east1-b"
   metadata_startup_script = "${file("scripts/startup.sh")}"
@@ -155,7 +155,7 @@ module "vpc_demo_vpn_us_c1" {
 #============================================
 
 locals {
-  vpc_onprem_subnet_10_128_1 = "${local.prefix}vpc-onprem-subnet-10-128-1"
+  vpc_onprem_subnet1 = "${local.prefix}vpc-onprem-subnet1"
 }
 
 module "vpc_onprem" {
@@ -167,7 +167,7 @@ module "vpc_onprem" {
 
   subnets = [
     {
-      subnet_name           = "${local.vpc_onprem_subnet_10_128_1}"
+      subnet_name           = "${local.vpc_onprem_subnet1}"
       subnet_ip             = "10.128.1.0/24"
       subnet_region         = "us-central1"
       subnet_private_access = false
@@ -176,7 +176,7 @@ module "vpc_onprem" {
   ]
 
   secondary_ranges = {
-    "${local.vpc_onprem_subnet_10_128_1}" = []
+    "${local.vpc_onprem_subnet1}" = []
   }
 }
 
@@ -273,7 +273,7 @@ module "vpc_onprem_vpn_us_c1" {
 #============================================
 
 locals {
-  vpc_saas_subnet_192_168_1 = "${local.prefix}vpc-saas-subnet-192-168-1"
+  vpc_saas_subnet1 = "${local.prefix}vpc-saas-subnet1"
 }
 
 module "vpc_saas" {
@@ -285,7 +285,7 @@ module "vpc_saas" {
 
   subnets = [
     {
-      subnet_name           = "${local.vpc_saas_subnet_192_168_1}"
+      subnet_name           = "${local.vpc_saas_subnet1}"
       subnet_ip             = "192.168.1.0/24"
       subnet_region         = "us-central1"
       subnet_private_access = false
@@ -294,43 +294,8 @@ module "vpc_saas" {
   ]
 
   secondary_ranges = {
-    "${local.vpc_saas_subnet_192_168_1}" = []
+    "${local.vpc_saas_subnet1}" = []
   }
-}
-
-resource "google_compute_firewall" "vpc_saas_fw_rules" {
-  provider    = "google-beta"
-  name        = "${local.prefix}vpc-saas-fw-rules"
-  description = "VPC SAAS FW rules"
-  network     = "${module.vpc_saas.network_self_link}"
-
-  allow {
-    protocol = "tcp"
-  }
-
-  allow {
-    protocol = "udp"
-  }
-
-  allow {
-    protocol = "icmp"
-  }
-
-  source_ranges = ["0.0.0.0/0"]
-}
-
-# VM Instance
-#-----------------------------------
-module "vpc_saas_vm" {
-  source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
-  name                    = "${local.prefix}vpc-saas-vm"
-  machine_type            = "${local.machine_type}"
-  zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_saas.subnets_self_links[0]}"
 }
 
 # FW Rules
@@ -360,4 +325,18 @@ resource "google_compute_firewall" "vpc_saas_icmp" {
   }
 
   source_ranges = ["10.0.0.0/8", "192.168.1.0/24"]
+}
+
+# VM Instance
+#-----------------------------------
+module "vpc_saas_vm" {
+  source                  = "../../modules/gce-public"
+  project                 = "${var.project_id}"
+  name                    = "${local.prefix}vpc-saas-vm"
+  machine_type            = "${local.machine_type}"
+  zone                    = "us-central1-a"
+  metadata_startup_script = "${file("scripts/startup.sh")}"
+  image                   = "${local.image}"
+  subnetwork_project      = "${var.project_id}"
+  subnetwork              = "${module.vpc_saas.subnets_self_links[0]}"
 }
