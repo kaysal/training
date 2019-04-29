@@ -372,7 +372,7 @@ module "gke" {
   min_master_version             = "1.11.8-gke.6"
   pods_range_name                = "pod-range"
   services_range_name            = "svc-range"
-  location                       = "europe-west1"
+  location                       = "us-central1"
   default_max_pods_per_node      = 16
   remove_default_node_pool       = false
   logging_service                = "logging.googleapis.com/kubernetes"
