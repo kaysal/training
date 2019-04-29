@@ -1,4 +1,4 @@
-# Cloudnet 19 SME
+# Cloudnet19
 ### Prerequisites
 1. Create a Google Cloud Project.
 2. Activate `Compute Engine API` in your Project if you are using Compute Engine for the first time.
