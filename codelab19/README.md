@@ -1,7 +1,7 @@
 # Cloudnet19
 ### Prerequisites
 1. Create a Google Cloud Project.
-2. Activate `Compute Engine API` in your Project if you are using Compute Engine for the first time.
+2. Activate `Compute Engine API` and `Kubernetes Engine API` in your Project if you are using Compute Engine for the first time.
 3. Launch a `Cloud Shell` terminal to be used for the remaining steps.
 ### Clone GitHub Repository for Codelabs
 Open a Cloud Shell terminal and run the following command:
