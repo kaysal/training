@@ -52,6 +52,7 @@ In the `training/codelab19/` directory, run the following script:
 ```sh
 ./terraform-install.sh
 ```
+Note: that the script above requires `jq` and `zip` applications already installed on your linux OS. If you get any errors
 2. Run the following command to reload your `PATH` with terraform:
 ```sh
 source ~/.bashrc
@@ -126,3 +127,17 @@ If all required APIs are not activated, you might get an error similar to the fo
 * google_compute_network.network: Error creating Network: googleapi: Error 403: Access Not Configured. Compute Engine API has not been used in project [PROJECT_ID] before or it is disabled...
 ```
 In this case, the Compute API was not enabled during step 2 of the prerequisites section. Not to worry! Just enable the Compute API (in this example) and re-rerun the `init.sh` script. Depending on the GCP cloud services tested in the labs, you might need to enable other APIs in your project.
+3. The `terraform-install.sh` script requires `jq` and `unzip` applications are already installed on your linux OS. If not installed it might give any of the following errors:
+```
+$ ./terraform-install.sh
+./terraform-install.sh: line 5: jq: command not found
+```
+Or
+```
+$ ./terraform-install.sh
+./terraform-install.sh: line 9: unzip: command not found
+```
+The applications should already be available in GCP Cloudshell. In case you are using a different environment or for some reason your Cloudshell throws any errors, then just install the applications:
+```
+$ sudo apt install jq unzip -y
+```
