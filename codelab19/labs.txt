@@ -1,4 +1,3 @@
-NAT
 VPC_Peering
 HA_VPN
 DNS
