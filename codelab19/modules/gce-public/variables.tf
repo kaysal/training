@@ -37,3 +37,9 @@ variable "subnetwork" {
 variable "metadata_startup_script" {
   description = "metadata startup script"
 }
+
+variable "tags" {
+  type        = "list"
+  description = "network tags"
+  default     = []
+}
