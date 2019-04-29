@@ -374,7 +374,7 @@ module "gke" {
   services_range_name            = "svc-range"
   location                       = "us-central1"
   default_max_pods_per_node      = 16
-  remove_default_node_pool       = false
+  remove_default_node_pool       = true
   logging_service                = "logging.googleapis.com/kubernetes"
   monitoring_service             = "monitoring.googleapis.com/kubernetes"
   enable_binary_authorization    = false
