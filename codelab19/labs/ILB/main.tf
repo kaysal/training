@@ -13,11 +13,9 @@ locals {
 #============================================
 
 # VPC Demo Network
-#------------------------------
 
 locals {
-  vpc_demo_subnet_10_1_1 = "${local.prefix}vpc-demo-subnet-10-1-1"
-  vpc_demo_subnet_10_3_1 = "${local.prefix}vpc-demo-subnet-10-3-1"
+  vpc_demo_subnet1 = "${local.prefix}vpc-demo-subnet1"
 }
 
 module "vpc_demo" {
@@ -30,76 +28,118 @@ module "vpc_demo" {
 
   subnets = [
     {
-      subnet_name           = "${local.vpc_demo_subnet_10_1_1}"
+      subnet_name           = "${local.vpc_demo_subnet1}"
       subnet_ip             = "10.1.1.0/24"
       subnet_region         = "us-central1"
-      subnet_private_access = true
-      subnet_flow_logs      = true
-    },
-    {
-      subnet_name           = "${local.vpc_demo_subnet_10_3_1}"
-      subnet_ip             = "10.3.1.0/24"
-      subnet_region         = "us-east1"
-      subnet_private_access = true
-      subnet_flow_logs      = true
+      subnet_private_access = false
+      subnet_flow_logs      = false
     },
   ]
 
   secondary_ranges = {
-    "${local.vpc_demo_subnet_10_1_1}" = []
-    "${local.vpc_demo_subnet_10_3_1}" = []
+    "${local.vpc_demo_subnet1}" = []
   }
 }
 
-resource "google_compute_firewall" "vpc_demo_ssh" {
-  provider    = "google-beta"
-  name        = "${local.prefix}vpc-demo-ssh"
-  description = "VPC demo SSH FW rule"
-  network     = "${module.vpc_demo.network_self_link}"
+resource "google_compute_firewall" "vpc_demo_allow_internal" {
+  provider = "google-beta"
+  name     = "${local.prefix}vpc-demo-allow-internal"
+  network  = "${module.vpc_demo.network_self_link}"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["0-65535"]
+  }
+
+  allow {
+    protocol = "udp"
+    ports    = ["0-65535"]
+  }
+
+  allow {
+    protocol = "icmp"
+  }
+
+  source_ranges = ["10.1.0.0/16"]
+}
+
+resource "google_compute_firewall" "vpc_demo_allow_health_checks" {
+  provider = "google-beta"
+  name     = "${local.prefix}vpc-demo-allow-health-checks"
+  network  = "${module.vpc_demo.network_self_link}"
+
+  allow {
+    protocol = "tcp"
+    ports    = [80]
+  }
+
+  source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
+  target_tags   = ["allow-hc"]
+}
+
+resource "google_compute_firewall" "vpc_demo_allow_ssh" {
+  provider = "google-beta"
+  name     = "${local.prefix}vpc-demo-allow-ssh"
+  network  = "${module.vpc_demo.network_self_link}"
 
   allow {
     protocol = "tcp"
     ports    = [22]
   }
 
-  source_ranges = ["0.0.0.0/0"]
-}
-
-resource "google_compute_firewall" "vpc_demo_icmp" {
-  provider    = "google-beta"
-  name        = "${local.prefix}vpc-demo-icmp"
-  description = "VPC demo ICMP FW rule"
-  network     = "${module.vpc_demo.network_self_link}"
-
-  allow {
-    protocol = "icmp"
-  }
-
-  source_ranges = ["10.0.0.0/8"]
+  target_tags = ["allow-ssh"]
 }
 
 # VM Instance
 #-----------------------------------
-module "vpc_demo_vm_10_1_1" {
+module "vm_primary_a" {
   source                  = "../../modules/gce-public"
   project                 = "${var.project_id}"
-  name                    = "${local.prefix}vpc-demo-vm-10-1-1"
+  name                    = "${local.prefix}vm-primary-a"
   machine_type            = "${local.machine_type}"
   zone                    = "us-central1-a"
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = "${local.image}"
   subnetwork_project      = "${var.project_id}"
   subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  tags                    = ["allow-hc"]
 }
 
-module "vpc_demo_vm_10_3_1" {
+module "vm_primary_b" {
   source                  = "../../modules/gce-public"
   project                 = "${var.project_id}"
-  name                    = "${local.prefix}vpc-demo-vm-10-3-1"
+  name                    = "${local.prefix}vm-primary-b"
   machine_type            = "${local.machine_type}"
-  zone                    = "us-east1-b"
+  zone                    = "us-central1-a"
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = "${local.image}"
   subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[1]}"
+  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  tags                    = ["allow-hc"]
+}
+
+module "vm_backup" {
+  source                  = "../../modules/gce-public"
+  project                 = "${var.project_id}"
+  name                    = "${local.prefix}vm-backup"
+  machine_type            = "${local.machine_type}"
+  zone                    = "us-central1-c"
+  metadata_startup_script = "${file("scripts/startup.sh")}"
+  image                   = "${local.image}"
+  subnetwork_project      = "${var.project_id}"
+  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  tags                    = ["allow-hc"]
+}
+
+module "vm_client" {
+  source                  = "../../modules/gce-public"
+  project                 = "${var.project_id}"
+  name                    = "${local.prefix}vm-client"
+  machine_type            = "${local.machine_type}"
+  zone                    = "us-central1-a"
+  metadata_startup_script = "${file("scripts/client.sh")}"
+  image                   = "${local.image}"
+  subnetwork_project      = "${var.project_id}"
+  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  tags                    = ["allow-ssh"]
 }
