@@ -391,7 +391,7 @@ module "gke" {
           display_name = "all-external"
         },
       ]
-    }
+    },
   ]
   cluster_labels = {
     component = "gke"
