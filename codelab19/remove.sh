@@ -16,7 +16,7 @@ echo ""
 read -p "Are you sure you want to remove ${red}${bold}$LAB_DEPLOYED${reset} lab? ( Y/N  y/n  yes/no ):"
 if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
 then
-    exit 1
+    exit
 fi
 echo ""
 echo "Removing base template for ${red}${bold}$LAB_DEPLOYED ${reset}..."
