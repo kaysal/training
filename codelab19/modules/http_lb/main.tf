@@ -103,7 +103,7 @@ resource "google_compute_url_map" "url_map" {
   name            = "${var.url_map_name}"
   project         = "${var.project_id}"
   default_service = "${google_compute_backend_service.backend_service.self_link}"
-
+/*
   host_rule {
     hosts        = ["*"]
     path_matcher = "allpaths"
@@ -112,7 +112,7 @@ resource "google_compute_url_map" "url_map" {
   path_matcher {
     name            = "allpaths"
     default_service = "${google_compute_backend_service.backend_service.self_link}"
-  }
+  }*/
 }
 
 # http target proxy
