@@ -9,41 +9,11 @@ Open a Cloud Shell terminal and run the following command:
 ```sh
 git clone https://github.com/kaysal/training.git
 ```
-The cloned repository contains the following scripts:
-- `terraform-install.sh` - taken from https://github.com/emanuelemazza/sme-academy-ny
-- `init.sh` script for installing lab base configuration
-- `remove.sh` script for removing installed lab templates
 
 2. Change to the directory of the cloned repository
 ```sh
 cd training/codelab19/
 ```
-The directory structure is as follows:
-```
-.
-├── init.sh
-├── labs
-│   ├── DNS
-│   ├── HA_VPN
-│   ├── ILB
-│   ├── NAT
-│   ├── Security
-│   └── VPC_Peering
-├── labs.txt
-├── modules
-│   ├── bind
-│   ├── gce-private
-│   ├── gce-public
-│   ├── gke
-│   └── vpn
-├── README.md
-├── remove.sh
-├── terraform-install.sh
-├── tf_apply.sh
-└── tf_destroy.sh
-
-```
-The `labs/` directory lists the base configs for the various lab sections. The directory tree also shows the `modules/` folder and other relevant terraform scripts.
 
 ### Install Terraform
 1. Install Terraform if it is not already installed (visit [terraform.io](https://terraform.io) for other distributions).
@@ -52,7 +22,6 @@ In the `training/codelab19/` directory, run the following script:
 ```sh
 ./terraform-install.sh
 ```
-Note: that the script above requires `jq` and `zip` applications already installed on your linux OS. If you get any errors
 2. Run the following command to reload your `PATH` with terraform:
 ```sh
 source ~/.bashrc
