@@ -19,6 +19,8 @@ locals {
   vpc_demo_subnet3 = "${local.prefix}vpc-demo-subnet3"
 }
 
+# VPC and Subnets
+
 module "vpc_demo" {
   source  = "terraform-google-modules/network/google"
   version = "0.6.0"
@@ -58,6 +60,8 @@ module "vpc_demo" {
   }
 }
 
+# FW rule for health check
+
 resource "google_compute_firewall" "vpc_demo_allow_health_checks" {
   provider = "google-beta"
   name     = "${local.prefix}vpc-demo-allow-health-checks"
@@ -70,6 +74,8 @@ resource "google_compute_firewall" "vpc_demo_allow_health_checks" {
 
   source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
 }
+
+# FW rule for HTTP from RFC1918
 
 resource "google_compute_firewall" "vpc_demo_allow_http_rfc1918" {
   provider = "google-beta"
