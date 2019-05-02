@@ -27,7 +27,7 @@ LAB=$item
 echo ""
 printf "You selected ${green}${bold}$LAB${reset}"
 echo ""
-read -p "Are you sure you want to load ${green}${bold}$LAB${reset} lab? (Y/N | y/n | yes/no):"
+read -p "Are you sure you want to load ${green}${bold}$LAB${reset} lab? (vY/N  y/n  yes/no ):"
 if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     exit 1

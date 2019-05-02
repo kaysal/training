@@ -13,7 +13,7 @@ export LAB_DEPLOYED=($(cat lab_deployed.txt))
 echo ""
 echo "${red}${bold}$LAB_DEPLOYED${reset} lab is currently deployed"
 echo ""
-read -p "Are you sure you want to remove ${red}${bold}$LAB_DEPLOYED${reset} lab? (Y/N | y/n | yes/no):"
+read -p "Are you sure you want to remove ${red}${bold}$LAB_DEPLOYED${reset} lab? ( Y/N  y/n  yes/no ):"
 if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     exit 1
