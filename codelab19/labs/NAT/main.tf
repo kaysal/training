@@ -113,6 +113,18 @@ module "vpc_demo_vm2" {
   project                 = "${var.project_id}"
   name                    = "${local.prefix}vpc-demo-vm2"
   machine_type            = "${local.machine_type}"
+  zone                    = "us-central1-a"
+  metadata_startup_script = "${file("scripts/startup.sh")}"
+  image                   = "${local.image}"
+  subnetwork_project      = "${var.project_id}"
+  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+}
+
+module "vpc_demo_vm3" {
+  source                  = "../../modules/gce-public"
+  project                 = "${var.project_id}"
+  name                    = "${local.prefix}vpc-demo-vm3"
+  machine_type            = "${local.machine_type}"
   zone                    = "us-east1-b"
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = "${local.image}"
