@@ -31,6 +31,10 @@ tf_destroy() {
   echo "Running ${red}${bold}terraform destroy${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
   echo ""
   terraform destroy -var project_id=$project_id
+  
+  if [ -f tfplan ]; then
+    rm tfplan
+  fi
 }
 
 tf_destroy

@@ -39,10 +39,6 @@ tf_apply() {
   echo "Running ${green}${bold}terraform apply${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
   echo ""
   terraform apply -input=false tfplan
-
-  if [ -f tfplan ]; then
-    rm tfplan
-  fi
 }
 
 tf_apply
