@@ -22,13 +22,14 @@ remove () {
   echo ""
   echo "Removing base template for ${red}${bold}$LAB_DEPLOYED ${reset}..."
   echo ""
-  time ./tf_destroy.sh -d "labs/${LAB_DEPLOYED}/" -l ${LAB_DEPLOYED}
+  time ./tf_destroy.sh -d "labs/${LAB_DEPLOYED}/"
 }
 
-if [[ -f lab_deployed.txt ]]; then
+if [[ -s lab_deployed.txt ]]; then
   remove
   rm lab_deployed.txt
 else
   echo ""
-  echo "You have no deployed labs!"
+  echo "You have no labs deployed!"
+  echo ""
 fi

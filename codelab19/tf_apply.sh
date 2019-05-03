@@ -42,3 +42,7 @@ tf_apply() {
 }
 
 tf_apply
+
+if [ -f tfplan ]; then
+  rm tfplan
+fi

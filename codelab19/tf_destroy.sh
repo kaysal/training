@@ -18,11 +18,10 @@ export TF_VAR_project_id=$(gcloud config get-value project)
 echo "${bold}TF_VAR_project_id${reset} variable set as active project ${yellow}${bold}[$TF_VAR_project_id]${reset}"
 echo ""
 
-while getopts d:l: option
+while getopts d: option
 do
   case "${option}" in
     d) FOLDER=$OPTARG;;
-    l) LAB_DEPLOYED=$OPTARG;;
 esac
 done
 
@@ -31,10 +30,6 @@ tf_destroy() {
   echo "Running ${red}${bold}terraform destroy${reset} in directory ${magenta}${bold}$FOLDER${reset}..."
   echo ""
   terraform destroy -var project_id=$project_id
-  
-  if [ -f tfplan ]; then
-    rm tfplan
-  fi
 }
 
 tf_destroy

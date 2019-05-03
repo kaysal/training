@@ -28,7 +28,7 @@ init () {
   echo ""
   printf "You selected ${green}${bold}$LAB${reset}"
   echo ""
-  
+
   read -p "Are you sure you want to load ${green}${bold}$LAB${reset} lab? ( Y/N  y/n  yes/no ): "
   if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
   then
@@ -42,8 +42,8 @@ init () {
 
   if [ ! -f lab_deployed.txt ]; then
     touch lab_deployed.txt
+    echo ${LAB} > lab_deployed.txt
   fi
-  echo ${LAB} > lab_deployed.txt
 }
 
 init
