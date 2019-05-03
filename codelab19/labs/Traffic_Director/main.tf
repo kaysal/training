@@ -69,7 +69,7 @@ resource "google_compute_firewall" "vpc_demo_allow_health_checks" {
 
   allow {
     protocol = "tcp"
-    ports    = [80]
+    ports    = [80, 8000]
   }
 
   source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
