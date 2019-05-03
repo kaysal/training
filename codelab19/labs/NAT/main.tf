@@ -117,7 +117,7 @@ module "vpc_demo_vm2" {
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = "${local.image}"
   subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  subnetwork              = "${module.vpc_demo.subnets_self_links[1]}"
 }
 
 module "vpc_demo_vm3" {
