@@ -6,8 +6,8 @@ cat <<EOF > /var/www/html/index.html
 <html><body><h1>Welcome to the CDN demo!</h1>
 </body></html>
 EOF
-ln -s /etc/apache2/mods_available/headers.load /etc/apache2/mods_enabled/headers.load
-cat <<EOF > /etc/apache2/sites_available/000_default.conf
+ln -s /etc/apache2/mods-available/headers.load /etc/apache2/mods-enabled/headers.load
+cat <<EOF > /etc/apache2/sites-available/000-default.conf
 <VirtualHost *:80>
         ServerAdmin webmaster@localhost
         DocumentRoot /var/www/html
