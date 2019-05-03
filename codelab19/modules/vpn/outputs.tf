@@ -18,6 +18,11 @@ output "vpn_tunnels_names-dynamic" {
   value       = "${google_compute_vpn_tunnel.tunnel-dynamic.*.name}"
 }
 
+output "vpn_tunnels_self_links-dynamic" {
+  description = "The VPN tunnel name is"
+  value       = "${google_compute_vpn_tunnel.tunnel-dynamic.*.self_link}"
+}
+
 output "ipsec_secret-dynamic" {
   description = "The secret"
   value       = "${google_compute_vpn_tunnel.tunnel-dynamic.*.shared_secret}"
