@@ -83,7 +83,7 @@ variable "autoscaler_cooldown_period" {
 
 variable "autoscaler_cpu_utilization_target" {
   description = "autoscaler cpu utilization target"
-  default     = 0.8
+  default     = "0.8"
 }
 
 variable "url_map_name" {
@@ -104,4 +104,9 @@ variable "target_proxy_name" {
 variable "forwarding_rule_name" {
   description = "forwarding rule name"
   default     = "proxy"
+}
+
+variable "target_size" {
+  description = "instance group zone"
+  default     = 1
 }

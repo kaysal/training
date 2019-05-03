@@ -79,27 +79,27 @@ resource "google_compute_firewall" "vpc_demo_allow_ssh_http_s_icmp" {
 }
 
 module "http_lb" {
-  source                  = "../../modules/http_lb"
-  project_id              = "${var.project_id}"
-  prefix                  = "${local.prefix}"
-  instance_template_name  = "cdn-www-template"
-  region                  = "asia-east1"
-  machine_type            = "${local.machine_type}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  instance_group_name     = "cdn-mig"
-  health_check_name       = "http-basic-check"
-  backend_service_name    = "cdn-backend-service"
-  url_map_name            = "cdn-map"
-  target_proxy_name       = "cdn-proxy"
-  forwarding_rule_name    = "cdn-rule"
-
-  named_port = {
-    name = "http"
-    port = "80"
-  }
+  source                            = "../../modules/http_lb"
+  project_id                        = "${var.project_id}"
+  prefix                            = "${local.prefix}"
+  instance_template_name            = "cdn-www-template"
+  region                            = "asia-east1"
+  machine_type                      = "${local.machine_type}"
+  image                             = "${local.image}"
+  subnetwork_project                = "${var.project_id}"
+  subnetwork                        = "${module.vpc_demo.subnets_self_links[0]}"
+  metadata_startup_script           = "${file("scripts/startup.sh")}"
+  instance_group_name               = "cdn-mig"
+  target_size                       = 1
+  autoscaler_max_replicas           = 3
+  autoscaler_min_replicas           = 1
+  autoscaler_cooldown_period        = 45
+  autoscaler_cpu_utilization_target = "0.8"
+  health_check_name                 = "http-basic-check"
+  backend_service_name              = "cdn-backend-service"
+  url_map_name                      = "cdn-map"
+  target_proxy_name                 = "cdn-proxy"
+  forwarding_rule_name              = "cdn-rule"
 }
 
 # cdn ip output

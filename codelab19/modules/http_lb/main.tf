@@ -37,7 +37,7 @@ resource "google_compute_region_instance_group_manager" "mig" {
   base_instance_name = "${var.instance_group_name}"
   instance_template  = "${google_compute_instance_template.instance_template.self_link}"
   region             = "${var.region}"
-  target_size        = 1
+  target_size        = "${var.target_size}"
 
   named_port {
     name = "http"
@@ -103,16 +103,6 @@ resource "google_compute_url_map" "url_map" {
   name            = "${var.url_map_name}"
   project         = "${var.project_id}"
   default_service = "${google_compute_backend_service.backend_service.self_link}"
-/*
-  host_rule {
-    hosts        = ["*"]
-    path_matcher = "allpaths"
-  }
-
-  path_matcher {
-    name            = "allpaths"
-    default_service = "${google_compute_backend_service.backend_service.self_link}"
-  }*/
 }
 
 # http target proxy
