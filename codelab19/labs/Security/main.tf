@@ -352,7 +352,7 @@ module "vpc_onprem_vpn_us_c1" {
   bgp_cr_session_range     = ["169.254.100.2/30", "169.254.100.6/30"]
   bgp_remote_session_range = ["169.254.100.1", "169.254.100.5"]
 }
-
+/*
 #============================================
 # GKE Cluster
 #============================================
@@ -413,4 +413,4 @@ module "gke" {
     "https://www.googleapis.com/auth/logging.write",
     "https://www.googleapis.com/auth/monitoring",
   ]
-}
+}*/
