@@ -4,6 +4,8 @@ provider "google-beta" {}
 
 locals {
   prefix       = ""
+  image        = "debian-cloud/debian-9"
+  machine_type = "f1-micro"
 }
 
 #============================================
@@ -86,4 +88,36 @@ resource "google_compute_firewall" "vpc_demo_allow_http_ilb_tcp" {
   }
 
   source_ranges = ["10.126.0.0/22"]
+}
+
+module "apache" {
+  source                    = "../../modules/l7_ilb"
+  project_id                = "${var.project_id}"
+  prefix                    = "${local.prefix}"
+  instance_template_name    = "apache-template"
+  region                    = "us-east1"
+  machine_type              = "${local.machine_type}"
+  image                     = "${local.image}"
+  subnetwork_project        = "${var.project_id}"
+  subnetwork                = "${module.vpc_demo.subnets_self_links[0]}"
+  metadata_startup_script   = "${file("scripts/apache.sh")}"
+  instance_group_name       = "apache-instance-group"
+  distribution_policy_zones = ["us-east1-b"]
+  target_size               = 2
+}
+
+module "nginx" {
+  source                    = "../../modules/l7_ilb"
+  project_id                = "${var.project_id}"
+  prefix                    = "${local.prefix}"
+  instance_template_name    = "nginx-template"
+  region                    = "us-east1"
+  machine_type              = "${local.machine_type}"
+  image                     = "${local.image}"
+  subnetwork_project        = "${var.project_id}"
+  subnetwork                = "${module.vpc_demo.subnets_self_links[0]}"
+  metadata_startup_script   = "${file("scripts/nginx.sh")}"
+  instance_group_name       = "nginx-instance-group"
+  distribution_policy_zones = ["us-east1-c"]
+  target_size               = 2
 }
