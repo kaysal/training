@@ -29,5 +29,6 @@ if [[ -f lab_deployed.txt ]]; then
   remove
   rm lab_deployed.txt
 else
+  echo ""
   echo "You have no deployed labs!"
 fi
