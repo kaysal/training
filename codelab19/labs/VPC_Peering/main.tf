@@ -13,7 +13,6 @@ locals {
 #============================================
 
 # VPC Demo Network
-#------------------------------
 
 locals {
   vpc_demo_subnet1 = "${local.prefix}vpc-demo-subnet1"
@@ -33,15 +32,15 @@ module "vpc_demo" {
       subnet_name           = "${local.vpc_demo_subnet1}"
       subnet_ip             = "10.1.1.0/24"
       subnet_region         = "us-central1"
-      subnet_private_access = true
-      subnet_flow_logs      = true
+      subnet_private_access = false
+      subnet_flow_logs      = false
     },
     {
       subnet_name           = "${local.vpc_demo_subnet2}"
       subnet_ip             = "10.2.1.0/24"
       subnet_region         = "us-east1"
-      subnet_private_access = true
-      subnet_flow_logs      = true
+      subnet_private_access = false
+      subnet_flow_logs      = false
     },
   ]
 
@@ -52,36 +51,42 @@ module "vpc_demo" {
 }
 
 # FW Rules
-#-----------------------------------
-resource "google_compute_firewall" "vpc_demo_ssh" {
-  provider    = "google-beta"
-  name        = "${local.prefix}vpc-demo-ssh"
-  description = "VPC demo SSH FW rule"
-  network     = "${module.vpc_demo.network_self_link}"
+
+resource "google_compute_firewall" "vpc_demo_allow_rfc1918" {
+  provider = "google-beta"
+  name     = "${local.prefix}vpc-demo-allow-rfc1918"
+  network  = "${module.vpc_demo.network_self_link}"
+
+  allow {
+    protocol = "tcp"
+  }
+  allow {
+    protocol = "udp"
+  }
+  allow {
+    protocol = "icmp"
+  }
+
+  source_ranges = [
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16"
+  ]
+}
+
+resource "google_compute_firewall" "vpc_demo_allow_ssh" {
+  provider = "google-beta"
+  name     = "${local.prefix}vpc-demo-allow-ssh"
+  network  = "${module.vpc_demo.network_self_link}"
 
   allow {
     protocol = "tcp"
     ports    = [22]
   }
-
-  source_ranges = ["0.0.0.0/0"]
-}
-
-resource "google_compute_firewall" "vpc_demo_icmp" {
-  provider    = "google-beta"
-  name        = "${local.prefix}vpc-demo-icmp"
-  description = "VPC demo ICMP FW rule"
-  network     = "${module.vpc_demo.network_self_link}"
-
-  allow {
-    protocol = "icmp"
-  }
-
-  source_ranges = ["10.0.0.0/8", "192.168.1.0/24"]
 }
 
 # VM Instance
-#-----------------------------------
+
 module "vpc_demo_vm1" {
   source                  = "../../modules/gce-public"
   project                 = "${var.project_id}"
@@ -107,7 +112,7 @@ module "vpc_demo_vm2" {
 }
 
 # VPC Demo Cloud Routers
-#------------------------------
+
 resource "google_compute_router" "vpc_demo_cr_us_c1" {
   project = "${var.project_id}"
   name    = "${local.prefix}vpc-demo-cr-us-c1"
@@ -122,7 +127,7 @@ resource "google_compute_router" "vpc_demo_cr_us_c1" {
 }
 
 # VPC Demo VPNs
-#-----------------------------------
+
 # VPC_demo VPN GW external IP (us-central1)
 resource "google_compute_address" "vpc_demo_vpngw_ip_us_c1" {
   project = "${var.project_id}"
@@ -150,12 +155,21 @@ module "vpc_demo_vpn_us_c1" {
   bgp_remote_session_range = ["169.254.100.2"]
 }
 
+resource "google_compute_route" "route_to_onprem_subnet2" {
+  name                = "${local.prefix}route-to-onprem-subnet2"
+  dest_range          = "172.16.2.0/24"
+  network             = "${module.vpc_demo.network_self_link}"
+  next_hop_vpn_tunnel = "${module.vpc_demo_vpn_us_c1.vpn_tunnels_self_links-dynamic[0]}"
+  priority            = 100
+}
+
 #============================================
 # VPC On-prem Configuration
 #============================================
 
 locals {
-  vpc_onprem_subnet1 = "${local.prefix}vpc-onprem-subnet1"
+  onprem_subnet1 = "${local.prefix}onprem-subnet1"
+  onprem_subnet2 = "${local.prefix}onprem-subnet2"
 }
 
 module "vpc_onprem" {
@@ -167,8 +181,15 @@ module "vpc_onprem" {
 
   subnets = [
     {
-      subnet_name           = "${local.vpc_onprem_subnet1}"
-      subnet_ip             = "10.128.1.0/24"
+      subnet_name           = "${local.onprem_subnet1}"
+      subnet_ip             = "172.16.1.0/24"
+      subnet_region         = "us-central1"
+      subnet_private_access = false
+      subnet_flow_logs      = false
+    },
+    {
+      subnet_name           = "${local.onprem_subnet2}"
+      subnet_ip             = "172.16.2.0/24"
       subnet_region         = "us-central1"
       subnet_private_access = false
       subnet_flow_logs      = false
@@ -176,41 +197,48 @@ module "vpc_onprem" {
   ]
 
   secondary_ranges = {
-    "${local.vpc_onprem_subnet1}" = []
+    "${local.onprem_subnet1}" = []
+    "${local.onprem_subnet2}" = []
   }
 }
 
 # FW Rules
-#-----------------------------------
-resource "google_compute_firewall" "vpc_onprem_ssh" {
-  provider    = "google-beta"
-  name        = "${local.prefix}vpc-onprem-ssh"
-  description = "VPC onprem SSH FW rule"
-  network     = "${module.vpc_onprem.network_self_link}"
+
+resource "google_compute_firewall" "vpc_onprem_allow_rfc1918" {
+  provider = "google-beta"
+  name     = "${local.prefix}vpc-onprem-allow-rfc1918"
+  network  = "${module.vpc_onprem.network_self_link}"
+
+  allow {
+    protocol = "tcp"
+  }
+  allow {
+    protocol = "udp"
+  }
+  allow {
+    protocol = "icmp"
+  }
+
+  source_ranges = [
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16"
+  ]
+}
+
+resource "google_compute_firewall" "vpc_onprem_allow_ssh" {
+  provider = "google-beta"
+  name     = "${local.prefix}vpc-onprem-allow-ssh"
+  network  = "${module.vpc_onprem.network_self_link}"
 
   allow {
     protocol = "tcp"
     ports    = [22]
   }
-
-  source_ranges = ["0.0.0.0/0"]
-}
-
-resource "google_compute_firewall" "vpc_onprem_icmp" {
-  provider    = "google-beta"
-  name        = "${local.prefix}vpc-onprem-icmp"
-  description = "VPC onprem ICMP FW rule"
-  network     = "${module.vpc_onprem.network_self_link}"
-
-  allow {
-    protocol = "icmp"
-  }
-
-  source_ranges = ["10.0.0.0/8", "192.168.1.0/24"]
 }
 
 # VM Instance
-#-----------------------------------
+
 module "vpc_onprem_vm" {
   source                  = "../../modules/gce-public"
   project                 = "${var.project_id}"
@@ -241,7 +269,7 @@ resource "google_compute_router" "vpc_onprem_cr_us_c1" {
 }
 
 # VPC On-premises VPN
-#-----------------------------------
+
 # VPC_onprem VPN GW external IP
 resource "google_compute_address" "vpc_onprem_vpngw_ip_us_c1" {
   project = "${var.project_id}"
@@ -269,24 +297,24 @@ module "vpc_onprem_vpn_us_c1" {
 }
 
 #============================================
-# VPC SaaS Configuration
+# VPC Demo 2 Configuration
 #============================================
 
 locals {
-  vpc_saas_subnet1 = "${local.prefix}vpc-saas-subnet1"
+  vpc_demo_2_subnet1 = "${local.prefix}vpc-demo-2-subnet1"
 }
 
-module "vpc_saas" {
+module "vpc_demo_2" {
   source       = "terraform-google-modules/network/google"
   version      = "0.6.0"
   project_id   = "${var.project_id}"
-  network_name = "${local.prefix}vpc-saas"
+  network_name = "${local.prefix}vpc-demo-2"
   routing_mode = "GLOBAL"
 
   subnets = [
     {
-      subnet_name           = "${local.vpc_saas_subnet1}"
-      subnet_ip             = "192.168.1.0/24"
+      subnet_name           = "${local.vpc_demo_2_subnet1}"
+      subnet_ip             = "10.3.1.0/24"
       subnet_region         = "us-central1"
       subnet_private_access = false
       subnet_flow_logs      = false
@@ -294,49 +322,55 @@ module "vpc_saas" {
   ]
 
   secondary_ranges = {
-    "${local.vpc_saas_subnet1}" = []
+    "${local.vpc_demo_2_subnet1}" = []
   }
 }
 
 # FW Rules
-#-----------------------------------
-resource "google_compute_firewall" "vpc_saas_ssh" {
-  provider    = "google-beta"
-  name        = "${local.prefix}vpc-saas-ssh"
-  description = "VPC saas SSH FW rule"
-  network     = "${module.vpc_saas.network_self_link}"
+
+resource "google_compute_firewall" "vpc_demo_2_allow_rfc1918" {
+  provider = "google-beta"
+  name     = "${local.prefix}vpc-demo-2-allow-rfc1918"
+  network  = "${module.vpc_demo_2.network_self_link}"
+
+  allow {
+    protocol = "tcp"
+  }
+  allow {
+    protocol = "udp"
+  }
+  allow {
+    protocol = "icmp"
+  }
+
+  source_ranges = [
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16"
+  ]
+}
+
+resource "google_compute_firewall" "vpc_demo_2_allow_ssh" {
+  provider = "google-beta"
+  name     = "${local.prefix}vpc-demo-2-allow-ssh"
+  network  = "${module.vpc_demo_2.network_self_link}"
 
   allow {
     protocol = "tcp"
     ports    = [22]
   }
-
-  source_ranges = ["0.0.0.0/0"]
-}
-
-resource "google_compute_firewall" "vpc_saas_icmp" {
-  provider    = "google-beta"
-  name        = "${local.prefix}vpc-saas-icmp"
-  description = "VPC saas ICMP FW rule"
-  network     = "${module.vpc_saas.network_self_link}"
-
-  allow {
-    protocol = "icmp"
-  }
-
-  source_ranges = ["10.0.0.0/8", "192.168.1.0/24"]
 }
 
 # VM Instance
-#-----------------------------------
-module "vpc_saas_vm" {
+
+module "vpc_demo_2_vm" {
   source                  = "../../modules/gce-public"
   project                 = "${var.project_id}"
-  name                    = "${local.prefix}vpc-saas-vm"
+  name                    = "${local.prefix}vpc-demo-2-vm"
   machine_type            = "${local.machine_type}"
   zone                    = "us-central1-a"
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = "${local.image}"
   subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_saas.subnets_self_links[0]}"
+  subnetwork              = "${module.vpc_demo_2.subnets_self_links[0]}"
 }
