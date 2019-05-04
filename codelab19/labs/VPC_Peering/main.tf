@@ -85,32 +85,6 @@ resource "google_compute_firewall" "vpc_demo_allow_ssh" {
   }
 }
 
-# VM Instance
-
-module "vpc_demo_vm1" {
-  source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
-  name                    = "${local.prefix}vpc-demo-vm1"
-  machine_type            = "${local.machine_type}"
-  zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
-}
-
-module "vpc_demo_vm2" {
-  source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
-  name                    = "${local.prefix}vpc-demo-vm2"
-  machine_type            = "${local.machine_type}"
-  zone                    = "us-east1-b"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[1]}"
-}
-
 # VPC Demo Cloud Routers
 
 resource "google_compute_router" "vpc_demo_cr_us_c1" {
@@ -237,20 +211,6 @@ resource "google_compute_firewall" "vpc_onprem_allow_ssh" {
   }
 }
 
-# VM Instance
-
-module "vpc_onprem_vm" {
-  source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
-  name                    = "${local.prefix}vpc-onprem-vm"
-  machine_type            = "${local.machine_type}"
-  zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_onprem.subnets_self_links[0]}"
-}
-
 # Create vpc-onprem Cloud Router
 resource "google_compute_router" "vpc_onprem_cr_us_c1" {
   project = "${var.project_id}"
@@ -359,18 +319,4 @@ resource "google_compute_firewall" "vpc_demo_2_allow_ssh" {
     protocol = "tcp"
     ports    = [22]
   }
-}
-
-# VM Instance
-
-module "vpc_demo_2_vm" {
-  source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
-  name                    = "${local.prefix}vpc-demo-2-vm"
-  machine_type            = "${local.machine_type}"
-  zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo_2.subnets_self_links[0]}"
 }
