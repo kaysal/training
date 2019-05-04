@@ -97,7 +97,7 @@ resource "google_compute_firewall" "vpc_demo_allow_ssh" {
 # VM Instance
 
 module "vpc_demo_vm1" {
-  source                  = "../../modules/gce-public"
+  source                  = "../../modules/gce-private"
   project                 = "${var.project_id}"
   name                    = "${local.prefix}vpc-demo-vm1"
   machine_type            = "${local.machine_type}"
@@ -109,7 +109,7 @@ module "vpc_demo_vm1" {
 }
 
 module "vpc_demo_vm2" {
-  source                  = "../../modules/gce-public"
+  source                  = "../../modules/gce-private"
   project                 = "${var.project_id}"
   name                    = "${local.prefix}vpc-demo-vm2"
   machine_type            = "${local.machine_type}"
@@ -121,7 +121,7 @@ module "vpc_demo_vm2" {
 }
 
 module "vpc_demo_vm3" {
-  source                  = "../../modules/gce-public"
+  source                  = "../../modules/gce-private"
   project                 = "${var.project_id}"
   name                    = "${local.prefix}vpc-demo-vm3"
   machine_type            = "${local.machine_type}"
