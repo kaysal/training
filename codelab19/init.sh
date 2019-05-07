@@ -24,7 +24,7 @@ bold=$(tput bold)
 reset=`tput sgr0`
 
 init () {
-  echo "\nList of Labs"
+  printf "\nList of Labs"
   echo "-----------------------"
 
   OLDIFS=$IFS
