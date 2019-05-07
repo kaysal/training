@@ -12,7 +12,7 @@ git clone https://github.com/kaysal/training.git
 
 2. Change to the directory of the cloned repository
 ```sh
-cd training/codelab19/
+cd ~/training/codelab19/
 ```
 
 ### Install Terraform
