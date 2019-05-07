@@ -85,7 +85,7 @@ if [[ -s .tmp ]]; then
   printf "\n${green}${bold}$LAB_DEPLOYED${reset} lab is already deployed!\n"
   read -p "Re-deploy ${green}${bold}$LAB_DEPLOYED${reset} lab? ( Y/N  y/n  yes/no ): "
   if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]; then
-    printf "To deploy a new lab, you must remove the existing lab"
+    printf "To deploy a new lab, you must remove the existing lab\n"
     return
   else
     time tf_apply "labs/${LAB_DEPLOYED}/" "${LAB_DEPLOYED}"
