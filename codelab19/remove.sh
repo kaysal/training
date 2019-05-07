@@ -24,12 +24,12 @@ bold=$(tput bold)
 reset=`tput sgr0`
 
 remove () {
-  printf "\n${red}${bold}$1${reset} lab is currently deployed\n"
+  printf "\n${red}${bold}$2${reset} lab is currently deployed\n"
   read -p "Are you sure you want to remove ${red}${bold}$2${reset} lab? ( Y/N  y/n  yes/no ): "
   if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]; then
       return
   else
-    printf "\nRemoving base template for ${red}${bold}$1 ${reset}...\n"
+    printf "\nRemoving base template for ${red}${bold}$2 ${reset}...\n"
     tf_destroy $1 $2
   fi
 }
@@ -55,7 +55,7 @@ export GOOGLE_PROJECT=$(gcloud config get-value project)
 export TF_VAR_project_id=$GOOGLE_PROJECT
 
 if [[ -s .tmp ]]; then
-  export LAB_DEPLOYED=($(cat .tmp))
+  LAB_DEPLOYED=($(cat .tmp))
   printf "\n${bold}GOOGLE_PROJECT${reset} variable = ${green}${bold}[$GOOGLE_PROJECT]${reset}\n"
   printf "${bold}TF_VAR_project_id${reset} variable = ${green}${bold}[$TF_VAR_project_id]${reset}\n"
   time remove "labs/${LAB_DEPLOYED}/" ${LAB_DEPLOYED}
