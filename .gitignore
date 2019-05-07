@@ -6,6 +6,7 @@
 #*.json
 *backend*
 tfplan
+.tmp
 
 # Module directory
 .terraform/
