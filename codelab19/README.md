@@ -36,7 +36,7 @@ The `init.sh` script lets you select a given lab and then configures terraform w
 ```
 2. Select a lab section and follow the instructions. The example below shows how to setup the ILB lab environment.
 ```
-~$ . init.sh
+~$ ./init.sh
 
 List of Labs
 -----------------------
