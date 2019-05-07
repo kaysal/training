@@ -92,5 +92,5 @@ if [[ -s .tmp ]]; then
 else
   init
   time tf_apply "labs/${LAB}/" "${LAB}"
-  touch .tmp && echo $2 > .tmp
+  touch .tmp && echo ${LAB} > .tmp
 fi

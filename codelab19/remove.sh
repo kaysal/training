@@ -25,32 +25,41 @@ reset=`tput sgr0`
 
 remove () {
   printf "\n${red}${bold}$1${reset} lab is currently deployed\n"
-  read -p "Are you sure you want to remove ${red}${bold}$LAB_DEPLOYED${reset} lab? ( Y/N  y/n  yes/no ): "
-  if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]
-  then
+  read -p "Are you sure you want to remove ${red}${bold}$2${reset} lab? ( Y/N  y/n  yes/no ): "
+  if [[ ! $REPLY =~ ^([yY][eE][sS]|[yY])$ ]]; then
       return
+  else
+    printf "\nRemoving base template for ${red}${bold}$1 ${reset}...\n"
+    tf_destroy $1 $2
   fi
-  printf "\nRemoving base template for ${red}${bold}$LAB_DEPLOYED ${reset}...\n"
 }
 
 tf_destroy() {
   pushd $1 > /dev/null
   printf "\nRunning ${red}${bold}terraform destroy${reset} in directory ${magenta}${bold}$1${reset}...\n"
+
   terraform destroy -var project_id=$project_id
-  popd > /dev/null
+  if [ $? -eq 0 ]; then
+    printf "\n${bold}${green}$2 removed successfully!${reset}\n"
+    popd > /dev/null
+    rm .tmp
+  else
+    printf "\n${bold}${red}Terraform error while removing $2 Lab !!!${reset}\n"
+    printf "\nUse the troubleshooting guide to resolve the error code.${reset}\n"
+    popd > /dev/null
+  fi
 }
 
 export TF_WARN_OUTPUT_ERRORS=1
 export GOOGLE_PROJECT=$(gcloud config get-value project)
 export TF_VAR_project_id=$GOOGLE_PROJECT
-export LAB_DEPLOYED=($(cat .tmp))
 
 if [[ -s .tmp ]]; then
+  export LAB_DEPLOYED=($(cat .tmp))
   printf "\n${bold}GOOGLE_PROJECT${reset} variable = ${green}${bold}[$GOOGLE_PROJECT]${reset}\n"
   printf "${bold}TF_VAR_project_id${reset} variable = ${green}${bold}[$TF_VAR_project_id]${reset}\n"
-  remove $LAB_DEPLOYED
-  time tf_destroy "labs/${LAB_DEPLOYED}/"
-  > .tmp
+  time remove "labs/${LAB_DEPLOYED}/" ${LAB_DEPLOYED}
+  printf "\ndone!\n"
 else
   printf "\nYou have no labs deployed\n\n"
 fi
