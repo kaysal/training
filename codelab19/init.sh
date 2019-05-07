@@ -25,7 +25,7 @@ reset=`tput sgr0`
 
 init () {
   printf "\nList of Labs\n"
-  printf "\n-----------------------\n"
+  printf "-----------------------\n"
 
   OLDIFS=$IFS
   IFS=$'\n'
