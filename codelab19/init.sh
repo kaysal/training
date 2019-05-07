@@ -77,6 +77,9 @@ export TF_WARN_OUTPUT_ERRORS=1
 export GOOGLE_PROJECT=$(gcloud config get-value project)
 export TF_VAR_project_id=$GOOGLE_PROJECT
 
+printf "\n${bold}GOOGLE_PROJECT${reset} variable = ${green}${bold}[$GOOGLE_PROJECT]${reset}\n"
+printf "${bold}TF_VAR_project_id${reset} variable = ${green}${bold}[$TF_VAR_project_id]${reset}\n"
+
 if [[ -s .tmp ]]; then
   LAB_DEPLOYED=($(cat .tmp))
   printf "\n${green}${bold}$LAB_DEPLOYED${reset} lab is already deployed!\n"
@@ -87,8 +90,6 @@ if [[ -s .tmp ]]; then
   else
     time tf_apply "labs/${LAB_DEPLOYED}/" "${LAB_DEPLOYED}"
   fi
-  printf "\n${bold}GOOGLE_PROJECT${reset} variable = ${green}${bold}[$GOOGLE_PROJECT]${reset}\n"
-  printf "${bold}TF_VAR_project_id${reset} variable = ${green}${bold}[$TF_VAR_project_id]${reset}\n"
 else
   init
   time tf_apply "labs/${LAB}/" "${LAB}"
