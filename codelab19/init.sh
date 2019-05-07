@@ -65,13 +65,11 @@ tf_apply() {
     printf "\n${bold}${green}$2 deployed successfully!${reset}\n"
     rm tfplan
     popd > /dev/null
-    touch .tmp && echo $2 > .tmp
   else
     printf "\n${bold}${red}Terraform error while deploying $2 Lab !!!${reset}\n"
     printf "\nUse the troubleshooting guide to resolve the error code.${reset}\n"
     rm tfplan
     popd > /dev/null
-    touch .tmp && echo $2 > .tmp
   fi
 }
 
@@ -87,11 +85,12 @@ if [[ -s .tmp ]]; then
     return
   else
     time tf_apply "labs/${LAB}/" "${LAB}"
-    touch .tmp && echo ${LAB} > .tmp
+    echo ${LAB} > .tmp
   fi
   printf "\n${bold}GOOGLE_PROJECT${reset} variable = ${green}${bold}[$GOOGLE_PROJECT]${reset}\n"
   printf "${bold}TF_VAR_project_id${reset} variable = ${green}${bold}[$TF_VAR_project_id]${reset}\n"
 else
   init
   time tf_apply "labs/${LAB}/" "${LAB}"
+  touch .tmp && echo $2 > .tmp
 fi
