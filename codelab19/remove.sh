@@ -52,5 +52,5 @@ if [[ -s .tmp ]]; then
   time tf_destroy "labs/${LAB_DEPLOYED}/"
   > .tmp
 else
-  printf "\nYou have no labs deployed!\n\n"
+  printf "\nYou have no labs deployed\n\n"
 fi
