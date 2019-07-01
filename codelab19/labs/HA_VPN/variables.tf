@@ -22,3 +22,4 @@ variable "psk" {
   description = "pre-shared key"
   default     = "password123"
 }
+
