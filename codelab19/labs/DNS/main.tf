@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-provider "google" {}
+provider "google" {
+  project = var.project_id
+}
 
-provider "google-beta" {}
+provider "google-beta" {
+  project = var.project_id
+}
 
 locals {
   prefix       = ""
@@ -34,16 +38,14 @@ locals {
 }
 
 module "vpc_demo" {
-  source  = "terraform-google-modules/network/google"
-  version = "0.6.0"
-
-  project_id   = "${var.project_id}"
+  source       = "../../modules/vpc"
+  project_id   = var.project_id
   network_name = "${local.prefix}vpc-demo"
   routing_mode = "GLOBAL"
 
   subnets = [
     {
-      subnet_name           = "${local.vpc_demo_subnet_10_1_1}"
+      subnet_name           = local.vpc_demo_subnet_10_1_1
       subnet_ip             = "10.1.1.0/24"
       subnet_region         = "us-central1"
       subnet_private_access = true
@@ -57,10 +59,10 @@ module "vpc_demo" {
 }
 
 resource "google_compute_firewall" "vpc_demo_fw_rule" {
-  provider    = "google-beta"
+  provider    = google-beta
   name        = "${local.prefix}vpc-demo-fw-rule"
   description = "VPC demo FW rules"
-  network     = "${module.vpc_demo.network_self_link}"
+  network     = module.vpc_demo.network_self_link
 
   allow {
     protocol = "tcp"
@@ -74,31 +76,30 @@ resource "google_compute_firewall" "vpc_demo_fw_rule" {
   source_ranges = ["0.0.0.0/0"]
 }
 
-
 # VM Instance 1
 #-----------------------------------
 module "vpc_demo_vm1_10_1_1" {
   source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
+  project                 = var.project_id
   name                    = "${local.prefix}vpc-demo-vm1-10-1-1"
-  machine_type            = "${local.machine_type}"
+  machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  metadata_startup_script = file("scripts/startup.sh")
+  image                   = local.image
+  network_project         = var.project_id
+  subnetwork              = module.vpc_demo.subnets_self_links[0]
 }
 
 # VM Instance 2
 #-----------------------------------
 module "vpc_demo_vm2_10_1_1" {
   source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
+  project                 = var.project_id
   name                    = "${local.prefix}vpc-demo-vm2-10-1-1"
-  machine_type            = "${local.machine_type}"
+  machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  metadata_startup_script = file("scripts/startup.sh")
+  image                   = local.image
+  network_project         = var.project_id
+  subnetwork              = module.vpc_demo.subnets_self_links[0]
 }
