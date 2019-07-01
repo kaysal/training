@@ -57,7 +57,7 @@ variable "metadata_startup_script" {
 }
 
 variable "tags" {
-  type        = "list"
+  type        = list(string)
   description = "network tags"
   default     = []
 }
@@ -67,10 +67,11 @@ variable "instance_group_name" {
 }
 
 variable "distribution_policy_zones" {
-  type = "list"
+  type        = list(string)
   description = "instance group zone distibution"
 }
 
 variable "target_size" {
   description = "instance group zone"
 }
+
