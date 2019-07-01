@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-provider "google" {}
+provider "google" {
+  project = "${var.project_id}"
+}
 
-provider "google-beta" {}
+provider "google-beta" {
+  project = "${var.project_id}"
+}
 
 locals {
   prefix       = ""
@@ -33,9 +37,7 @@ locals {
 }
 
 module "vpc_demo" {
-  source  = "terraform-google-modules/network/google"
-  version = "0.6.0"
-
+  source  = "../../modules/vpc"
   project_id   = "${var.project_id}"
   network_name = "${local.prefix}vpc-demo"
   routing_mode = "REGIONAL"
@@ -45,8 +47,8 @@ module "vpc_demo" {
       subnet_name           = "${local.vpc_demo_subnet_cdn}"
       subnet_ip             = "10.1.33.0/24"
       subnet_region         = "asia-east1"
-      subnet_private_access = false
-      subnet_flow_logs      = false
+      subnet_private_access = "false"
+      subnet_flow_logs      = "false"
     },
   ]
 
