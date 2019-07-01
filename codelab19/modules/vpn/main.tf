@@ -1,108 +1,106 @@
-resource "random_id" "ipsec_secret" {
-  byte_length = 8
-}
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-locals {
-  default_shared_secret = var.shared_secret != "" ? var.shared_secret : random_id.ipsec_secret.b64_url
-}
-
-# static external ip for vpn gateway
-
-resource "google_compute_address" "vpn_gw_ip" {
-  count   = var.gateway_ip == null ? 1 : 0
-  name    = "${var.gateway_name}-ip"
-  region  = var.region
-  project = var.project_id
-}
-
-# vpn gateway
-
+# VPN Gateways
 resource "google_compute_vpn_gateway" "vpn_gateway" {
-  name    = var.gateway_name
-  network = var.network
-  region  = var.region
-  project = var.project_id
+  name    = "${var.prefix}${var.gateway_name}"
+  network = "${var.network}"
+  region  = "${var.region}"
+  project = "${var.project_id}"
 }
 
-# assosciate external ip/port to vpn gateway
-
+# Assosciate external IP/Port-range to VPN-GW by using Forwarding rules
 resource "google_compute_forwarding_rule" "vpn_esp" {
-  name        = "${google_compute_vpn_gateway.vpn_gateway.name}-esp"
+  name        = "${var.prefix}${var.gateway_name}-esp"
   ip_protocol = "ESP"
-  ip_address  = var.gateway_ip != null ? var.gateway_ip : google_compute_address.vpn_gw_ip[0].address
-  target      = google_compute_vpn_gateway.vpn_gateway.self_link
-  project     = var.project_id
-  region      = var.region
+  ip_address  = "${var.gateway_ip}"
+  target      = "${google_compute_vpn_gateway.vpn_gateway.self_link}"
+  project     = "${var.project_id}"
+  region      = "${var.region}"
 }
 
 resource "google_compute_forwarding_rule" "vpn_udp500" {
-  name        = "${google_compute_vpn_gateway.vpn_gateway.name}-udp500"
+  name        = "${var.prefix}${var.gateway_name}-udp500"
   ip_protocol = "UDP"
   port_range  = "500"
-  ip_address  = var.gateway_ip != null ? var.gateway_ip : google_compute_address.vpn_gw_ip[0].address
-  target      = google_compute_vpn_gateway.vpn_gateway.self_link
-  project     = var.project_id
-  region      = var.region
+  ip_address  = "${var.gateway_ip}"
+  target      = "${google_compute_vpn_gateway.vpn_gateway.self_link}"
+  project     = "${var.project_id}"
+  region      = "${var.region}"
 }
 
 resource "google_compute_forwarding_rule" "vpn_udp4500" {
-  name        = "${google_compute_vpn_gateway.vpn_gateway.name}-udp4500"
+  name        = "${var.prefix}${var.gateway_name}-udp4500"
   ip_protocol = "UDP"
   port_range  = "4500"
-  ip_address  = var.gateway_ip != null ? var.gateway_ip : google_compute_address.vpn_gw_ip[0].address
-  target      = google_compute_vpn_gateway.vpn_gateway.self_link
-  project     = var.project_id
-  region      = var.region
+  ip_address  = "${var.gateway_ip}"
+  target      = "${google_compute_vpn_gateway.vpn_gateway.self_link}"
+  project     = "${var.project_id}"
+  region      = "${var.region}"
 }
 
-# vpn tunnels
-
-resource "google_compute_vpn_tunnel" "tunnel" {
-  count         = "${length(var.peer_ips)}"
-  name          = "${lookup(var.tunnel_config[count.index], "name")}"
-  region        = var.region
-  project       = var.project_id
-  peer_ip       = "${element(var.peer_ips, count.index)}"
-  shared_secret = local.default_shared_secret
-
-  target_vpn_gateway = google_compute_vpn_gateway.vpn_gateway.self_link
-
-  router      = var.cr_name
-  ike_version = var.ike_version
+resource "google_compute_vpn_tunnel" "tunnel-dynamic" {
+  count              = "${var.cr_name != "" ? var.tunnel_count : 0}"
+  name               = "${var.prefix}${var.gateway_name}-tun${count.index+1}"
+  region             = "${var.region}"
+  project            = "${var.project_id}"
+  peer_ip            = "${element(var.peer_ips, count.index)}"
+  shared_secret      = "${var.shared_secret}"
+  target_vpn_gateway = "${google_compute_vpn_gateway.vpn_gateway.self_link}"
+  router             = "${var.cr_name}"
+  ike_version        = "${var.ike_version}"
 
   depends_on = [
-    google_compute_forwarding_rule.vpn_esp,
-    google_compute_forwarding_rule.vpn_udp500,
-    google_compute_forwarding_rule.vpn_udp4500,
+    "google_compute_forwarding_rule.vpn_esp",
+    "google_compute_forwarding_rule.vpn_udp500",
+    "google_compute_forwarding_rule.vpn_udp4500",
   ]
 }
 
-# cloud router interfaces
-
+# For VPN gateways routing through BGP and Cloud Routers
+## Create Router Interfaces
 resource "google_compute_router_interface" "router_interface" {
-  count      = "${length(var.peer_ips)}"
-  region     = var.region
-  router     = var.cr_name
-  name       = "${lookup(var.tunnel_config[count.index], "name")}"
-  ip_range   = "${lookup(var.tunnel_config[count.index], "cr_bgp_session_range")}"
-  vpn_tunnel = google_compute_vpn_tunnel.tunnel[count.index].name
-  project    = var.project_id
+  count      = "${var.cr_name != "" ? var.tunnel_count : 0}"
+  name       = "${var.prefix}${var.gateway_name}-tun${count.index+1}"
+  router     = "${var.cr_name}"
+  region     = "${var.region}"
+  ip_range   = "${element(var.bgp_cr_session_range, count.index)}"
+  vpn_tunnel = "${google_compute_vpn_tunnel.tunnel-dynamic.*.name[count.index]}"
+  project    = "${var.project_id}"
 
-  depends_on = [google_compute_vpn_tunnel.tunnel]
+  depends_on = [
+    "google_compute_vpn_tunnel.tunnel-dynamic",
+  ]
 }
 
-# bgp peers
-
+## Create Peers
 resource "google_compute_router_peer" "bgp_peer" {
-  count                     = "${length(var.peer_ips)}"
-  project                   = var.project_id
-  region                    = var.region
-  router                    = var.cr_name
-  name                      = "${lookup(var.tunnel_config[count.index], "name")}"
-  peer_ip_address           = "${lookup(var.tunnel_config[count.index], "remote_bgp_session_ip")}"
-  peer_asn                  = "${lookup(var.tunnel_config[count.index], "peer_asn")}"
-  advertised_route_priority = "${lookup(var.tunnel_config[count.index], "advertised_route_priority")}"
-  interface                 = "${lookup(var.tunnel_config[count.index], "name")}"
+  count                     = "${var.cr_name != "" ? var.tunnel_count : 0}"
+  name                      = "${var.prefix}bgp-session-${count.index+1}"
+  router                    = "${var.cr_name}"
+  region                    = "${var.region}"
+  peer_ip_address           = "${element(var.bgp_remote_session_range, count.index)}"
+  peer_asn                  = "${element(var.peer_asn, count.index)}"
+  advertised_route_priority = "${var.advertised_route_priority}"
+  interface                 = "${var.prefix}${var.gateway_name}-tun${count.index+1}"
+  project                   = "${var.project_id}"
 
-  depends_on = [google_compute_router_interface.router_interface]
+  depends_on = [
+    "google_compute_router_interface.router_interface",
+  ]
+
+  lifecycle {
+    ignore_changes = ["ip_address"]
+  }
 }

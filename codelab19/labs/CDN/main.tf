@@ -12,13 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-provider "google" {
-  project = var.project_id
-}
+provider "google" {}
 
-provider "google-beta" {
-  project = var.project_id
-}
+provider "google-beta" {}
 
 locals {
   prefix       = ""
@@ -37,18 +33,20 @@ locals {
 }
 
 module "vpc_demo" {
-  source       = "../../modules/vpc"
-  project_id   = var.project_id
+  source  = "terraform-google-modules/network/google"
+  version = "0.6.0"
+
+  project_id   = "${var.project_id}"
   network_name = "${local.prefix}vpc-demo"
   routing_mode = "REGIONAL"
 
   subnets = [
     {
-      subnet_name           = local.vpc_demo_subnet_cdn
+      subnet_name           = "${local.vpc_demo_subnet_cdn}"
       subnet_ip             = "10.1.33.0/24"
       subnet_region         = "asia-east1"
-      subnet_private_access = "false"
-      subnet_flow_logs      = "false"
+      subnet_private_access = false
+      subnet_flow_logs      = false
     },
   ]
 
@@ -58,9 +56,9 @@ module "vpc_demo" {
 }
 
 resource "google_compute_firewall" "vpc_demo_allow_internal" {
-  provider = google-beta
+  provider = "google-beta"
   name     = "${local.prefix}vpc-demo-allow-internal"
-  network  = module.vpc_demo.network_self_link
+  network  = "${module.vpc_demo.network_self_link}"
 
   allow {
     protocol = "tcp"
@@ -80,9 +78,9 @@ resource "google_compute_firewall" "vpc_demo_allow_internal" {
 }
 
 resource "google_compute_firewall" "vpc_demo_allow_ssh_http_s_icmp" {
-  provider = google-beta
+  provider = "google-beta"
   name     = "${local.prefix}vpc-demo-allow-ssh-http-s-icmp"
-  network  = module.vpc_demo.network_self_link
+  network  = "${module.vpc_demo.network_self_link}"
 
   allow {
     protocol = "tcp"
@@ -96,15 +94,15 @@ resource "google_compute_firewall" "vpc_demo_allow_ssh_http_s_icmp" {
 
 module "http_lb" {
   source                            = "../../modules/http_lb"
-  project_id                        = var.project_id
-  prefix                            = local.prefix
+  project_id                        = "${var.project_id}"
+  prefix                            = "${local.prefix}"
   instance_template_name            = "cdn-www-template"
   region                            = "asia-east1"
-  machine_type                      = local.machine_type
-  image                             = local.image
-  subnetwork_project                = var.project_id
-  subnetwork                        = module.vpc_demo.subnets_self_links[0]
-  metadata_startup_script           = file("scripts/startup.sh")
+  machine_type                      = "${local.machine_type}"
+  image                             = "${local.image}"
+  subnetwork_project                = "${var.project_id}"
+  subnetwork                        = "${module.vpc_demo.subnets_self_links[0]}"
+  metadata_startup_script           = "${file("scripts/startup.sh")}"
   instance_group_name               = "cdn-mig"
   target_size                       = 1
   autoscaler_max_replicas           = 3
@@ -121,5 +119,5 @@ module "http_lb" {
 # cdn ip output
 
 output "cdn-ip" {
-  value = module.http_lb.cdn_ip
+  value = "${module.http_lb.cdn_ip}"
 }
