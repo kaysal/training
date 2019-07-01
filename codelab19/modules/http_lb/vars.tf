@@ -57,7 +57,7 @@ variable "metadata_startup_script" {
 }
 
 variable "tags" {
-  type        = "list"
+  type        = list(string)
   description = "network tags"
   default     = []
 }
@@ -71,7 +71,7 @@ variable "health_check_name" {
 }
 
 variable "named_port" {
-  type        = "map"
+  type        = map(string)
   description = "named port map"
 
   default = {
@@ -124,3 +124,4 @@ variable "target_size" {
   description = "instance group zone"
   default     = 1
 }
+
