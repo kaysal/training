@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-provider "google" {}
+provider "google" {
+  project = var.project_id
+}
 
-provider "google-beta" {}
+provider "google-beta" {
+  project = var.project_id
+}
 
 locals {
   prefix       = ""
@@ -33,16 +37,14 @@ locals {
 }
 
 module "vpc_demo" {
-  source  = "terraform-google-modules/network/google"
-  version = "0.6.0"
-
-  project_id   = "${var.project_id}"
+  source  = "../../modules/vpc"
+  project_id   = var.project_id
   network_name = "${local.prefix}vpc-demo"
   routing_mode = "GLOBAL"
 
   subnets = [
     {
-      subnet_name           = "${local.vpc_demo_subnet1}"
+      subnet_name           = local.vpc_demo_subnet1
       subnet_ip             = "10.1.1.0/24"
       subnet_region         = "us-central1"
       subnet_private_access = false
@@ -56,9 +58,9 @@ module "vpc_demo" {
 }
 
 resource "google_compute_firewall" "vpc_demo_allow_internal" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-demo-allow-internal"
-  network  = "${module.vpc_demo.network_self_link}"
+  network  = module.vpc_demo.network_self_link
 
   allow {
     protocol = "tcp"
@@ -78,9 +80,9 @@ resource "google_compute_firewall" "vpc_demo_allow_internal" {
 }
 
 resource "google_compute_firewall" "vpc_demo_allow_health_checks" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-demo-allow-health-checks"
-  network  = "${module.vpc_demo.network_self_link}"
+  network  = module.vpc_demo.network_self_link
 
   allow {
     protocol = "tcp"
@@ -92,9 +94,9 @@ resource "google_compute_firewall" "vpc_demo_allow_health_checks" {
 }
 
 resource "google_compute_firewall" "vpc_demo_allow_ssh" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-demo-allow-ssh"
-  network  = "${module.vpc_demo.network_self_link}"
+  network  = module.vpc_demo.network_self_link
 
   allow {
     protocol = "tcp"
@@ -108,52 +110,52 @@ resource "google_compute_firewall" "vpc_demo_allow_ssh" {
 #-----------------------------------
 module "vm_primary_a" {
   source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
+  project                 = var.project_id
   name                    = "${local.prefix}vm-primary-a"
-  machine_type            = "${local.machine_type}"
+  machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  metadata_startup_script = file("scripts/startup.sh")
+  image                   = local.image
+  network_project      = var.project_id
+  subnetwork              = module.vpc_demo.subnets_self_links[0]
   tags                    = ["allow-hc"]
 }
 
 module "vm_primary_b" {
   source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
+  project                 = var.project_id
   name                    = "${local.prefix}vm-primary-b"
-  machine_type            = "${local.machine_type}"
+  machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  metadata_startup_script = file("scripts/startup.sh")
+  image                   = local.image
+  network_project      = var.project_id
+  subnetwork              = module.vpc_demo.subnets_self_links[0]
   tags                    = ["allow-hc"]
 }
 
 module "vm_backup" {
   source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
+  project                 = var.project_id
   name                    = "${local.prefix}vm-backup"
-  machine_type            = "${local.machine_type}"
+  machine_type            = local.machine_type
   zone                    = "us-central1-c"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  metadata_startup_script = file("scripts/startup.sh")
+  image                   = local.image
+  network_project      = var.project_id
+  subnetwork              = module.vpc_demo.subnets_self_links[0]
   tags                    = ["allow-hc"]
 }
 
 module "vm_client" {
   source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
+  project                 = var.project_id
   name                    = "${local.prefix}vm-client"
-  machine_type            = "${local.machine_type}"
+  machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/client.sh")}"
-  image                   = "${local.image}"
-  subnetwork_project      = "${var.project_id}"
-  subnetwork              = "${module.vpc_demo.subnets_self_links[0]}"
+  metadata_startup_script = file("scripts/client.sh")
+  image                   = local.image
+  network_project      = var.project_id
+  subnetwork              = module.vpc_demo.subnets_self_links[0]
   tags                    = ["allow-ssh"]
 }
