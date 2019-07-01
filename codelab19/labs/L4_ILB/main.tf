@@ -37,7 +37,7 @@ locals {
 }
 
 module "vpc_demo" {
-  source  = "../../modules/vpc"
+  source       = "../../modules/vpc"
   project_id   = var.project_id
   network_name = "${local.prefix}vpc-demo"
   routing_mode = "GLOBAL"
@@ -116,7 +116,7 @@ module "vm_primary_a" {
   zone                    = "us-central1-a"
   metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
-  network_project      = var.project_id
+  network_project         = var.project_id
   subnetwork              = module.vpc_demo.subnets_self_links[0]
   tags                    = ["allow-hc"]
 }
@@ -129,7 +129,7 @@ module "vm_primary_b" {
   zone                    = "us-central1-a"
   metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
-  network_project      = var.project_id
+  network_project         = var.project_id
   subnetwork              = module.vpc_demo.subnets_self_links[0]
   tags                    = ["allow-hc"]
 }
@@ -142,7 +142,7 @@ module "vm_backup" {
   zone                    = "us-central1-c"
   metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
-  network_project      = var.project_id
+  network_project         = var.project_id
   subnetwork              = module.vpc_demo.subnets_self_links[0]
   tags                    = ["allow-hc"]
 }
@@ -155,7 +155,7 @@ module "vm_client" {
   zone                    = "us-central1-a"
   metadata_startup_script = file("scripts/client.sh")
   image                   = local.image
-  network_project      = var.project_id
+  network_project         = var.project_id
   subnetwork              = module.vpc_demo.subnets_self_links[0]
   tags                    = ["allow-ssh"]
 }

@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-provider "google" {}
+provider "google" {
+  project = var.project_id
+}
 
-provider "google-beta" {}
+provider "google-beta" {
+  project = var.project_id
+}
 
 locals {
   prefix       = ""
@@ -33,16 +37,14 @@ locals {
 }
 
 module "vpc_demo" {
-  source  = "terraform-google-modules/network/google"
-  version = "0.6.0"
-
-  project_id   = "${var.project_id}"
+  source       = "../../modules/vpc"
+  project_id   = var.project_id
   network_name = "${local.prefix}vpc-demo"
   routing_mode = "REGIONAL"
 
   subnets = [
     {
-      subnet_name           = "${local.vpc_demo_subnet_l7_ilb}"
+      subnet_name           = local.vpc_demo_subnet_l7_ilb
       subnet_ip             = "10.1.12.0/24"
       subnet_region         = "us-east1"
       subnet_private_access = false
@@ -56,9 +58,9 @@ module "vpc_demo" {
 }
 
 resource "google_compute_firewall" "vpc_demo_allow_internal" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-demo-allow-internal"
-  network  = "${module.vpc_demo.network_self_link}"
+  network  = module.vpc_demo.network_self_link
 
   allow {
     protocol = "tcp"
@@ -78,9 +80,9 @@ resource "google_compute_firewall" "vpc_demo_allow_internal" {
 }
 
 resource "google_compute_firewall" "vpc_demo_allow_ssh_http_s_icmp" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-demo-allow-ssh-http-s-icmp"
-  network  = "${module.vpc_demo.network_self_link}"
+  network  = module.vpc_demo.network_self_link
 
   allow {
     protocol = "tcp"
@@ -93,9 +95,9 @@ resource "google_compute_firewall" "vpc_demo_allow_ssh_http_s_icmp" {
 }
 
 resource "google_compute_firewall" "vpc_demo_allow_http_ilb_tcp" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-demo-allow-http-ilb-tcp"
-  network  = "${module.vpc_demo.network_self_link}"
+  network  = module.vpc_demo.network_self_link
 
   allow {
     protocol = "tcp"
@@ -106,15 +108,15 @@ resource "google_compute_firewall" "vpc_demo_allow_http_ilb_tcp" {
 
 module "apache" {
   source                    = "../../modules/l7_ilb"
-  project_id                = "${var.project_id}"
-  prefix                    = "${local.prefix}"
+  project_id                = var.project_id
+  prefix                    = local.prefix
   instance_template_name    = "apache-template"
   region                    = "us-east1"
-  machine_type              = "${local.machine_type}"
-  image                     = "${local.image}"
-  subnetwork_project        = "${var.project_id}"
-  subnetwork                = "${module.vpc_demo.subnets_self_links[0]}"
-  metadata_startup_script   = "${file("scripts/apache.sh")}"
+  machine_type              = local.machine_type
+  image                     = local.image
+  subnetwork_project        = var.project_id
+  subnetwork                = module.vpc_demo.subnets_self_links[0]
+  metadata_startup_script   = file("scripts/apache.sh")
   instance_group_name       = "apache-instance-group"
   distribution_policy_zones = ["us-east1-b"]
   target_size               = 2
@@ -122,15 +124,15 @@ module "apache" {
 
 module "nginx" {
   source                    = "../../modules/l7_ilb"
-  project_id                = "${var.project_id}"
-  prefix                    = "${local.prefix}"
+  project_id                = var.project_id
+  prefix                    = local.prefix
   instance_template_name    = "nginx-template"
   region                    = "us-east1"
-  machine_type              = "${local.machine_type}"
-  image                     = "${local.image}"
-  subnetwork_project        = "${var.project_id}"
-  subnetwork                = "${module.vpc_demo.subnets_self_links[0]}"
-  metadata_startup_script   = "${file("scripts/nginx.sh")}"
+  machine_type              = local.machine_type
+  image                     = local.image
+  subnetwork_project        = var.project_id
+  subnetwork                = module.vpc_demo.subnets_self_links[0]
+  metadata_startup_script   = file("scripts/nginx.sh")
   instance_group_name       = "nginx-instance-group"
   distribution_policy_zones = ["us-east1-c"]
   target_size               = 2

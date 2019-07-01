@@ -39,7 +39,7 @@ locals {
 }
 
 module "vpc_demo" {
-  source  = "../../modules/vpc"
+  source       = "../../modules/vpc"
   project_id   = var.project_id
   network_name = "${local.prefix}vpc-demo"
   routing_mode = "REGIONAL"
@@ -104,7 +104,7 @@ module "vpc_demo_vm_10_1_1" {
   zone                    = "us-central1-a"
   metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
-  network_project      = var.project_id
+  network_project         = var.project_id
   subnetwork              = module.vpc_demo.subnets_self_links[0]
 }
 
@@ -116,7 +116,7 @@ module "vpc_demo_vm_10_3_1" {
   zone                    = "us-east1-b"
   metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
-  network_project      = var.project_id
+  network_project         = var.project_id
   subnetwork              = module.vpc_demo.subnets_self_links[1]
 }
 
@@ -186,6 +186,6 @@ module "vpc_onprem_vm" {
   zone                    = "us-central1-a"
   metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
-  network_project      = var.project_id
+  network_project         = var.project_id
   subnetwork              = module.vpc_onprem.subnets_self_links[0]
 }
