@@ -1,16 +1,18 @@
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+/**
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 variable "project_id" {
   description = "The ID of the project where this VPC will be created"
@@ -31,21 +33,7 @@ variable "gateway_name" {
 
 variable "gateway_ip" {
   description = "The IP of VPN gateway"
-}
-
-variable "tunnel_count" {
-  description = "The number of tunnels from each VPN gw (default is 1)"
-  default     = 1
-}
-
-variable "tunnel_name_prefix" {
-  description = "The optional custom name of VPN tunnel being created"
-  default     = ""
-}
-
-variable "peer_ips" {
-  type        = "list"
-  description = "IP address of remote-peer/gateway"
+  default     = null
 }
 
 variable "shared_secret" {
@@ -58,21 +46,6 @@ variable "cr_name" {
   default     = ""
 }
 
-variable "peer_asn" {
-  type        = "list"
-  description = "Please enter the ASN of the BGP peer that cloud router will use"
-}
-
-variable "bgp_cr_session_range" {
-  type        = "list"
-  description = "Please enter the cloud-router interface IP/Session IP"
-}
-
-variable "bgp_remote_session_range" {
-  type        = "list"
-  description = "Please enter the remote environments BGP Session IP"
-}
-
 variable "advertised_route_priority" {
   description = "Please enter the priority for the advertised route to BGP peer(default is 100)"
   default     = 100
@@ -83,6 +56,11 @@ variable "ike_version" {
   default     = 2
 }
 
-variable "prefix" {
-  description = "Prefix appended before resource names"
+variable "peer_ips" {
+  description = "List of IP addresses of peer VPN Gateways"
+}
+
+variable "tunnel_config" {
+  type        = "list"
+  description = "IPsec tunnel and BGP session parameters"
 }
