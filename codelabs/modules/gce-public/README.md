@@ -1,4 +1,4 @@
-# GCE VM Instance with Public IP
+# GCE VM instance with public IP
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
