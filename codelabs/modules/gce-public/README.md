@@ -20,3 +20,14 @@
 |------|-------------|
 | instance\_private\_ip | private ip of the instance |
 | instance\_public\_ip | public ip of the instance |
+
+## Example Usage
+
+```hcl
+module "vm" {
+  source     = "../modules/gce-private"
+  name       = "super-vm"
+  zone       = "europe-west1-b"
+  subnetwork = var.subnet
+}
+```
