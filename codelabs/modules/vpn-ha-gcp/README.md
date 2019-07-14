@@ -64,7 +64,7 @@ resource "google_compute_ha_vpn_gateway" "vpn_gw" {
 
 # vpn tunnel
 
-module "vpn__to_hub" {
+module "vpn_tunnel" {
   source           = "../modules/vpn-ha-gcp"
   project_id       = var.project_id
   network          = var.network
