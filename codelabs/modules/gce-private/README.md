@@ -1,30 +1,30 @@
-# GCE VM Instance with only Privte IP
-
-## Inputs
+# GCE VM instance with public IP
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| image | os image | string | `"debian-cloud/debian-9"` | no |
+| image | OS image | string | `"debian-cloud/debian-9"` | no |
 | machine\_type | machine type | string | `"f1-micro"` | no |
 | metadata\_startup\_script | metadata startup script | string | n/a | yes |
 | name | vm instance name | string | n/a | yes |
-| network | the vpc where the instance will be created | string | `"default"` | no |
-| subnetwork | the vpc subnetwork where the instance will be created | string | `"default"` | no |
+| network | The VPC where the instance will be created | string | `"default"` | no |
+| project\_id | project id where resources belong to | string | n/a | yes |
+| subnetwork | The VPC subnetwork where the instance will be created | string | `"default"` | no |
 | subnetwork\_project | the project that the vm's subnet belongs to | string | n/a | yes |
 | tags | network tags | list | n/a | yes |
-| zone | gce zone | string | n/a | yes |
+| zone | GCE zone | string | n/a | yes |
 
-## outputs
+## Outputs
 
-| name | description |
+| Name | Description |
 |------|-------------|
-| instance\_private\_ip | private ip of the instance |
+| instance | instance resource complete with all attributes |
+
 
 ## Example Usage
 
 ```hcl
 module "vm" {
-  source     = "../modules/gce-private"
+  source     = "../modules/gce-public"
   name       = "super-vm"
   zone       = "europe-west1-b"
   subnetwork = var.subnet
