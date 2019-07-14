@@ -1,3 +1,5 @@
+# GCE VM Instance with Public IP
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
