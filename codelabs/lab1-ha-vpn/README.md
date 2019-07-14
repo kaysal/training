@@ -1,4 +1,4 @@
-# HA VPN: GCP to GCP
+# LAB 1: HA VPN from GCP to GCP
 
 This terraform code deploys 2 x VPCs and sets up HA VPN between them.
 

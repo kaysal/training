@@ -3,7 +3,7 @@
 
 locals {
   onprem = {
-    prefix      = "onprem-"
+    prefix      = "lab1-onprem-"
     region      = "europe-west1"
     asn         = 65001
     router_vti1 = "169.254.100.1"
@@ -12,7 +12,7 @@ locals {
   }
 
   hub = {
-    prefix      = "hub-"
+    prefix      = "lab1-hub-"
     region      = "europe-west1"
     asn         = 65002
     router_vti1 = "169.254.100.2"
