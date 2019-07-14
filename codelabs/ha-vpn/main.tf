@@ -9,7 +9,6 @@ provider "google-beta" {
 # local variables
 
 locals {
-
   # onprem
   onprem_prefix  = "onprem-"
   onprem_region  = "europe-west2"
