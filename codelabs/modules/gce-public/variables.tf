@@ -25,7 +25,7 @@ variable "name" {
 
 variable "subnetwork_project" {
   description = "the project that the vm's subnet belongs to"
-  #default     = null
+  default     = null
 }
 
 variable "machine_type" {
@@ -60,5 +60,5 @@ variable "metadata_startup_script" {
 variable "tags" {
   type        = "list"
   description = "network tags"
-  #default     = null
+  default     = null
 }

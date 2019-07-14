@@ -15,7 +15,7 @@
  */
 
 resource "google_compute_instance" "instance" {
-  project      = var.project_id
+  project      = "${var.project_id}"
   name         = "${var.name}"
   machine_type = "${var.machine_type}"
   zone         = "${var.zone}"
