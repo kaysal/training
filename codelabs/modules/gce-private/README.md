@@ -1,3 +1,5 @@
+# GCE VM Instance with only Privte IP
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
