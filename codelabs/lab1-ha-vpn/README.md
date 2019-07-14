@@ -6,6 +6,8 @@ This terraform code deploys 2 x VPCs and sets up HA VPN between them.
 
 ## Deploy
 
+Rename the `sample.tfvars` file to `terraform.tfvars` and fill the values of variables in the file.
+
 Run the following commands to deploy the infrastructure:
 ```hcl
 terraform init
