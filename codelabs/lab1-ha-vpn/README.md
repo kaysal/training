@@ -18,3 +18,7 @@ To destroy the infrastructure, run the command
 ```hcl
 terraform destroy
 ```
+
+## Requirements
+
+Terraform 0.12 required.
