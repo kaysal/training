@@ -75,6 +75,15 @@ resource "google_compute_firewall" "onprem_allow_icmp" {
   source_ranges = ["10.0.0.0/8", "172.0.0.0/8", ]
 }
 
+# vm instance
+
+module "vm_onprem" {
+  source     = "../modules/gce-private"
+  name       = "${local.onprem_prefix}vm"
+  zone       = "${local.onprem_region}-a"
+  subnetwork = "${module.vpc_onprem.subnets_self_links[0]}"
+}
+
 # cloud router
 
 resource "google_compute_router" "onprem_cr" {
@@ -177,6 +186,15 @@ resource "google_compute_firewall" "hub_allow_icmp" {
   }
 
   source_ranges = ["10.0.0.0/8", "172.0.0.0/8", ]
+}
+
+# vm instance
+
+module "vm_hub" {
+  source     = "../modules/gce-private"
+  name       = "${local.hub_prefix}vm"
+  zone       = "${local.hub_region}-a"
+  subnetwork = "${module.vpc_hub.subnets_self_links[0]}"
 }
 
 # cloud router
