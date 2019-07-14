@@ -15,7 +15,8 @@
  */
 
 variable "project_id" {
-  description = "The ID of the project where this VPC will be created"
+  description = "project id where resources belong to"
+  default     = null
 }
 
 variable "network" {

@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+variable "project_id" {
+  description = "project id where resources belong to"
+  default     = null
+}
+
 variable "name" {
   description = "vm instance name"
 }

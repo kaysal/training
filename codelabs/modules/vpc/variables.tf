@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 variable "project_id" {
-  description = "The ID of the project where this VPC will be created"
+  description = "project id where resources belong to"
+  default     = null
 }
 
 variable "network_name" {
@@ -23,17 +24,17 @@ variable "network_name" {
 }
 
 variable "routing_mode" {
-  type        = "string"
+  type        = string
   default     = "GLOBAL"
   description = "The network routing mode (default 'GLOBAL')"
 }
 
 variable "subnets" {
-  type        = "list"
+  type        = list
   description = "The list of subnets being created"
 }
 
 variable "secondary_ranges" {
-  type        = "map"
+  type        = map
   description = "Secondary ranges that will be used in some of the subnets"
 }
