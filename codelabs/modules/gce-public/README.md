@@ -25,7 +25,7 @@
 
 ```hcl
 module "vm" {
-  source     = "../modules/gce-private"
+  source     = "../modules/gce-public"
   name       = "super-vm"
   zone       = "europe-west1-b"
   subnetwork = var.subnet
