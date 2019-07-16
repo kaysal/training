@@ -15,14 +15,15 @@
  */
 
 resource "google_compute_instance" "instance" {
-  project      = var.project_id
+  project      = "${var.project_id}"
   name         = "${var.name}"
   machine_type = "${var.machine_type}"
   zone         = "${var.zone}"
   tags         = "${var.tags}"
 
-  allow_stopping_for_update = true
+  can_ip_forward            = "${var.can_ip_forward}"
   metadata_startup_script   = "${var.metadata_startup_script}"
+  allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
@@ -33,9 +34,11 @@ resource "google_compute_instance" "instance" {
   network_interface {
     subnetwork_project = "${var.subnetwork_project}"
     subnetwork         = "${var.subnetwork}"
+    network_ip         = "${var.network_ip}"
   }
 
   service_account {
+    email  = "${var.service_account_email}"
     scopes = ["cloud-platform"]
   }
 }

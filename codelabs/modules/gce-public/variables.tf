@@ -52,9 +52,38 @@ variable "subnetwork" {
   default     = "default"
 }
 
+variable "network_ip" {
+  description = "The private IP address to assign to the instance"
+  default     = null
+}
+
+variable "nat_ip" {
+  description = "The IP address that will be 1:1 mapped to the instance's network ip"
+  default     = null
+}
+
+variable "network_tier" {
+  description = "The network tier of the VM"
+  default     = "STANDARD"
+}
+
+variable "public_ptr_domain_name" {
+  description = "The DNS domain name for the public PTR record"
+  default     = null
+}
+
 variable "metadata_startup_script" {
   description = "metadata startup script"
-  #default     = null
+  default     = null
+}
+variable "can_ip_forward" {
+  description = "Whether to allow sending and receiving of packets with non-matching source or destination IPs"
+  default     = false
+}
+
+variable "service_account_email" {
+  description = "service account to attach to the instance"
+  default     = null
 }
 
 variable "tags" {

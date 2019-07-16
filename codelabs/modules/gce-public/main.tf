@@ -21,8 +21,9 @@ resource "google_compute_instance" "instance" {
   zone         = "${var.zone}"
   tags         = "${var.tags}"
 
-  allow_stopping_for_update = true
+  can_ip_forward            = "${var.can_ip_forward}"
   metadata_startup_script   = "${var.metadata_startup_script}"
+  allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
@@ -33,10 +34,17 @@ resource "google_compute_instance" "instance" {
   network_interface {
     subnetwork_project = "${var.subnetwork_project}"
     subnetwork         = "${var.subnetwork}"
-    access_config {}
+    network_ip         = "${var.network_ip}"
+
+    access_config {
+      nat_ip                 = "${var.nat_ip}"
+      network_tier           = "${var.network_tier}"
+      public_ptr_domain_name = "${var.public_ptr_domain_name}"
+    }
   }
 
   service_account {
+    email  = "${var.service_account_email}"
     scopes = ["cloud-platform"]
   }
 }
