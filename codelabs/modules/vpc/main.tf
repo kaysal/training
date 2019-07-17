@@ -44,11 +44,3 @@ resource "google_compute_subnetwork" "subnetwork" {
     }
   }
 }
-
-data "google_compute_subnetwork" "created_subnets" {
-  count = length(var.subnets)
-
-  name    = element(google_compute_subnetwork.subnetwork.*.name, count.index)
-  region  = element(google_compute_subnetwork.subnetwork.*.region, count.index)
-  project = var.project_id
-}

@@ -1,7 +1,7 @@
 resource "google_dns_managed_zone" "unbound_dns" {
   provider    = google-beta
   name        = "${local.onprem.prefix}unbound-dns"
-  dns_name    = "onprem.kay."
+  dns_name    = "onprem.lab."
   description = "route all queries to local unbound dns server"
   visibility  = "private"
 

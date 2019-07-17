@@ -20,7 +20,7 @@ module "vm_onprem" {
 
 locals {
   unbound_init = templatefile("${path.module}/scripts/unbound.sh.tpl", {
-    LOCAL_DATA1 = "local-data: 'vm.onprem.kay A ${local.onprem.vm_ip}'"
+    LOCAL_DATA1 = "local-data: 'vm.onprem.lab A ${local.onprem.vm_ip}'"
     DNS_EGRESS_PROXY = "35.199.192.0/19"
   })
 }

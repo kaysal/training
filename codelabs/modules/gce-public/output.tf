@@ -15,6 +15,6 @@
  */
 
 output "instance" {
-  description = "private ip of the instance"
+  description = "instance resource"
   value       = "${google_compute_instance.instance}"
 }

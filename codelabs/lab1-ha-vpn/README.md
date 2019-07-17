@@ -1,10 +1,24 @@
 # LAB 1: HA VPN from GCP to GCP
-
-This terraform code deploys 2 x VPCs and sets up HA VPN between them.
+This terraform code deploys:
+1. On-premises environment simulated in GCP
+2. A GCP Cloud environment
+3. HA VPN between on-premises and GCP
 
 ![HA VPN from GCP to GCP](diagram.png)
 
-## Deploy
+### Clone Lab
+Open a Cloud Shell terminal and run the following command:
+1. Clone the Git Repository for the labs
+```sh
+git clone https://github.com/kaysal/training.git
+```
+
+2. Change to the directory of the cloned repository
+```sh
+cd ~/training/codelabs/lab1-ha-vpn
+```
+
+## Deploy Lab
 
 Rename the `sample.tfvars` file to `terraform.tfvars` and fill the values of variables in the file.
 
@@ -19,6 +33,4 @@ To destroy the infrastructure, run the command
 terraform destroy
 ```
 
-## Requirements
-
-Terraform 0.12 required.
+## Requ

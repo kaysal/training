@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-output "instance_private_ip" {
-  description = "private ip of the instance"
-  value       = "${google_compute_instance.instance.network_interface.0.network_ip}"
+output "instance" {
+  description = "instance resource"
+  value       = "${google_compute_instance.instance}"
 }
