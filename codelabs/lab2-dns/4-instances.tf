@@ -20,8 +20,11 @@ module "vm_onprem" {
 
 locals {
   unbound_init = templatefile("${path.module}/scripts/unbound.sh.tpl", {
-    LOCAL_DATA1 = "local-data: 'vm.onprem.lab A ${local.onprem.vm_ip}'"
-    DNS_EGRESS_PROXY = "35.199.192.0/19"
+    DNS_NAME1            = "vm.onprem.lab"
+    DNS_RECORD1          = local.onprem.vm_ip
+    DNS_EGRESS_PROXY     = "35.199.192.0/19"
+    FORWARD_ZONE1        = "cloud.lab"
+    FORWARD_ZONE1_TARGET = "10.10.1.3"
   })
 }
 
@@ -34,14 +37,34 @@ module "ns_onprem" {
   metadata_startup_script = local.unbound_init
 }
 
-# hub
+# cloud
 #---------------------------------------------
 
 # vm instance
 
-module "vm_hub" {
+module "vm_cloud" {
   source     = "../modules/gce-public"
-  name       = "${local.hub.prefix}vm"
-  zone       = "${local.hub.region}-d"
-  subnetwork = module.vpc_hub.subnets.*.self_link[0]
+  name       = "${local.cloud.prefix}vm"
+  zone       = "${local.cloud.region}-d"
+  subnetwork = module.vpc_cloud.subnets.*.self_link[0]
+}
+
+# proxy for forwarding dns queries to on-premises
+
+locals {
+  proxy_init = templatefile("${path.module}/scripts/proxy.sh.tpl", {
+    DNAT      = "${local.onprem.unbound_ip}"
+    SNAT      = "${local.cloud.proxy_ip}"
+    NAT_RANGE = "${local.cloud.dns_nat_ip}"
+  })
+}
+
+module "proxy_cloud" {
+  source                  = "../modules/gce-public"
+  name                    = "${local.cloud.prefix}proxy"
+  zone                    = "${local.cloud.region}-d"
+  subnetwork              = module.vpc_cloud.subnets.*.self_link[0]
+  network_ip              = local.cloud.proxy_ip
+  can_ip_forward          = true
+  metadata_startup_script = local.proxy_init
 }

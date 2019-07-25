@@ -11,7 +11,7 @@ module "vpc_onprem" {
 
   subnets = [
     {
-      subnet_name              = "${local.onprem.prefix}-${local.onprem.subnet1}"
+      subnet_name              = "${local.onprem.prefix}${local.onprem.subnet1}"
       subnet_ip                = "172.16.1.0/24"
       subnet_region            = local.onprem.region
       private_ip_google_access = false
@@ -19,7 +19,7 @@ module "vpc_onprem" {
   ]
 
   secondary_ranges = {
-    "${local.onprem.prefix}-${local.onprem.subnet1}" = []
+    "${local.onprem.prefix}${local.onprem.subnet1}" = []
   }
 }
 
@@ -69,35 +69,35 @@ resource "google_compute_firewall" "gcp_dns_egress_proxy" {
   source_ranges = ["35.199.192.0/19"]
 }
 
-# hub
+# cloud
 #---------------------------------------------
 
 # vpc
 
-module "vpc_hub" {
+module "vpc_cloud" {
   source       = "../modules/vpc"
-  network_name = "${local.hub.prefix}vpc"
+  network_name = "${local.cloud.prefix}vpc"
   routing_mode = "REGIONAL"
 
   subnets = [
     {
-      subnet_name              = "${local.hub.prefix}-${local.hub.subnet1}"
+      subnet_name              = "${local.cloud.prefix}-${local.cloud.subnet1}"
       subnet_ip                = "10.10.1.0/24"
-      subnet_region            = local.hub.region
+      subnet_region            = local.cloud.region
       private_ip_google_access = false
     },
   ]
 
   secondary_ranges = {
-    "${local.hub.prefix}-${local.hub.subnet1}" = []
+    "${local.cloud.prefix}-${local.cloud.subnet1}" = []
   }
 }
 
 # firewall rules
 
-resource "google_compute_firewall" "hub_allow_ssh" {
-  name    = "${local.hub.prefix}allow-ssh"
-  network = module.vpc_hub.network.self_link
+resource "google_compute_firewall" "cloud_allow_ssh" {
+  name    = "${local.cloud.prefix}allow-ssh"
+  network = module.vpc_cloud.network.self_link
 
   allow {
     protocol = "tcp"
@@ -107,9 +107,9 @@ resource "google_compute_firewall" "hub_allow_ssh" {
   source_ranges = ["0.0.0.0/0"]
 }
 
-resource "google_compute_firewall" "hub_allow_rfc1918" {
-  name    = "${local.hub.prefix}allow-rfc1918"
-  network = module.vpc_hub.network.self_link
+resource "google_compute_firewall" "cloud_allow_rfc1918" {
+  name    = "${local.cloud.prefix}allow-rfc1918"
+  network = module.vpc_cloud.network.self_link
 
   allow {
     protocol = "all"
@@ -120,4 +120,31 @@ resource "google_compute_firewall" "hub_allow_rfc1918" {
     "172.0.0.0/8",
     "192.168.0.0/16"
   ]
+}
+
+resource "google_compute_firewall" "cloud_gcp_dns_egress_proxy" {
+  name    = "${local.cloud.prefix}gcp-dns-egress-proxy"
+  network = module.vpc_cloud.network.self_link
+
+  allow {
+    protocol = "tcp"
+    ports    = ["53"]
+  }
+
+  allow {
+    protocol = "udp"
+    ports    = ["53"]
+  }
+
+  source_ranges = ["35.199.192.0/19"]
+}
+
+# routes
+
+resource "google_compute_route" "onprem_dns_route" {
+  name        = "${local.cloud.prefix}onprem-dns-route"
+  dest_range  = "${local.cloud.dns_nat_ip}/32"
+  network     = module.vpc_cloud.network.self_link
+  next_hop_ip = module.proxy_cloud.instance.network_interface.0.network_ip
+  priority    = 100
 }

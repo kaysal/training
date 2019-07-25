@@ -16,18 +16,18 @@ resource "google_compute_router" "onprem_router" {
   }
 }
 
-# hub
+# cloud
 #---------------------------------------------
 
 # cloud router
 
-resource "google_compute_router" "hub_router" {
-  name    = "${local.hub.prefix}router"
-  network = module.vpc_hub.network.self_link
-  region  = local.hub.region
+resource "google_compute_router" "cloud_router" {
+  name    = "${local.cloud.prefix}router"
+  network = module.vpc_cloud.network.self_link
+  region  = local.cloud.region
 
   bgp {
-    asn               = local.hub.asn
+    asn               = local.cloud.asn
     advertise_mode    = "CUSTOM"
     advertised_groups = ["ALL_SUBNETS"]
   }
