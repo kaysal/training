@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 # onprem
 #---------------------------------------------
 
@@ -26,14 +26,14 @@ module "vm_onprem" {
   subnetwork = module.vpc_onprem.subnets.*.self_link[0]
 }
 
-# hub
+# cloud
 #---------------------------------------------
 
 # vm instance
 
-module "vm_hub" {
+module "vm_cloud" {
   source     = "../modules/gce-private"
-  name       = "${local.hub.prefix}vm"
-  zone       = "${local.hub.region}-b"
-  subnetwork = module.vpc_hub.subnets.*.self_link[0]
+  name       = "${local.cloud.prefix}vm"
+  zone       = "${local.cloud.region}-b"
+  subnetwork = module.vpc_cloud.subnets.*.self_link[0]
 }

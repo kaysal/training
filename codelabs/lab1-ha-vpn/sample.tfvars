@@ -1,2 +1,4 @@
 project_id = "Project ID here"
-psk        = "Pre-shared Key Here"
+
+# IPsec VPN pre-shared key secret
+psk = "password1234"

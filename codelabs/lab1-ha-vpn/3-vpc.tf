@@ -63,35 +63,35 @@ resource "google_compute_firewall" "onprem_allow_icmp" {
   source_ranges = ["10.0.0.0/8", "172.0.0.0/8", ]
 }
 
-# hub
+# cloud
 #---------------------------------------------
 
 # vpc
 
-module "vpc_hub" {
+module "vpc_cloud" {
   source       = "../modules/vpc"
-  network_name = "${local.hub.prefix}vpc"
+  network_name = "${local.cloud.prefix}vpc"
   routing_mode = "REGIONAL"
 
   subnets = [
     {
-      subnet_name              = local.hub.subnet1
+      subnet_name              = local.cloud.subnet1
       subnet_ip                = "172.16.1.0/24"
-      subnet_region            = local.hub.region
+      subnet_region            = local.cloud.region
       private_ip_google_access = false
     },
   ]
 
   secondary_ranges = {
-    "${local.hub.subnet1}" = []
+    "${local.cloud.subnet1}" = []
   }
 }
 
 # firewall rules
 
-resource "google_compute_firewall" "hub_allow_ssh" {
-  name    = "${local.hub.prefix}allow-ssh"
-  network = module.vpc_hub.network.self_link
+resource "google_compute_firewall" "cloud_allow_ssh" {
+  name    = "${local.cloud.prefix}allow-ssh"
+  network = module.vpc_cloud.network.self_link
 
   allow {
     protocol = "tcp"
@@ -101,9 +101,9 @@ resource "google_compute_firewall" "hub_allow_ssh" {
   source_ranges = ["0.0.0.0/0"]
 }
 
-resource "google_compute_firewall" "hub_allow_icmp" {
-  name    = "${local.hub.prefix}allow-icmp"
-  network = module.vpc_hub.network.self_link
+resource "google_compute_firewall" "cloud_allow_icmp" {
+  name    = "${local.cloud.prefix}allow-icmp"
+  network = module.vpc_cloud.network.self_link
 
   allow {
     protocol = "icmp"

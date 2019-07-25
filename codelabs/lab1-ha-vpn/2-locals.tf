@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 # local variables
 
 locals {
@@ -26,12 +26,12 @@ locals {
     subnet1     = "onprem-subnet1"
   }
 
-  hub = {
-    prefix      = "lab1-hub-"
+  cloud = {
+    prefix      = "lab1-cloud-"
     region      = "europe-west1"
     asn         = 65002
     router_vti1 = "169.254.100.2"
     router_vti2 = "169.254.100.6"
-    subnet1     = "hub-subnet1"
+    subnet1     = "cloud-subnet1"
   }
 }
