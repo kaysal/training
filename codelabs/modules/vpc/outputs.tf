@@ -16,9 +16,10 @@
 
 output "network" {
   value = google_compute_network.network
+  description = "The VPC network created"
 }
 
 output "subnets" {
   value       = google_compute_subnetwork.subnetwork.*
-  description = "The names of the subnets being created"
+  description = "The list of subnets created"
 }
