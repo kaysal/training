@@ -1,16 +1,31 @@
 #! /bin/bash
 
 apt update
-apt install -y tcpdump unbound dnsutils traceroute
+apt install -y tcpdump unbound dnsutils
 
 rm /etc/unbound/unbound.conf
+touch /var/log/unbound.log
+chmod a+x /var/log/unbound.log
+
 cat <<EOF > /etc/unbound/unbound.conf
 
 server:
-        verbosity: 3
-        num-threads: 2
         log-queries: yes
         logfile: /var/log/unbound.log
+
+        verbosity: 3
+        num-threads: 2
+
+        port: 53
+        do-ip4: yes
+        do-udp: yes
+        do-tcp: yes
+
+        # Use this only when you downloaded the list of primary root servers!
+        #root-hints: "/var/lib/unbound/root.hints"
+
+        # Ensure kernel buffer is large enough to not lose messages in traffic spikes
+        so-rcvbuf: 1m
 
         interface: 0.0.0.0
 
