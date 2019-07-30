@@ -31,7 +31,6 @@ locals {
   cloud = {
     prefix                = "lab2-cloud-"
     region                = "europe-west1"
-    subnet_cidr           = "10.10.1.0/24"
     vm_ip                 = "10.10.1.2"
     dns_proxy_snat_ip     = "10.10.1.100"
     dns_proxy_fwd_ip      = "192.168.1.1"
