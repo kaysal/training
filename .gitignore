@@ -2,7 +2,7 @@
 *.tfstate
 *.tfstate.*
 *.tfstate.backup
-terraform.tfvars
+*.tfvars
 #*.json
 *backend*
 tfplan
