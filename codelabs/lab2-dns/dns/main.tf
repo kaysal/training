@@ -98,7 +98,7 @@ resource "google_dns_managed_zone" "onprem_forward_to_cloud" {
 
 /*
 # inbound dns policy
-# inbound policy overrides zone configurations
+# overrides zone configurations
 
 resource "google_dns_policy" "onprem_inbound_policy" {
   provider                  = google-beta

@@ -92,7 +92,7 @@ resource "google_compute_instance" "onprem_ns" {
   name                      = "${local.onprem.prefix}ns"
   machine_type              = "n1-standard-1"
   zone                      = "${local.onprem.region}-c"
-  can_ip_forward            = true
+  #can_ip_forward            = true
   metadata_startup_script   = local.unbound_init
   allow_stopping_for_update = true
 
