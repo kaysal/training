@@ -9,17 +9,20 @@ white_bg=`tput setab 7`
 bold=$(tput bold)
 reset=`tput sgr0`
 
-terraform_apply() {
-  RESOURCES=(vpc instances router vpn dns)
+RESOURCES=(dns vpn router instances vpc)
 
+terraform_destroy() {
   for i in "${RESOURCES[@]}"
+
   do
     echo ""
-    echo "${bold}running terraform apply in${reset} ${bold}${magenta}$i${reset}"
+    echo "Running ${bold}${magenta}terraform destroy${reset} --> ${bold}${blue}$i${reset}"
     pushd $i > /dev/null
-    terraform init && terraform apply -auto-approve -var-file ../vars.tfvars
+    terraform destroy \
+      -var-file ../vars.tfvars \
+      -auto-approve
     popd > /dev/null
   done
 }
 
-time terraform_apply
+time terraform_destroy

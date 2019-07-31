@@ -1,3 +1,3 @@
 output "cloud_vm" {
-  value = module.cloud_vm
+  value = google_compute_instance.cloud_vm
 }

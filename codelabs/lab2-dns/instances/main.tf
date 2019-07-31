@@ -17,6 +17,13 @@ data "terraform_remote_state" "vpc" {
 }
 
 locals {
+  instance_init = templatefile("scripts/instance.sh.tpl", {})
+
+  image = {
+    debian = "debian-cloud/debian-9"
+    ubuntu = "ubuntu-os-cloud/ubuntu-1804-lts"
+  }
+
   onprem = {
     prefix            = "lab2-onprem-"
     region            = "europe-west1"
@@ -45,23 +52,34 @@ locals {
 
 # vm instance
 
-locals {
-  instance_init = templatefile("${path.module}/scripts/instance.sh.tpl", {})
-}
+resource "google_compute_instance" "onprem_vm" {
+  name                      = "${local.onprem.prefix}vm"
+  machine_type              = "f1-micro"
+  zone                      = "${local.onprem.region}-b"
+  metadata_startup_script   = local.instance_init
+  allow_stopping_for_update = true
 
-module "onprem_vm" {
-  source                  = "../../modules/gce-public"
-  name                    = "${local.onprem.prefix}vm"
-  zone                    = "${local.onprem.region}-b"
-  subnetwork              = local.onprem.subnet_self_link
-  network_ip              = local.onprem.vm_ip
-  metadata_startup_script = local.instance_init
+  boot_disk {
+    initialize_params {
+      image = local.image.debian
+    }
+  }
+
+  network_interface {
+    subnetwork = local.onprem.subnet_self_link
+    network_ip = local.onprem.vm_ip
+    access_config {}
+  }
+
+  service_account {
+    scopes = ["cloud-platform"]
+  }
 }
 
 # unbound dns server
 
 locals {
-  unbound_init = templatefile("${path.module}/scripts/unbound.sh.tpl", {
+  unbound_init = templatefile("scripts/unbound.sh.tpl", {
     DNS_NAME1            = "vm.onprem.lab"
     DNS_RECORD1          = local.onprem.vm_ip
     DNS_EGRESS_PROXY     = "35.199.192.0/19"
@@ -70,34 +88,64 @@ locals {
   })
 }
 
-module "onprem_ns" {
-  source                  = "../../modules/gce-public"
-  name                    = "${local.onprem.prefix}ns"
-  zone                    = "${local.onprem.region}-c"
-  subnetwork              = local.onprem.subnet_self_link
-  network_ip              = local.onprem.dns_unbound_ip
-  metadata_startup_script = local.unbound_init
-  machine_type            = "n1-standard-1"
+resource "google_compute_instance" "onprem_ns" {
+  name                      = "${local.onprem.prefix}ns"
+  machine_type              = "n1-standard-1"
+  zone                      = "${local.onprem.region}-c"
+  can_ip_forward            = true
+  metadata_startup_script   = local.unbound_init
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = local.image.debian
+    }
+  }
+
+  network_interface {
+    subnetwork = local.onprem.subnet_self_link
+    network_ip = local.onprem.dns_unbound_ip
+    access_config {}
+  }
+
+  service_account {
+    scopes = ["cloud-platform"]
+  }
 }
 
 # proxy for forwarding dns queries to cloud
 
 locals {
-  onprem_proxy_init = templatefile("${path.module}/scripts/proxy.sh.tpl", {
+  onprem_proxy_init = templatefile("scripts/proxy.sh.tpl", {
     DNAT = "${local.cloud.dns_policy_inbound_ip}"
     SNAT = "${local.onprem.dns_proxy_snat_ip}"
     DEST = "${local.onprem.dns_proxy_fwd_ip}"
   })
 }
 
-module "onprem_dns_proxy" {
-  source                  = "../../modules/gce-public"
-  name                    = "${local.onprem.prefix}proxy"
-  zone                    = "${local.onprem.region}-d"
-  subnetwork              = local.onprem.subnet_self_link
-  network_ip              = local.onprem.dns_proxy_snat_ip
-  can_ip_forward          = true
-  metadata_startup_script = local.onprem_proxy_init
+resource "google_compute_instance" "onprem_dns_proxy" {
+  name                      = "${local.onprem.prefix}dns-proxy"
+  machine_type              = "f1-micro"
+  zone                      = "${local.onprem.region}-d"
+  can_ip_forward            = true
+  metadata_startup_script   = local.onprem_proxy_init
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = local.image.debian
+    }
+  }
+
+  network_interface {
+    subnetwork = local.onprem.subnet_self_link
+    network_ip = local.onprem.dns_proxy_snat_ip
+    access_config {}
+  }
+
+  service_account {
+    scopes = ["cloud-platform"]
+  }
 }
 
 # route pointing to dns nat proxy instance
@@ -106,7 +154,7 @@ resource "google_compute_route" "onprem_dns_proxy_route" {
   name        = "${local.onprem.prefix}dns-proxy-route"
   dest_range  = "${local.onprem.dns_proxy_fwd_ip}/32"
   network     = local.onprem.network_self_link
-  next_hop_ip = module.onprem_dns_proxy.instance.network_interface.0.network_ip
+  next_hop_ip = google_compute_instance.onprem_dns_proxy.network_interface.0.network_ip
   priority    = 100
 }
 
@@ -115,32 +163,63 @@ resource "google_compute_route" "onprem_dns_proxy_route" {
 
 # vm instance
 
-module "cloud_vm" {
-  source     = "../../modules/gce-public"
-  name       = "${local.cloud.prefix}vm"
-  zone       = "${local.cloud.region}-d"
-  subnetwork = local.cloud.subnet_self_link
-  network_ip = local.cloud.vm_ip
+resource "google_compute_instance" "cloud_vm" {
+  name                      = "${local.cloud.prefix}vm"
+  machine_type              = "f1-micro"
+  zone                      = "${local.cloud.region}-d"
+  metadata_startup_script   = local.instance_init
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = local.image.debian
+    }
+  }
+
+  network_interface {
+    subnetwork = local.cloud.subnet_self_link
+    network_ip = local.cloud.vm_ip
+    access_config {}
+  }
+
+  service_account {
+    scopes = ["cloud-platform"]
+  }
 }
 
 # proxy for forwarding dns queries to on-premises
 
 locals {
-  cloud_proxy_init = templatefile("${path.module}/scripts/proxy.sh.tpl", {
+  cloud_proxy_init = templatefile("scripts/proxy.sh.tpl", {
     DNAT = "${local.onprem.dns_unbound_ip}"
     SNAT = "${local.cloud.dns_proxy_snat_ip}"
     DEST = "${local.cloud.dns_proxy_fwd_ip}"
   })
 }
 
-module "cloud_dns_proxy" {
-  source                  = "../../modules/gce-public"
-  name                    = "${local.cloud.prefix}proxy"
-  zone                    = "${local.cloud.region}-d"
-  subnetwork              = local.cloud.subnet_self_link
-  network_ip              = local.cloud.dns_proxy_snat_ip
-  can_ip_forward          = true
-  metadata_startup_script = local.cloud_proxy_init
+resource "google_compute_instance" "cloud_dns_proxy" {
+  name                      = "${local.cloud.prefix}dns-proxy"
+  machine_type              = "f1-micro"
+  zone                      = "${local.cloud.region}-d"
+  can_ip_forward            = true
+  metadata_startup_script   = local.cloud_proxy_init
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = local.image.debian
+    }
+  }
+
+  network_interface {
+    subnetwork = local.cloud.subnet_self_link
+    network_ip = local.cloud.dns_proxy_snat_ip
+    access_config {}
+  }
+
+  service_account {
+    scopes = ["cloud-platform"]
+  }
 }
 
 # route pointing to dns nat proxy instance
@@ -149,6 +228,6 @@ resource "google_compute_route" "cloud_dns_proxy_route" {
   name        = "${local.cloud.prefix}dns-proxy-route"
   dest_range  = "${local.cloud.dns_proxy_fwd_ip}/32"
   network     = local.cloud.network_self_link
-  next_hop_ip = module.cloud_dns_proxy.instance.network_interface.0.network_ip
+  next_hop_ip = google_compute_instance.cloud_dns_proxy.network_interface.0.network_ip
   priority    = 100
 }

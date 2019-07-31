@@ -1,8 +1,11 @@
-# LAB 1: HA VPN from GCP to GCP
+# LAB 2: Hybrid Private DNS
 This terraform code deploys:
 1. On-premises environment simulated in GCP
 2. A GCP Cloud environment
 3. HA VPN between on-premises and GCP
+4. Private DNS on-premises using unbound
+5. Private Cloud DNS in GCP
+6. Resolving on-premises and GCP DNS queries bi-directionally
 
 ![HA VPN from GCP to GCP](diagram.png)
 
@@ -15,7 +18,7 @@ git clone https://github.com/kaysal/training.git
 
 2. Change to the directory of the cloned repository
 ```sh
-cd ~/training/codelabs/lab1-ha-vpn
+cd ~/training/codelabs/lab2-dns
 ```
 
 ## Deploy Lab
@@ -33,4 +36,6 @@ To destroy the infrastructure, run the command
 terraform destroy
 ```
 
-## Requ
+## Requirements
+- Terraform 0.12 required.
+- Activate `Compute Engine API`

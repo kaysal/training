@@ -39,7 +39,7 @@ locals {
     region                = "europe-west1"
     dns_proxy_fwd_ip      = "192.168.1.1"
     dns_policy_inbound_ip = "10.10.1.3"
-    vm_ip                 = data.terraform_remote_state.instance.outputs.cloud_vm.instance.network_interface.0.network_ip
+    vm_ip                 = data.terraform_remote_state.instance.outputs.cloud_vm.network_interface.0.network_ip
     network_self_link     = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
   }
 }

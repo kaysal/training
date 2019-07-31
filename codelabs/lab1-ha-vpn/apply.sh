@@ -15,9 +15,12 @@ terraform_apply() {
   for i in "${RESOURCES[@]}"
   do
     echo ""
-    echo "${bold}running terraform apply in${reset} ${bold}${magenta}$i${reset}"
+    echo "Running ${bold}${magenta}terraform apply${reset} --> ${bold}${blue}$i${reset}"
     pushd $i > /dev/null
-    terraform init && terraform apply -auto-approve -var-file ../vars.tfvars
+    terraform init
+    terraform apply \
+      -var-file ../vars.tfvars \
+      -auto-approve
     popd > /dev/null
   done
 }
