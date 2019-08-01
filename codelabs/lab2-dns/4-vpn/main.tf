@@ -14,7 +14,7 @@ data "terraform_remote_state" "vpc" {
   backend = "local"
 
   config = {
-    path = "../vpc/terraform.tfstate"
+    path = "../1-vpc/terraform.tfstate"
   }
 }
 
@@ -22,7 +22,7 @@ data "terraform_remote_state" "router" {
   backend = "local"
 
   config = {
-    path = "../router/terraform.tfstate"
+    path = "../3-router/terraform.tfstate"
   }
 }
 

@@ -13,15 +13,15 @@ data "terraform_remote_state" "vpc" {
   backend = "local"
 
   config = {
-    path = "../vpc/terraform.tfstate"
+    path = "../1-vpc/terraform.tfstate"
   }
 }
 
-data "terraform_remote_state" "instance" {
+data "terraform_remote_state" "ip" {
   backend = "local"
 
   config = {
-    path = "../instances/terraform.tfstate"
+    path = "../2-instances/terraform.tfstate"
   }
 }
 
@@ -29,17 +29,17 @@ locals {
   onprem = {
     prefix            = "lab2-onprem-"
     region            = "europe-west1"
-    dns_proxy_fwd_ip  = "192.168.2.1"
-    dns_unbound_ip    = "172.16.1.99"
+    dns_unbound_ip    = data.terraform_remote_state.ip.outputs.ip.onprem.dns_unbound_ip
+    dns_proxy_fwd_ip  = data.terraform_remote_state.ip.outputs.ip.onprem.dns_proxy_fwd_ip
     network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
   }
 
   cloud = {
     prefix                = "lab2-cloud-"
     region                = "europe-west1"
-    dns_proxy_fwd_ip      = "192.168.1.1"
-    dns_policy_inbound_ip = "10.10.1.3"
-    vm_ip                 = data.terraform_remote_state.instance.outputs.cloud_vm.network_interface.0.network_ip
+    dns_policy_inbound_ip = data.terraform_remote_state.ip.outputs.ip.cloud.dns_policy_inbound_ip
+    dns_proxy_fwd_ip      = data.terraform_remote_state.ip.outputs.ip.cloud.dns_proxy_fwd_ip
+    vm_ip                 = data.terraform_remote_state.ip.outputs.ip.cloud.vm_ip
     network_self_link     = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
   }
 }

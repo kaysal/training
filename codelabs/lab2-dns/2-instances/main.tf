@@ -12,7 +12,7 @@ data "terraform_remote_state" "vpc" {
   backend = "local"
 
   config = {
-    path = "../vpc/terraform.tfstate"
+    path = "../1-vpc/terraform.tfstate"
   }
 }
 
@@ -29,7 +29,7 @@ locals {
     region            = "europe-west1"
     vm_ip             = "172.16.1.2"
     dns_proxy_snat_ip = "172.16.1.100"
-    dns_proxy_fwd_ip  = "192.168.2.1"
+    dns_proxy_fwd_ip  = "172.16.1.253"
     dns_unbound_ip    = "172.16.1.99"
     subnet_self_link  = data.terraform_remote_state.vpc.outputs.vpc.onprem.subnets.0.self_link
     network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
@@ -40,7 +40,7 @@ locals {
     region                = "europe-west1"
     vm_ip                 = "10.10.1.2"
     dns_proxy_snat_ip     = "10.10.1.100"
-    dns_proxy_fwd_ip      = "192.168.1.1"
+    dns_proxy_fwd_ip      = "10.10.1.253"
     dns_policy_inbound_ip = "10.10.1.3"
     subnet_self_link      = data.terraform_remote_state.vpc.outputs.vpc.cloud.subnets.0.self_link
     network_self_link     = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
@@ -92,7 +92,6 @@ resource "google_compute_instance" "onprem_ns" {
   name                      = "${local.onprem.prefix}ns"
   machine_type              = "n1-standard-1"
   zone                      = "${local.onprem.region}-c"
-  #can_ip_forward            = true
   metadata_startup_script   = local.unbound_init
   allow_stopping_for_update = true
 
@@ -128,8 +127,8 @@ resource "google_compute_instance" "onprem_dns_proxy" {
   machine_type              = "f1-micro"
   zone                      = "${local.onprem.region}-d"
   can_ip_forward            = true
-  metadata_startup_script   = local.onprem_proxy_init
   allow_stopping_for_update = true
+  metadata_startup_script   = local.onprem_proxy_init
 
   boot_disk {
     initialize_params {
@@ -141,21 +140,15 @@ resource "google_compute_instance" "onprem_dns_proxy" {
     subnetwork = local.onprem.subnet_self_link
     network_ip = local.onprem.dns_proxy_snat_ip
     access_config {}
+
+    alias_ip_range {
+      ip_cidr_range = local.onprem.dns_proxy_fwd_ip
+    }
   }
 
   service_account {
     scopes = ["cloud-platform"]
   }
-}
-
-# route pointing to dns nat proxy instance
-
-resource "google_compute_route" "onprem_dns_proxy_route" {
-  name        = "${local.onprem.prefix}dns-proxy-route"
-  dest_range  = "${local.onprem.dns_proxy_fwd_ip}/32"
-  network     = local.onprem.network_self_link
-  next_hop_ip = google_compute_instance.onprem_dns_proxy.network_interface.0.network_ip
-  priority    = 100
 }
 
 # cloud
@@ -202,8 +195,8 @@ resource "google_compute_instance" "cloud_dns_proxy" {
   machine_type              = "f1-micro"
   zone                      = "${local.cloud.region}-d"
   can_ip_forward            = true
-  metadata_startup_script   = local.cloud_proxy_init
   allow_stopping_for_update = true
+  metadata_startup_script   = local.cloud_proxy_init
 
   boot_disk {
     initialize_params {
@@ -215,19 +208,13 @@ resource "google_compute_instance" "cloud_dns_proxy" {
     subnetwork = local.cloud.subnet_self_link
     network_ip = local.cloud.dns_proxy_snat_ip
     access_config {}
+
+    alias_ip_range {
+      ip_cidr_range = local.cloud.dns_proxy_fwd_ip
+    }
   }
 
   service_account {
     scopes = ["cloud-platform"]
   }
-}
-
-# route pointing to dns nat proxy instance
-
-resource "google_compute_route" "cloud_dns_proxy_route" {
-  name        = "${local.cloud.prefix}dns-proxy-route"
-  dest_range  = "${local.cloud.dns_proxy_fwd_ip}/32"
-  network     = local.cloud.network_self_link
-  next_hop_ip = google_compute_instance.cloud_dns_proxy.network_interface.0.network_ip
-  priority    = 100
 }

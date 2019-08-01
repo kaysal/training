@@ -10,7 +10,7 @@ bold=$(tput bold)
 reset=`tput sgr0`
 
 terraform_apply() {
-  RESOURCES=(vpc instances router vpn dns)
+  RESOURCES=(1-vpc 2-instances 3-router 4-vpn 5-dns)
 
   for i in "${RESOURCES[@]}"
   do
