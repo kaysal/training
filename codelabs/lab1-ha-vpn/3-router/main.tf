@@ -12,20 +12,20 @@ data "terraform_remote_state" "vpc" {
   backend = "local"
 
   config = {
-    path = "../vpc/terraform.tfstate"
+    path = "../1-vpc/terraform.tfstate"
   }
 }
 
 locals {
   onprem = {
-    prefix            = "lab2-onprem-"
+    prefix            = "lab1-onprem-"
     region            = "europe-west1"
     asn               = "65001"
     network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
   }
 
   cloud = {
-    prefix            = "lab2-cloud-"
+    prefix            = "lab1-cloud-"
     region            = "europe-west1"
     asn               = "65002"
     network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link

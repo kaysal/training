@@ -10,17 +10,14 @@ bold=$(tput bold)
 reset=`tput sgr0`
 
 terraform_apply() {
-  RESOURCES=(vpc instances router vpn dns)
+  RESOURCES=(1-vpc 2-instances 3-router 4-vpn)
 
   for i in "${RESOURCES[@]}"
   do
     echo ""
-    echo "Running ${bold}${magenta}terraform apply${reset} --> ${bold}${blue}$i${reset}"
+    echo "${bold}running terraform apply in${reset} ${bold}${magenta}$i${reset}"
     pushd $i > /dev/null
-    terraform init
-    terraform apply \
-      -var-file ../vars.tfvars \
-      -auto-approve
+    terraform init && terraform apply -auto-approve -var-file ../vars.tfvars
     popd > /dev/null
   done
 }

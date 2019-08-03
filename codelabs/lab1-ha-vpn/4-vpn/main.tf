@@ -14,7 +14,7 @@ data "terraform_remote_state" "vpc" {
   backend = "local"
 
   config = {
-    path = "../vpc/terraform.tfstate"
+    path = "../1-vpc/terraform.tfstate"
   }
 }
 
@@ -22,13 +22,13 @@ data "terraform_remote_state" "router" {
   backend = "local"
 
   config = {
-    path = "../router/terraform.tfstate"
+    path = "../3-router/terraform.tfstate"
   }
 }
 
 locals {
   onprem = {
-    prefix            = "lab2-onprem-"
+    prefix            = "lab1-onprem-"
     region            = "europe-west1"
     router_vti1       = "169.254.100.1"
     router_vti2       = "169.254.100.5"
@@ -38,7 +38,7 @@ locals {
   }
 
   cloud = {
-    prefix            = "lab2-cloud-"
+    prefix            = "lab1-cloud-"
     region            = "europe-west1"
     router_vti1       = "169.254.100.2"
     router_vti2       = "169.254.100.6"

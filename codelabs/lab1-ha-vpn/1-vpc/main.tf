@@ -9,13 +9,13 @@ provider "google-beta" {
 
 locals {
   onprem = {
-    prefix      = "lab2-onprem-"
+    prefix      = "lab1-onprem-"
     region      = "europe-west1"
     subnet_cidr = "172.16.1.0/24"
   }
 
   cloud = {
-    prefix      = "lab2-cloud-"
+    prefix      = "lab1-cloud-"
     region      = "europe-west1"
     subnet_cidr = "10.10.1.0/24"
   }
@@ -69,7 +69,7 @@ resource "google_compute_firewall" "onprem_allow_rfc1918" {
 
   source_ranges = [
     "10.0.0.0/8",
-    "172.0.0.0/8",
+    "172.16.0.0/12",
     "192.168.0.0/16"
   ]
 }
@@ -139,7 +139,7 @@ resource "google_compute_firewall" "cloud_allow_rfc1918" {
 
   source_ranges = [
     "10.0.0.0/8",
-    "172.0.0.0/8",
+    "172.16.0.0/12",
     "192.168.0.0/16"
   ]
 }
