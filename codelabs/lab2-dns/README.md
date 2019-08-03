@@ -8,6 +8,7 @@ This terraform code deploys:
 6. Resolving on-premises and GCP DNS queries bi-directionally
 
 ![Alt Text](onprem.png)
+---
 ![Alt Text](cloud.png)
 
 ### Clone Lab
