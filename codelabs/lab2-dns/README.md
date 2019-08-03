@@ -1,5 +1,6 @@
 # LAB 2: Hybrid Private DNS
-This terraform code deploys:
+
+This terraform code deploys a bidirectional DNS setup between an on-premises environment (simulated on GCP) and a cloud environment. The on-premises environment uses unbound DNS. The lab consists of the following:
 1. On-premises environment simulated in GCP
 2. A GCP Cloud environment
 3. HA VPN between on-premises and GCP
