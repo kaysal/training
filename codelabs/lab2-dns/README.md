@@ -7,7 +7,8 @@ This terraform code deploys:
 5. Private Cloud DNS in GCP
 6. Resolving on-premises and GCP DNS queries bi-directionally
 
-![Alt Text](diagram.png)
+![Alt Text](onprem.png)
+![Alt Text](cloud.png)
 
 ### Clone Lab
 Open a shell terminal and run the following command:
