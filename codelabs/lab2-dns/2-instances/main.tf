@@ -28,22 +28,20 @@ locals {
     prefix            = "lab2-onprem-"
     region            = "europe-west1"
     vm_ip             = "172.16.1.2"
-    dns_proxy_snat_ip = "172.16.1.100"
-    dns_proxy_fwd_ip  = "172.16.1.253"
+    dns_proxy_ip      = "172.16.1.100"
     dns_unbound_ip    = "172.16.1.99"
     subnet_self_link  = data.terraform_remote_state.vpc.outputs.vpc.onprem.subnets.0.self_link
     network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
   }
 
   cloud = {
-    prefix                = "lab2-cloud-"
-    region                = "europe-west1"
-    vm_ip                 = "10.10.1.2"
-    dns_proxy_snat_ip     = "10.10.1.100"
-    dns_proxy_fwd_ip      = "10.10.1.253"
-    dns_policy_inbound_ip = "10.10.1.3"
-    subnet_self_link      = data.terraform_remote_state.vpc.outputs.vpc.cloud.subnets.0.self_link
-    network_self_link     = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
+    prefix            = "lab2-cloud-"
+    region            = "europe-west1"
+    vm_ip             = "10.10.1.2"
+    dns_proxy_ip      = "10.10.1.100"
+    dns_inbound_ip    = "10.10.1.3"
+    subnet_self_link  = data.terraform_remote_state.vpc.outputs.vpc.cloud.subnets.0.self_link
+    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
   }
 }
 
@@ -84,7 +82,7 @@ locals {
     DNS_RECORD1          = local.onprem.vm_ip
     DNS_EGRESS_PROXY     = "35.199.192.0/19"
     FORWARD_ZONE1        = "cloud.lab"
-    FORWARD_ZONE1_TARGET = local.cloud.dns_proxy_fwd_ip
+    FORWARD_ZONE1_TARGET = local.cloud.dns_inbound_ip
   })
 }
 
@@ -116,9 +114,8 @@ resource "google_compute_instance" "onprem_ns" {
 
 locals {
   onprem_proxy_init = templatefile("scripts/proxy.sh.tpl", {
-    DNAT = "${local.cloud.dns_policy_inbound_ip}"
-    SNAT = "${local.onprem.dns_proxy_snat_ip}"
-    DEST = "${local.onprem.dns_proxy_fwd_ip}"
+    DNS_PROXY_IP  = "${local.onprem.dns_proxy_ip}"
+    REMOTE_DNS_IP = "${local.cloud.dns_inbound_ip}"
   })
 }
 
@@ -138,12 +135,8 @@ resource "google_compute_instance" "onprem_dns_proxy" {
 
   network_interface {
     subnetwork = local.onprem.subnet_self_link
-    network_ip = local.onprem.dns_proxy_snat_ip
+    network_ip = local.onprem.dns_proxy_ip
     access_config {}
-
-    alias_ip_range {
-      ip_cidr_range = local.onprem.dns_proxy_fwd_ip
-    }
   }
 
   service_account {
@@ -184,9 +177,8 @@ resource "google_compute_instance" "cloud_vm" {
 
 locals {
   cloud_proxy_init = templatefile("scripts/proxy.sh.tpl", {
-    DNAT = "${local.onprem.dns_unbound_ip}"
-    SNAT = "${local.cloud.dns_proxy_snat_ip}"
-    DEST = "${local.cloud.dns_proxy_fwd_ip}"
+    DNS_PROXY_IP  = "${local.cloud.dns_proxy_ip}"
+    REMOTE_DNS_IP = "${local.onprem.dns_unbound_ip}"
   })
 }
 
@@ -206,12 +198,8 @@ resource "google_compute_instance" "cloud_dns_proxy" {
 
   network_interface {
     subnetwork = local.cloud.subnet_self_link
-    network_ip = local.cloud.dns_proxy_snat_ip
+    network_ip = local.cloud.dns_proxy_ip
     access_config {}
-
-    alias_ip_range {
-      ip_cidr_range = local.cloud.dns_proxy_fwd_ip
-    }
   }
 
   service_account {

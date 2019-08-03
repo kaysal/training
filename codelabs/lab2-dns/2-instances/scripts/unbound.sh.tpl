@@ -43,8 +43,8 @@ server:
         local-data: "${DNS_NAME1} A ${DNS_RECORD1}"
 
 forward-zone:
-        name: "cloud.lab"
-        forward-addr: 10.10.1.3
+        name: "${FORWARD_ZONE1}"
+        forward-addr: ${FORWARD_ZONE1_TARGET}
 
 forward-zone:
         name: "."

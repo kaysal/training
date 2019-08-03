@@ -30,15 +30,15 @@ locals {
     prefix            = "lab2-onprem-"
     region            = "europe-west1"
     dns_unbound_ip    = data.terraform_remote_state.ip.outputs.ip.onprem.dns_unbound_ip
-    dns_proxy_fwd_ip  = data.terraform_remote_state.ip.outputs.ip.onprem.dns_proxy_fwd_ip
+    dns_proxy_ip      = data.terraform_remote_state.ip.outputs.ip.onprem.dns_proxy_ip
     network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
   }
 
   cloud = {
     prefix                = "lab2-cloud-"
     region                = "europe-west1"
-    dns_policy_inbound_ip = data.terraform_remote_state.ip.outputs.ip.cloud.dns_policy_inbound_ip
-    dns_proxy_fwd_ip      = data.terraform_remote_state.ip.outputs.ip.cloud.dns_proxy_fwd_ip
+    dns_inbound_ip = data.terraform_remote_state.ip.outputs.ip.cloud.dns_inbound_ip
+    dns_proxy_ip          = data.terraform_remote_state.ip.outputs.ip.cloud.dns_proxy_ip
     vm_ip                 = data.terraform_remote_state.ip.outputs.ip.cloud.vm_ip
     network_self_link     = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
   }
@@ -91,7 +91,7 @@ resource "google_dns_managed_zone" "onprem_forward_to_cloud" {
 
   forwarding_config {
     target_name_servers {
-      ipv4_address = local.onprem.dns_proxy_fwd_ip
+      ipv4_address = local.onprem.dns_proxy_ip
     }
   }
 }
@@ -165,7 +165,7 @@ resource "google_dns_managed_zone" "cloud_forward_to_onprem" {
 
   forwarding_config {
     target_name_servers {
-      ipv4_address = local.cloud.dns_proxy_fwd_ip
+      ipv4_address = local.cloud.dns_proxy_ip
     }
   }
 }

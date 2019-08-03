@@ -69,7 +69,7 @@ resource "google_compute_firewall" "onprem_allow_rfc1918" {
 
   source_ranges = [
     "10.0.0.0/8",
-    "172.0.0.0/8",
+    "172.16.0.0/12",
     "192.168.0.0/16"
   ]
 }
@@ -139,7 +139,7 @@ resource "google_compute_firewall" "cloud_allow_rfc1918" {
 
   source_ranges = [
     "10.0.0.0/8",
-    "172.0.0.0/8",
+    "172.16.0.0/12",
     "192.168.0.0/16"
   ]
 }
