@@ -4,7 +4,7 @@ This terraform code deploys:
 2. A GCP Cloud environment
 3. HA VPN between on-premises and GCP
 
-![Alt Text](diagram.png)
+![Alt Text](image.png)
 
 ### Clone Lab
 Open a Cloud Shell terminal and run the following command:
