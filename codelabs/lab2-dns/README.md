@@ -8,9 +8,9 @@ This terraform code deploys a bidirectional DNS setup between an on-premises env
 5. Private Cloud DNS in GCP
 6. Resolving on-premises and GCP DNS queries bi-directionally
 
-![Alt Text](onprem.png)
+![Alt Text](image1.png)
 ---
-![Alt Text](cloud.png)
+![Alt Text](image2.png)
 
 ### Clone Lab
 Open a shell terminal and run the following command:

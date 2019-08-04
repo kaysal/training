@@ -21,7 +21,7 @@ git clone https://github.com/kaysal/training.git
 
 2. Change to the directory of the cloned repository
 ```sh
-cd ~/training/codelabs/lab2-dns
+cd ~/training/codelabs/lab3-access
 ```
 
 ## Deploy Lab using Script
