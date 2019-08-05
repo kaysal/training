@@ -1,4 +1,4 @@
-# LAB 1: HA VPN
+# LAB 1: HA VPN from GCP to GCP
 This terraform code deploys:
 1. On-premises environment simulated in GCP
 2. A GCP Cloud environment

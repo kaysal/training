@@ -28,21 +28,11 @@ data "terraform_remote_state" "router" {
 
 locals {
   onprem = {
-    prefix            = "lab1-onprem-"
-    region            = "europe-west1"
-    router_vti1       = "169.254.100.1"
-    router_vti2       = "169.254.100.5"
-    asn               = "65001"
     router            = data.terraform_remote_state.router.outputs.router.onprem.name
     network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
   }
 
   cloud = {
-    prefix            = "lab1-cloud-"
-    region            = "europe-west1"
-    router_vti1       = "169.254.100.2"
-    router_vti2       = "169.254.100.6"
-    asn               = "65002"
     router            = data.terraform_remote_state.router.outputs.router.cloud.name
     network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
   }
@@ -59,8 +49,8 @@ resource "random_id" "ipsec_secret" {
 
 resource "google_compute_ha_vpn_gateway" "onprem_vpn_gw" {
   provider = "google-beta"
-  region   = local.onprem.region
-  name     = "${local.onprem.prefix}vpn-gw"
+  region   = var.onprem.region
+  name     = "${var.onprem.prefix}vpn-gw"
   network  = local.onprem.network_self_link
 }
 
@@ -69,26 +59,26 @@ resource "google_compute_ha_vpn_gateway" "onprem_vpn_gw" {
 module "vpn_onprem_to_cloud" {
   source           = "../../modules/vpn-ha-gcp"
   network          = local.onprem.network_self_link
-  region           = local.onprem.region
+  region           = var.onprem.region
   vpn_gateway      = google_compute_ha_vpn_gateway.onprem_vpn_gw.self_link
   peer_gcp_gateway = google_compute_ha_vpn_gateway.cloud_vpn_gw.self_link
   shared_secret    = random_id.ipsec_secret.b64_url
-  router           = data.terraform_remote_state.router.outputs.router.onprem.name
+  router           = local.onprem.router
   ike_version      = 2
 
   session_config = [
     {
-      session_name              = "${local.onprem.prefix}to-cloud"
-      peer_asn                  = local.cloud.asn
-      cr_bgp_session_range      = "${local.onprem.router_vti1}/30"
-      remote_bgp_session_ip     = local.cloud.router_vti1
+      session_name              = "${var.onprem.prefix}to-cloud"
+      peer_asn                  = var.cloud.asn
+      cr_bgp_session_range      = "${var.onprem.router_vti1}/30"
+      remote_bgp_session_ip     = var.cloud.router_vti1
       advertised_route_priority = 100
     },
     {
-      session_name              = "${local.onprem.prefix}to-cloud"
-      peer_asn                  = local.cloud.asn
-      cr_bgp_session_range      = "${local.onprem.router_vti2}/30"
-      remote_bgp_session_ip     = local.cloud.router_vti2
+      session_name              = "${var.onprem.prefix}to-cloud"
+      peer_asn                  = var.cloud.asn
+      cr_bgp_session_range      = "${var.onprem.router_vti2}/30"
+      remote_bgp_session_ip     = var.cloud.router_vti2
       advertised_route_priority = 100
     },
   ]
@@ -101,8 +91,8 @@ module "vpn_onprem_to_cloud" {
 
 resource "google_compute_ha_vpn_gateway" "cloud_vpn_gw" {
   provider = "google-beta"
-  region   = local.cloud.region
-  name     = "${local.cloud.prefix}vpn-gw"
+  region   = var.cloud.region
+  name     = "${var.cloud.prefix}vpn-gw"
   network  = local.cloud.network_self_link
 }
 
@@ -112,26 +102,26 @@ module "vpn_cloud_to_onprem" {
   source           = "../../modules/vpn-ha-gcp"
   project_id       = var.project_id
   network          = local.cloud.network_self_link
-  region           = local.cloud.region
+  region           = var.cloud.region
   vpn_gateway      = google_compute_ha_vpn_gateway.cloud_vpn_gw.self_link
   peer_gcp_gateway = google_compute_ha_vpn_gateway.onprem_vpn_gw.self_link
   shared_secret    = random_id.ipsec_secret.b64_url
-  router           = data.terraform_remote_state.router.outputs.router.cloud.name
+  router           = local.cloud.router
   ike_version      = 2
 
   session_config = [
     {
-      session_name              = "${local.cloud.prefix}to-onprem"
-      peer_asn                  = local.onprem.asn
-      cr_bgp_session_range      = "${local.cloud.router_vti1}/30"
-      remote_bgp_session_ip     = local.onprem.router_vti1
+      session_name              = "${var.cloud.prefix}to-onprem"
+      peer_asn                  = var.onprem.asn
+      cr_bgp_session_range      = "${var.cloud.router_vti1}/30"
+      remote_bgp_session_ip     = var.onprem.router_vti1
       advertised_route_priority = 100
     },
     {
-      session_name              = "${local.cloud.prefix}to-onprem"
-      peer_asn                  = local.onprem.asn
-      cr_bgp_session_range      = "${local.cloud.router_vti2}/30"
-      remote_bgp_session_ip     = local.onprem.router_vti2
+      session_name              = "${var.cloud.prefix}to-onprem"
+      peer_asn                  = var.onprem.asn
+      cr_bgp_session_range      = "${var.cloud.router_vti2}/30"
+      remote_bgp_session_ip     = var.onprem.router_vti2
       advertised_route_priority = 100
     },
   ]

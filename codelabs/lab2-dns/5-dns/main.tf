@@ -27,19 +27,10 @@ data "terraform_remote_state" "ip" {
 
 locals {
   onprem = {
-    prefix            = "lab2-onprem-"
-    region            = "europe-west1"
-    dns_unbound_ip    = data.terraform_remote_state.ip.outputs.ip.onprem.dns_unbound_ip
-    dns_proxy_ip      = data.terraform_remote_state.ip.outputs.ip.onprem.dns_proxy_ip
     network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
   }
 
   cloud = {
-    prefix                = "lab2-cloud-"
-    region                = "europe-west1"
-    dns_inbound_ip = data.terraform_remote_state.ip.outputs.ip.cloud.dns_inbound_ip
-    dns_proxy_ip          = data.terraform_remote_state.ip.outputs.ip.cloud.dns_proxy_ip
-    vm_ip                 = data.terraform_remote_state.ip.outputs.ip.cloud.vm_ip
     network_self_link     = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
   }
 }
@@ -53,7 +44,7 @@ locals {
 
 resource "google_dns_managed_zone" "onprem_forward_to_unbound" {
   provider    = google-beta
-  name        = "${local.onprem.prefix}forward-to-unbound"
+  name        = "${var.onprem.prefix}forward-to-unbound"
   dns_name    = "."
   description = "default local resolver -> unbound"
   visibility  = "private"
@@ -66,7 +57,7 @@ resource "google_dns_managed_zone" "onprem_forward_to_unbound" {
 
   forwarding_config {
     target_name_servers {
-      ipv4_address = local.onprem.dns_unbound_ip
+      ipv4_address = var.onprem.dns_unbound_ip
     }
   }
 }
@@ -78,7 +69,7 @@ resource "google_dns_managed_zone" "onprem_forward_to_unbound" {
 
 resource "google_dns_managed_zone" "onprem_forward_to_cloud" {
   provider    = google-beta
-  name        = "${local.onprem.prefix}forward-to-cloud"
+  name        = "${var.onprem.prefix}forward-to-cloud"
   dns_name    = "cloud.lab."
   description = "resolver for cloud.lab -> cloud dns inbound IP"
   visibility  = "private"
@@ -91,7 +82,7 @@ resource "google_dns_managed_zone" "onprem_forward_to_cloud" {
 
   forwarding_config {
     target_name_servers {
-      ipv4_address = local.onprem.dns_proxy_ip
+      ipv4_address = var.onprem.dns_proxy_ip
     }
   }
 }
@@ -124,7 +115,7 @@ resource "google_dns_policy" "onprem_inbound_policy" {
 
 resource "google_dns_managed_zone" "cloud_local_zone" {
   provider    = google-beta
-  name        = "${local.cloud.prefix}local-zone"
+  name        = "${var.cloud.prefix}local-zone"
   dns_name    = "cloud.lab."
   description = "default local resolver -> metadata server"
   visibility  = "private"
@@ -144,7 +135,7 @@ resource "google_dns_record_set" "cloud_vm_record" {
   ttl  = 300
 
   managed_zone = google_dns_managed_zone.cloud_local_zone.name
-  rrdatas      = [local.cloud.vm_ip]
+  rrdatas      = [var.cloud.vm_ip]
 }
 
 # private on-premises zone on cloud VPC
@@ -152,7 +143,7 @@ resource "google_dns_record_set" "cloud_vm_record" {
 
 resource "google_dns_managed_zone" "cloud_forward_to_onprem" {
   provider    = google-beta
-  name        = "${local.cloud.prefix}forward-to-onprem"
+  name        = "${var.cloud.prefix}forward-to-onprem"
   dns_name    = "onprem.lab."
   description = "resolver for onprem.lab -> onprem NS"
   visibility  = "private"
@@ -165,7 +156,7 @@ resource "google_dns_managed_zone" "cloud_forward_to_onprem" {
 
   forwarding_config {
     target_name_servers {
-      ipv4_address = local.cloud.dns_proxy_ip
+      ipv4_address = var.cloud.dns_proxy_ip
     }
   }
 }
@@ -174,7 +165,7 @@ resource "google_dns_managed_zone" "cloud_forward_to_onprem" {
 
 resource "google_dns_policy" "cloud_inbound_policy" {
   provider                  = google-beta
-  name                      = "${local.cloud.prefix}inbound-policy"
+  name                      = "${var.cloud.prefix}inbound-policy"
   enable_inbound_forwarding = true
 
   networks {
