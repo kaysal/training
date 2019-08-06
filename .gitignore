@@ -8,7 +8,6 @@ vars.tfvars
 *backend*
 tfplan
 .tmp
-vars.txt
 
 # Module directory
 .terraform/
