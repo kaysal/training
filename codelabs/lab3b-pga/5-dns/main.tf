@@ -153,7 +153,34 @@ resource "google_dns_policy" "cloud_inbound_policy" {
 }
 
 # private google access
-# googleapis.com
+# www.googleapis.com
+
+resource "google_dns_managed_zone" "www_googleapis" {
+  provider    = google-beta
+  name        = "${var.cloud.prefix}www-googleapis"
+  dns_name    = "www.googleapis.com."
+  description = "private zone for wwww.googleapis.com"
+  visibility  = "private"
+
+  private_visibility_config {
+    networks {
+      network_url = local.cloud.network_self_link
+    }
+  }
+
+  forwarding_config {
+    target_name_servers {
+      ipv4_address = "8.8.8.8"
+    }
+
+    target_name_servers {
+      ipv4_address = "8.8.4.4"
+    }
+  }
+}
+
+# private google access
+# *.googleapis.com
 
 resource "google_dns_managed_zone" "private_googleapis" {
   provider    = google-beta
