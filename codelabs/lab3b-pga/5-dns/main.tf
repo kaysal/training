@@ -21,7 +21,7 @@ data "terraform_remote_state" "ip" {
   backend = "local"
 
   config = {
-    path = "../2-instances/terraform.tfstate"
+    path = "../3-instances/terraform.tfstate"
   }
 }
 
@@ -150,4 +150,86 @@ resource "google_dns_policy" "cloud_inbound_policy" {
   networks {
     network_url = local.cloud.network_self_link
   }
+}
+
+# private google access
+# googleapis.com
+
+resource "google_dns_managed_zone" "private_googleapis" {
+  provider    = google-beta
+  name        = "${var.cloud.prefix}private-googleapis"
+  dns_name    = "googleapis.com."
+  description = "private zone for googleapis"
+  visibility  = "private"
+
+  private_visibility_config {
+    networks {
+      network_url = local.cloud.network_self_link
+    }
+  }
+}
+
+resource "google_dns_record_set" "googleapis_cname" {
+  count        = length(var.apis)
+  name         = "${element(var.apis, count.index)}.${google_dns_managed_zone.private_googleapis.dns_name}"
+  type         = "CNAME"
+  ttl          = 300
+  managed_zone = google_dns_managed_zone.private_googleapis.name
+  rrdatas      = ["restricted.${google_dns_managed_zone.private_googleapis.dns_name}"]
+}
+
+resource "google_dns_record_set" "restricted_googleapis" {
+  name = "restricted.${google_dns_managed_zone.private_googleapis.dns_name}"
+  type = "A"
+  ttl  = 300
+
+  managed_zone = google_dns_managed_zone.private_googleapis.name
+
+  rrdatas = [
+    "199.36.153.4",
+    "199.36.153.5",
+    "199.36.153.6",
+    "199.36.153.7",
+  ]
+}
+
+# private google access
+# gcr.io
+
+resource "google_dns_managed_zone" "private_gcr_io" {
+  provider    = "google-beta"
+  name        = "${var.cloud.prefix}private-gcr-io"
+  dns_name    = "gcr.io."
+  description = "private zone for gcr.io"
+  visibility  = "private"
+
+  private_visibility_config {
+    networks {
+      network_url = local.cloud.network_self_link
+    }
+  }
+}
+
+resource "google_dns_record_set" "gcr_io_cname" {
+  name = "*.gcr.io."
+  type = "CNAME"
+  ttl  = 300
+
+  managed_zone = "${google_dns_managed_zone.private_gcr_io.name}"
+  rrdatas      = ["gcr.io."]
+}
+
+resource "google_dns_record_set" "restricted_gcr_io" {
+  name = "gcr.io."
+  type = "A"
+  ttl  = 300
+
+  managed_zone = google_dns_managed_zone.private_gcr_io.name
+
+  rrdatas = [
+    "199.36.153.4",
+    "199.36.153.5",
+    "199.36.153.6",
+    "199.36.153.7",
+  ]
 }

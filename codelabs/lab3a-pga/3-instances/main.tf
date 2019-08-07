@@ -151,7 +151,7 @@ resource "google_compute_instance" "cloud_vm" {
   network_interface {
     subnetwork = local.cloud.subnet_self_link
     network_ip = var.cloud.vm_ip
-    access_config {}
+    #access_config {}
   }
 
   service_account {
@@ -185,7 +185,7 @@ resource "google_compute_instance" "cloud_dns_proxy" {
   network_interface {
     subnetwork = local.cloud.subnet_self_link
     network_ip = var.cloud.dns_proxy_ip
-    access_config {}
+    #access_config {}
   }
 
   service_account {

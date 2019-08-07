@@ -7,20 +7,20 @@ reset=`tput sgr0`
 source variables.txt
 
 terraform_apply() {
-  RESOURCES=(5-dns 4-vpn 3-router 2-instances 1-vpc)
+  RESOURCES=(1-vpc 2-router 3-instances 4-vpn 5-dns 6-storage)
 
   for i in "${RESOURCES[@]}"
   do
     echo ""
-    echo "${bold}${magenta}$i ~> destroying...${reset}"
+    echo "${bold}${magenta}$i ~> deploying...${reset}"
     pushd $i > /dev/null
-    terraform init && terraform destroy -auto-approve
+    terraform fmt && terraform init && terraform apply -auto-approve
     if [ $? -eq 0 ]; then
-      echo "${bold}${magenta}$i: destroyed!${reset}"
+      echo "${bold}${magenta}$i: deployed!${reset}"
       popd > /dev/null
     else
       echo "${bold}${magenta}$i: error!${reset}"
-      popd > /dev/null
+      popd > /dev/null && break
     fi
   done
 }

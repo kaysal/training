@@ -53,7 +53,7 @@ terraform init
 terraform plan
 terraform apply
 ```
-To manually destroy the infrastructure, terraform must be executed in the directories in the following order:
+3. To manually destroy the infrastructure, terraform must be run in the directories in the following order:
 - `4-vpn`
 - `3-router`
 - `2-instances`

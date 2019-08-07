@@ -1,26 +1,30 @@
 
 export TF_VAR_global='{
-  machine_type = "f1-micro",
+  machine_type = "f1-micro"
   image = {
     debian = "debian-cloud/debian-9"
   }
 }'
 
 export TF_VAR_onprem='{
-  prefix         = "lab2-onprem-",
-  region         = "europe-west1",
-  subnet_cidr    = "172.16.1.0/24",
+  prefix         = "lab3a-onprem-"
+  region         = "europe-west1"
+  subnet_cidr    = "172.16.1.0/24"
   vm_ip          = "172.16.1.2"
+  dns_proxy_ip   = "172.16.1.100"
+  dns_unbound_ip = "172.16.1.99"
   asn            = "65001"
   router_vti1    = "169.254.100.1"
   router_vti2    = "169.254.100.5"
 }'
 
 export TF_VAR_cloud='{
-  prefix         = "lab2-cloud-",
-  region         = "europe-west1",
-  subnet_cidr    = "10.10.1.0/24",
+  prefix         = "lab3a-cloud-",
+  region         = "europe-west1"
+  subnet_cidr    = "10.10.1.0/24"
   vm_ip          = "10.10.1.2"
+  dns_proxy_ip   = "10.10.1.100"
+  dns_inbound_ip = "10.10.1.3"
   asn            = "65002"
   router_vti1    = "169.254.100.2"
   router_vti2    = "169.254.100.6"
