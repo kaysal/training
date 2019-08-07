@@ -31,7 +31,7 @@ locals {
   }
 
   cloud = {
-    network_self_link     = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
+    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
   }
 }
 

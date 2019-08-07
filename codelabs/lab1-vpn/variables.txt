@@ -7,7 +7,7 @@ export TF_VAR_global='{
 }'
 
 export TF_VAR_onprem='{
-  prefix         = "lab2-onprem-",
+  prefix         = "lab1-onprem-",
   region         = "europe-west1",
   subnet_cidr    = "172.16.1.0/24",
   vm_ip          = "172.16.1.2"
@@ -17,7 +17,7 @@ export TF_VAR_onprem='{
 }'
 
 export TF_VAR_cloud='{
-  prefix         = "lab2-cloud-",
+  prefix         = "lab1-cloud-",
   region         = "europe-west1",
   subnet_cidr    = "10.10.1.0/24",
   vm_ip          = "10.10.1.2"

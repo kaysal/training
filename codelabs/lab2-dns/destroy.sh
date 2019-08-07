@@ -12,14 +12,14 @@ terraform_apply() {
   for i in "${RESOURCES[@]}"
   do
     echo ""
-    echo "${bold}${magenta}$i ~> destroying...${reset}"
+    echo "${bold}${magenta}[$i]: destroying...${reset}"
     pushd $i > /dev/null
     terraform init && terraform destroy -auto-approve
     if [ $? -eq 0 ]; then
-      echo "${bold}${magenta}$i: destroyed!${reset}"
+      echo "${bold}${green}[$i]: destroyed!${reset}"
       popd > /dev/null
     else
-      echo "${bold}${magenta}$i: error!${reset}"
+      echo "${bold}${red}[$i]: error!${reset}"
       popd > /dev/null
     fi
   done
