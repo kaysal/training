@@ -58,6 +58,7 @@ resource "google_compute_ha_vpn_gateway" "onprem_vpn_gw" {
 
 module "vpn_onprem_to_cloud" {
   source           = "../../modules/vpn-ha-gcp"
+  project_id       = var.project_id
   network          = local.onprem.network_self_link
   region           = var.onprem.region
   vpn_gateway      = google_compute_ha_vpn_gateway.onprem_vpn_gw.self_link
