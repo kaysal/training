@@ -18,7 +18,7 @@ variable "project_id" {
 
 variable "network" {
   description = "The name of VPC being created"
-  default = "default"
+  default     = "default"
 }
 
 variable "region" {

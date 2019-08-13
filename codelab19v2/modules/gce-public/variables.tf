@@ -22,7 +22,7 @@ variable "project" {
 
 variable "subnetwork_project" {
   description = "Project where the subnetwork will be created"
-  default = null
+  default     = null
 }
 
 variable "network" {

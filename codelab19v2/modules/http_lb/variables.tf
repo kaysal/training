@@ -28,7 +28,7 @@ variable "subnetwork" {
 
 variable "subnetwork_project" {
   description = "Subnetwork project"
-  default = null
+  default     = null
 }
 
 variable "region" {
