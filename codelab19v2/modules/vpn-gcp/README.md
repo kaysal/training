@@ -1,4 +1,4 @@
-# VPN Tunnel
+# HA VPN Tunnel
 
 This modules creates a HA VPN from GCP to GCP
 
