@@ -210,33 +210,7 @@ resource "google_dns_policy" "cloud1_inbound" {
   }
 }
 
-# private google access: www.googleapis.com
-
-resource "google_dns_managed_zone" "www_googleapis" {
-  provider    = google-beta
-  name        = "${var.cloud1.prefix}www-googleapis"
-  dns_name    = "www.googleapis.com."
-  description = "www.googleapis.com private zone"
-  visibility  = "private"
-
-  private_visibility_config {
-    networks {
-      network_url = local.cloud1.network_self_link
-    }
-  }
-
-  forwarding_config {
-    target_name_servers {
-      ipv4_address = "8.8.8.8"
-    }
-
-    target_name_servers {
-      ipv4_address = "8.8.4.4"
-    }
-  }
-}
-
-# private google access: *.googleapis.com
+# googleapis.com. zone
 
 resource "google_dns_managed_zone" "googleapis" {
   provider    = google-beta
@@ -252,9 +226,27 @@ resource "google_dns_managed_zone" "googleapis" {
   }
 }
 
-resource "google_dns_record_set" "googleapis_cname" {
-  count        = length(var.apis)
-  name         = "${element(var.apis, count.index)}.${google_dns_managed_zone.googleapis.dns_name}"
+# gcr.io zone
+
+resource "google_dns_managed_zone" "private_gcr_io" {
+  provider    = "google-beta"
+  name        = "${var.cloud1.prefix}private-gcr-io"
+  dns_name    = "gcr.io."
+  description = "gcr.io private zone"
+  visibility  = "private"
+
+  private_visibility_config {
+    networks {
+      network_url = local.cloud1.network_self_link
+    }
+  }
+}
+
+# restricted.googleapis.com is used for APIs for VPC SC
+
+resource "google_dns_record_set" "restricted_googleapis_cname" {
+  count        = length(var.restricted_apis)
+  name         = "${element(var.restricted_apis, count.index)}.${google_dns_managed_zone.googleapis.dns_name}"
   type         = "CNAME"
   ttl          = 300
   managed_zone = google_dns_managed_zone.googleapis.name
@@ -276,21 +268,7 @@ resource "google_dns_record_set" "restricted_googleapis" {
   ]
 }
 
-# private google access: gcr.io
-
-resource "google_dns_managed_zone" "private_gcr_io" {
-  provider    = "google-beta"
-  name        = "${var.cloud1.prefix}private-gcr-io"
-  dns_name    = "gcr.io."
-  description = "gcr.io private zone"
-  visibility  = "private"
-
-  private_visibility_config {
-    networks {
-      network_url = local.cloud1.network_self_link
-    }
-  }
-}
+# restricted.googleapis.com is used for gcr.io
 
 resource "google_dns_record_set" "gcr_io_cname" {
   name = "*.gcr.io."
@@ -313,6 +291,31 @@ resource "google_dns_record_set" "restricted_gcr_io" {
     "199.36.153.5",
     "199.36.153.6",
     "199.36.153.7",
+  ]
+}
+
+# private.googleapis.com is used for all other googleapis
+
+resource "google_dns_record_set" "private_googleapis_cname" {
+  name         = "*.${google_dns_managed_zone.googleapis.dns_name}"
+  type         = "CNAME"
+  ttl          = 300
+  managed_zone = google_dns_managed_zone.googleapis.name
+  rrdatas      = ["private.${google_dns_managed_zone.googleapis.dns_name}"]
+}
+
+resource "google_dns_record_set" "private_googleapis" {
+  name = "private.${google_dns_managed_zone.googleapis.dns_name}"
+  type = "A"
+  ttl  = 300
+
+  managed_zone = google_dns_managed_zone.googleapis.name
+
+  rrdatas = [
+    "199.36.153.8",
+    "199.36.153.9",
+    "199.36.153.10",
+    "199.36.153.11",
   ]
 }
 

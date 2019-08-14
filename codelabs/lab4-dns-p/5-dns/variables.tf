@@ -27,7 +27,7 @@ variable "cloud3" {
   type        = map
 }
 
-variable "apis" {
-  description = "list of Google APIs for Private Google Access"
+variable "restricted_apis" {
+  description = "list of Restrcited Google APIs for Private Google Access"
   type        = list
 }

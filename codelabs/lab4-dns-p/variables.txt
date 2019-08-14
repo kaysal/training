@@ -44,7 +44,7 @@ export TF_VAR_cloud3='{
   vm_ip          = "10.10.3.2"
 }'
 
-export TF_VAR_apis='[
+export TF_VAR_restricted_apis='[
   "storage",
   "bigquery",
   "bigtable",

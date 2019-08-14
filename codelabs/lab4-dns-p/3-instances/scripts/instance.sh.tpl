@@ -27,6 +27,9 @@ cat <<EOF > /usr/local/bin/scriptz
   echo -e "\ndig +noall +answer www.googleapis.com"
   dig +noall +answer www.googleapis.com
 
+  echo -e "\ndig +noall +answer compute.googleapis.com"
+  dig +noall +answer compute.googleapis.com
+
   echo -e "\ndig +noall +answer gcr.io"
   dig +noall +answer gcr.io
 EOF
