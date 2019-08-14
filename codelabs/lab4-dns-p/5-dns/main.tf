@@ -26,32 +26,22 @@ data "terraform_remote_state" "ip" {
 }
 
 locals {
-  onprem = {
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
-  }
-  cloud1 = {
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud1.network.self_link
-  }
-  cloud2 = {
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud2.network.self_link
-  }
-  cloud3 = {
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud3.network.self_link
-  }
+  onprem = {network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link}
+  cloud1 = {network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud1.network.self_link}
+  cloud2 = {network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud2.network.self_link}
+  cloud3 = {network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud3.network.self_link}
 }
 
 # onprem
 #---------------------------------------------
 
-# private zone to allow all GCE VM's use the
-# unbound server to query the on-premises zone
-# *.onprem.lab
+# queries for "." forwarded to onprem unbound server
 
-resource "google_dns_managed_zone" "onprem_forward_to_unbound" {
+resource "google_dns_managed_zone" "onprem_to_unbound" {
   provider    = google-beta
-  name        = "${var.onprem.prefix}forward-to-unbound"
+  name        = "${var.onprem.prefix}to-unbound"
   dns_name    = "."
-  description = "default local resolver -> unbound"
+  description = "for all (.), forward to onprem unbound server"
   visibility  = "private"
 
   private_visibility_config {
@@ -67,16 +57,13 @@ resource "google_dns_managed_zone" "onprem_forward_to_unbound" {
   }
 }
 
-# resolving cloud1.lab via unbound gives error
-# due to interaction of unbound with metadat server
-# so cloud1.lab is resolved via the remote cloud1 inbound
-# dns endpoint
+# queries for "lab." forwarded to onprem DNS proxy
 
-resource "google_dns_managed_zone" "onprem_forward_to_cloud" {
+resource "google_dns_managed_zone" "onprem_to_lab" {
   provider    = google-beta
-  name        = "${var.onprem.prefix}forward-to-cloud"
-  dns_name    = "cloud1.lab."
-  description = "resolver for cloud1.lab -> cloud1 dns inbound IP"
+  name        = "${var.onprem.prefix}to-lab"
+  dns_name    = "lab."
+  description = "for *.lab, forward to onprem DNS proxy"
   visibility  = "private"
 
   private_visibility_config {
@@ -95,13 +82,13 @@ resource "google_dns_managed_zone" "onprem_forward_to_cloud" {
 # cloud1
 #---------------------------------------------
 
-# private zone for cloud1 VPC
+# queries for "cloud1.lab" forwarded to metadata server
 
-resource "google_dns_managed_zone" "cloud1_local_zone" {
+resource "google_dns_managed_zone" "cloud1_to_cloud1" {
   provider    = google-beta
-  name        = "${var.cloud1.prefix}local-zone"
+  name        = "${var.cloud1.prefix}to-cloud1"
   dns_name    = "cloud1.lab."
-  description = "default local resolver -> metadata server"
+  description = "cloud1.lab local private zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -118,18 +105,17 @@ resource "google_dns_record_set" "cloud1_vm_record" {
   type = "A"
   ttl  = 300
 
-  managed_zone = google_dns_managed_zone.cloud1_local_zone.name
+  managed_zone = google_dns_managed_zone.cloud1_to_cloud1.name
   rrdatas      = [var.cloud1.vm_ip]
 }
 
-# private on-premises zone on cloud1 VPC
-# forwarded to on-premises name server
+# queries for "onprem.lab" forwarded to cloud1 DNS proxy
 
-resource "google_dns_managed_zone" "cloud1_forward_to_onprem" {
+resource "google_dns_managed_zone" "cloud1_to_onprem" {
   provider    = google-beta
-  name        = "${var.cloud1.prefix}forward-to-onprem"
+  name        = "${var.cloud1.prefix}to-onprem"
   dns_name    = "onprem.lab."
-  description = "resolver for onprem.lab -> onprem NS"
+  description = "for onprem.lab, forward to cloud1 DNS proxy"
   visibility  = "private"
 
   private_visibility_config {
@@ -147,11 +133,11 @@ resource "google_dns_managed_zone" "cloud1_forward_to_onprem" {
 
 # peering zone to cloud2.lab.
 
-resource "google_dns_managed_zone" "cloud1_peering_zone_to_cloud2" {
+resource "google_dns_managed_zone" "cloud1_to_cloud2" {
   provider    = google-beta
-  name        = "${var.cloud2.prefix}peering-to-cloud2"
+  name        = "${var.cloud1.prefix}to-cloud2"
   dns_name    = "cloud2.lab."
-  description = "peering zone to cloud2.lab."
+  description = "cloud2.lab. peering zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -169,11 +155,11 @@ resource "google_dns_managed_zone" "cloud1_peering_zone_to_cloud2" {
 
 # peering zone to cloud3.lab.
 
-resource "google_dns_managed_zone" "cloud1_peering_zone_to_cloud3" {
+resource "google_dns_managed_zone" "cloud1_to_cloud3" {
   provider    = google-beta
-  name        = "${var.cloud2.prefix}peering-to-cloud3"
+  name        = "${var.cloud1.prefix}to-cloud3"
   dns_name    = "cloud3.lab."
-  description = "peering zone to cloud3.lab."
+  description = "cloud3.lab. peering zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -191,9 +177,9 @@ resource "google_dns_managed_zone" "cloud1_peering_zone_to_cloud3" {
 
 # inbound dns policy
 
-resource "google_dns_policy" "cloud1_inbound_policy" {
+resource "google_dns_policy" "cloud1_inbound" {
   provider                  = google-beta
-  name                      = "${var.cloud1.prefix}inbound-policy"
+  name                      = "${var.cloud1.prefix}inbound"
   enable_inbound_forwarding = true
 
   networks {
@@ -201,14 +187,13 @@ resource "google_dns_policy" "cloud1_inbound_policy" {
   }
 }
 
-# private google access
-# www.googleapis.com
+# private google access: www.googleapis.com
 
 resource "google_dns_managed_zone" "www_googleapis" {
   provider    = google-beta
   name        = "${var.cloud1.prefix}www-googleapis"
   dns_name    = "www.googleapis.com."
-  description = "private zone for wwww.googleapis.com"
+  description = "www.googleapis.com private zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -228,14 +213,13 @@ resource "google_dns_managed_zone" "www_googleapis" {
   }
 }
 
-# private google access
-# *.googleapis.com
+# private google access: *.googleapis.com
 
-resource "google_dns_managed_zone" "private_googleapis" {
+resource "google_dns_managed_zone" "googleapis" {
   provider    = google-beta
-  name        = "${var.cloud1.prefix}private-googleapis"
+  name        = "${var.cloud1.prefix}googleapis"
   dns_name    = "googleapis.com."
-  description = "private zone for googleapis"
+  description = "googleapis private zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -247,19 +231,19 @@ resource "google_dns_managed_zone" "private_googleapis" {
 
 resource "google_dns_record_set" "googleapis_cname" {
   count        = length(var.apis)
-  name         = "${element(var.apis, count.index)}.${google_dns_managed_zone.private_googleapis.dns_name}"
+  name         = "${element(var.apis, count.index)}.${google_dns_managed_zone.googleapis.dns_name}"
   type         = "CNAME"
   ttl          = 300
-  managed_zone = google_dns_managed_zone.private_googleapis.name
-  rrdatas      = ["restricted.${google_dns_managed_zone.private_googleapis.dns_name}"]
+  managed_zone = google_dns_managed_zone.googleapis.name
+  rrdatas      = ["restricted.${google_dns_managed_zone.googleapis.dns_name}"]
 }
 
 resource "google_dns_record_set" "restricted_googleapis" {
-  name = "restricted.${google_dns_managed_zone.private_googleapis.dns_name}"
+  name = "restricted.${google_dns_managed_zone.googleapis.dns_name}"
   type = "A"
   ttl  = 300
 
-  managed_zone = google_dns_managed_zone.private_googleapis.name
+  managed_zone = google_dns_managed_zone.googleapis.name
 
   rrdatas = [
     "199.36.153.4",
@@ -269,14 +253,13 @@ resource "google_dns_record_set" "restricted_googleapis" {
   ]
 }
 
-# private google access
-# gcr.io
+# private google access: gcr.io
 
 resource "google_dns_managed_zone" "private_gcr_io" {
   provider    = "google-beta"
   name        = "${var.cloud1.prefix}private-gcr-io"
   dns_name    = "gcr.io."
-  description = "private zone for gcr.io"
+  description = "gcr.io private zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -310,17 +293,16 @@ resource "google_dns_record_set" "restricted_gcr_io" {
   ]
 }
 
-
 # cloud2
 #---------------------------------------------
 
 # private zone for cloud2 VPC
 
-resource "google_dns_managed_zone" "cloud2_local_zone" {
+resource "google_dns_managed_zone" "cloud2_to_cloud2" {
   provider    = google-beta
-  name        = "${var.cloud2.prefix}local-zone"
+  name        = "${var.cloud2.prefix}to-cloud2"
   dns_name    = "cloud2.lab."
-  description = "default local resolver -> metadata server"
+  description = "cloud2.lab local private zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -337,17 +319,17 @@ resource "google_dns_record_set" "cloud2_vm_record" {
   type = "A"
   ttl  = 300
 
-  managed_zone = google_dns_managed_zone.cloud2_local_zone.name
+  managed_zone = google_dns_managed_zone.cloud2_to_cloud2.name
   rrdatas      = [var.cloud2.vm_ip]
 }
 
 # peering zone to lab.
 
-resource "google_dns_managed_zone" "cloud2_peering_zone" {
+resource "google_dns_managed_zone" "cloud2_to_lab" {
   provider    = google-beta
-  name        = "${var.cloud2.prefix}peering-zone"
+  name        = "${var.cloud2.prefix}to-lab"
   dns_name    = "lab."
-  description = "peering zone to lab."
+  description = "for *.lab, use peering zone to cloud1"
   visibility  = "private"
 
   private_visibility_config {
@@ -368,11 +350,11 @@ resource "google_dns_managed_zone" "cloud2_peering_zone" {
 
 # private zone for cloud3 VPC
 
-resource "google_dns_managed_zone" "cloud3_local_zone" {
+resource "google_dns_managed_zone" "cloud3_to_cloud3" {
   provider    = google-beta
-  name        = "${var.cloud3.prefix}local-zone"
+  name        = "${var.cloud3.prefix}to-cloud3"
   dns_name    = "cloud3.lab."
-  description = "default local resolver -> metadata server"
+  description = "cloud3.lab local private zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -389,17 +371,17 @@ resource "google_dns_record_set" "cloud3_vm_record" {
   type = "A"
   ttl  = 300
 
-  managed_zone = google_dns_managed_zone.cloud3_local_zone.name
+  managed_zone = google_dns_managed_zone.cloud3_to_cloud3.name
   rrdatas      = [var.cloud3.vm_ip]
 }
 
 # peering zone to lab.
 
-resource "google_dns_managed_zone" "cloud3_peering_zone" {
+resource "google_dns_managed_zone" "cloud3_to_lab" {
   provider    = google-beta
-  name        = "${var.cloud3.prefix}peering-zone"
+  name        = "${var.cloud3.prefix}to-lab"
   dns_name    = "lab."
-  description = "peering zone to lab."
+  description = "for *.lab, use peering zone to cloud1"
   visibility  = "private"
 
   private_visibility_config {
