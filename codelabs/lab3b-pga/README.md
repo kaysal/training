@@ -1,5 +1,5 @@
 # LAB 3B: Private Google Access: From GCP and On-premises (Option B)
-### Resolving www.googleapis.com via Google Public DNS
+### Resolving `www.googleapis.com` via Google Public DNS
 
 This terraform code deploys a Private Google Access setup between an on-premises environment (simulated on GCP) and a cloud environment.
 
