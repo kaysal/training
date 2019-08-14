@@ -51,10 +51,6 @@ server:
         local-data: "gcr.io CNAME restricted.googleapis.com"
 
 forward-zone:
-        name: "cloud.lab"
-        forward-addr: 172.16.1.99
-
-forward-zone:
         name: "."
         forward-addr: 8.8.8.8
         forward-addr: 8.8.4.4

@@ -2,7 +2,7 @@
 
 This terraform code deploys a Private Google Access setup between an on-premises environment (simulated on GCP) and a cloud environment.
 
-DNS servers are configured to resolve \*.googleapis.com as a CNAME to restricted.googleapis.com; both on-premises and in GCP Cloud.
+DNS servers are configured to resolve `\*.googleapis.com` as a CNAME to `restricted.googleapis.com`; both on-premises and in GCP Cloud.
 
 See `LAB 2: Hybrid Private DNS` which forms the basis of this lab. This lab includes additional Private Google Access in the GCP and On-premises environment.
 
