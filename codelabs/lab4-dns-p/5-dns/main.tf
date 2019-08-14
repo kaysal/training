@@ -35,13 +35,13 @@ locals {
 # onprem
 #---------------------------------------------
 
-# queries for "." forwarded to onprem unbound server
+# queries for "onprem.lab." forwarded to unbound server
 
-resource "google_dns_managed_zone" "onprem_to_unbound" {
+resource "google_dns_managed_zone" "onprem_to_onprem" {
   provider    = google-beta
-  name        = "${var.onprem.prefix}to-unbound"
-  dns_name    = "."
-  description = "for all (.), forward to onprem unbound server"
+  name        = "${var.onprem.prefix}to-onprem"
+  dns_name    = "onprem.lab."
+  description = "for *.lab, forward to onprem unbound server"
   visibility  = "private"
 
   private_visibility_config {
@@ -56,6 +56,7 @@ resource "google_dns_managed_zone" "onprem_to_unbound" {
     }
   }
 }
+
 
 # queries for "lab." forwarded to onprem DNS proxy
 
@@ -75,6 +76,28 @@ resource "google_dns_managed_zone" "onprem_to_lab" {
   forwarding_config {
     target_name_servers {
       ipv4_address = var.onprem.dns_proxy_ip
+    }
+  }
+}
+
+# queries for "." forwarded to onprem unbound server
+
+resource "google_dns_managed_zone" "onprem_to_unbound" {
+  provider    = google-beta
+  name        = "${var.onprem.prefix}to-unbound"
+  dns_name    = "."
+  description = "for all (.), forward to onprem unbound server"
+  visibility  = "private"
+
+  private_visibility_config {
+    networks {
+      network_url = local.onprem.network_self_link
+    }
+  }
+
+  forwarding_config {
+    target_name_servers {
+      ipv4_address = var.onprem.dns_unbound_ip
     }
   }
 }
