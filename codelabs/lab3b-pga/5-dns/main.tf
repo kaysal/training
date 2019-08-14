@@ -26,27 +26,20 @@ data "terraform_remote_state" "ip" {
 }
 
 locals {
-  onprem = {
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
-  }
-
-  cloud = {
-    network_self_link     = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
-  }
+  onprem = { network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link }
+  cloud  = { network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link }
 }
 
 # onprem
 #---------------------------------------------
 
-# private zone to allow all GCE VM's use the
-# unbound server to query the on-premises zone
-# *.onprem.lab
+# queries for "." forwarded to onprem unbound server
 
-resource "google_dns_managed_zone" "onprem_forward_to_unbound" {
+resource "google_dns_managed_zone" "onprem_to_unbound" {
   provider    = google-beta
-  name        = "${var.onprem.prefix}forward-to-unbound"
+  name        = "${var.onprem.prefix}to-unbound"
   dns_name    = "."
-  description = "default local resolver -> unbound"
+  description = "for all (.), forward to onprem unbound server"
   visibility  = "private"
 
   private_visibility_config {
@@ -62,16 +55,13 @@ resource "google_dns_managed_zone" "onprem_forward_to_unbound" {
   }
 }
 
-# resolving cloud.lab via unbound gives error
-# due to interaction of unbound with metadat server
-# so cloud.lab is resolved via remote cloud inbound
-# dns endpoint
+# queries for "lab." forwarded to onprem DNS proxy
 
-resource "google_dns_managed_zone" "onprem_forward_to_cloud" {
+resource "google_dns_managed_zone" "onprem_to_lab" {
   provider    = google-beta
-  name        = "${var.onprem.prefix}forward-to-cloud"
-  dns_name    = "cloud.lab."
-  description = "resolver for cloud.lab -> cloud dns inbound IP"
+  name        = "${var.onprem.prefix}to-lab"
+  dns_name    = "lab."
+  description = "for *.lab, forward to onprem DNS proxy"
   visibility  = "private"
 
   private_visibility_config {
@@ -90,13 +80,13 @@ resource "google_dns_managed_zone" "onprem_forward_to_cloud" {
 # cloud
 #---------------------------------------------
 
-# private zone for cloud VPC
+# queries for "cloud.lab" forwarded to metadata server
 
-resource "google_dns_managed_zone" "cloud_local_zone" {
+resource "google_dns_managed_zone" "cloud_to_cloud" {
   provider    = google-beta
-  name        = "${var.cloud.prefix}local-zone"
+  name        = "${var.cloud.prefix}to-cloud"
   dns_name    = "cloud.lab."
-  description = "default local resolver -> metadata server"
+  description = "cloud.lab local private zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -106,25 +96,24 @@ resource "google_dns_managed_zone" "cloud_local_zone" {
   }
 }
 
-# A Record for Cloud VM
+# A Record for cloud VM
 
 resource "google_dns_record_set" "cloud_vm_record" {
   name = "vm.cloud.lab."
   type = "A"
   ttl  = 300
 
-  managed_zone = google_dns_managed_zone.cloud_local_zone.name
+  managed_zone = google_dns_managed_zone.cloud_to_cloud.name
   rrdatas      = [var.cloud.vm_ip]
 }
 
-# private on-premises zone on cloud VPC
-# forwarded to on-premises name server
+# queries for "onprem.lab" forwarded to cloud DNS proxy
 
-resource "google_dns_managed_zone" "cloud_forward_to_onprem" {
+resource "google_dns_managed_zone" "cloud_to_onprem" {
   provider    = google-beta
-  name        = "${var.cloud.prefix}forward-to-onprem"
+  name        = "${var.cloud.prefix}to-onprem"
   dns_name    = "onprem.lab."
-  description = "resolver for onprem.lab -> onprem NS"
+  description = "for onprem.lab, forward to cloud DNS proxy"
   visibility  = "private"
 
   private_visibility_config {
@@ -142,9 +131,9 @@ resource "google_dns_managed_zone" "cloud_forward_to_onprem" {
 
 # inbound dns policy
 
-resource "google_dns_policy" "cloud_inbound_policy" {
+resource "google_dns_policy" "cloud_inbound" {
   provider                  = google-beta
-  name                      = "${var.cloud.prefix}inbound-policy"
+  name                      = "${var.cloud.prefix}inbound"
   enable_inbound_forwarding = true
 
   networks {
@@ -152,14 +141,13 @@ resource "google_dns_policy" "cloud_inbound_policy" {
   }
 }
 
-# private google access
-# www.googleapis.com
+# private google access: www.googleapis.com
 
 resource "google_dns_managed_zone" "www_googleapis" {
   provider    = google-beta
   name        = "${var.cloud.prefix}www-googleapis"
   dns_name    = "www.googleapis.com."
-  description = "private zone for wwww.googleapis.com"
+  description = "www.googleapis.com private zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -179,14 +167,13 @@ resource "google_dns_managed_zone" "www_googleapis" {
   }
 }
 
-# private google access
-# *.googleapis.com
+# private google access: *.googleapis.com
 
-resource "google_dns_managed_zone" "private_googleapis" {
+resource "google_dns_managed_zone" "googleapis" {
   provider    = google-beta
-  name        = "${var.cloud.prefix}private-googleapis"
+  name        = "${var.cloud.prefix}googleapis"
   dns_name    = "googleapis.com."
-  description = "private zone for googleapis"
+  description = "googleapis private zone"
   visibility  = "private"
 
   private_visibility_config {
@@ -198,19 +185,19 @@ resource "google_dns_managed_zone" "private_googleapis" {
 
 resource "google_dns_record_set" "googleapis_cname" {
   count        = length(var.apis)
-  name         = "${element(var.apis, count.index)}.${google_dns_managed_zone.private_googleapis.dns_name}"
+  name         = "${element(var.apis, count.index)}.${google_dns_managed_zone.googleapis.dns_name}"
   type         = "CNAME"
   ttl          = 300
-  managed_zone = google_dns_managed_zone.private_googleapis.name
-  rrdatas      = ["restricted.${google_dns_managed_zone.private_googleapis.dns_name}"]
+  managed_zone = google_dns_managed_zone.googleapis.name
+  rrdatas      = ["restricted.${google_dns_managed_zone.googleapis.dns_name}"]
 }
 
 resource "google_dns_record_set" "restricted_googleapis" {
-  name = "restricted.${google_dns_managed_zone.private_googleapis.dns_name}"
+  name = "restricted.${google_dns_managed_zone.googleapis.dns_name}"
   type = "A"
   ttl  = 300
 
-  managed_zone = google_dns_managed_zone.private_googleapis.name
+  managed_zone = google_dns_managed_zone.googleapis.name
 
   rrdatas = [
     "199.36.153.4",
@@ -220,14 +207,13 @@ resource "google_dns_record_set" "restricted_googleapis" {
   ]
 }
 
-# private google access
-# gcr.io
+# private google access: gcr.io
 
 resource "google_dns_managed_zone" "private_gcr_io" {
   provider    = "google-beta"
   name        = "${var.cloud.prefix}private-gcr-io"
   dns_name    = "gcr.io."
-  description = "private zone for gcr.io"
+  description = "gcr.io private zone"
   visibility  = "private"
 
   private_visibility_config {

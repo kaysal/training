@@ -2,7 +2,7 @@
 
 This terraform code deploys a Private Google Access setup between an on-premises environment (simulated on GCP) and a cloud environment.
 
-Some APIs (e.g. storage.googleapis.com) are routed over VPN to the restricted.googleapis.com; while other APIs (e.g. compute.googleapis.com") are routed over the Internet.
+Some APIs (e.g. `storage.googleapis.com`) are routed over VPN to the `restricted.googleapis.com`; while other APIs (e.g. `compute.googleapis.com`") are routed over the Internet.
 
 See `LAB 2: Hybrid Private DNS` which forms the basis of this lab. This lab includes additional Private Google Access in the GCP and On-premises environment.
 

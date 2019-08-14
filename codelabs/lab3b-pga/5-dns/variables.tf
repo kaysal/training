@@ -4,17 +4,17 @@ variable "project_id" {
 
 variable "global" {
   description = "variable map to hold all global config values"
-  type = any
+  type        = any
 }
 
 variable "onprem" {
   description = "variable map to hold all on-premises VPC config values"
-  type = map
+  type        = map
 }
 
 variable "cloud" {
   description = "variable map to hold all cloud VPC config values"
-  type = map
+  type        = map
 }
 
 variable "apis" {
