@@ -67,8 +67,6 @@ locals {
     DNS_NAME1            = "vm.onprem.lab"
     DNS_RECORD1          = var.onprem.vm_ip
     DNS_EGRESS_PROXY     = "35.199.192.0/19"
-    FORWARD_ZONE1        = "cloud.lab"
-    FORWARD_ZONE1_TARGET = var.cloud.dns_inbound_ip
   })
 }
 

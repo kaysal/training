@@ -26,27 +26,20 @@ data "terraform_remote_state" "ip" {
 }
 
 locals {
-  onprem = {
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
-  }
-
-  cloud = {
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
-  }
+  onprem = { network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link }
+  cloud  = { network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link }
 }
 
 # onprem
 #---------------------------------------------
 
-# private zone to allow all GCE VM's use the
-# unbound server to query the on-premises zone
-# *.onprem.lab
+# queries for "onprem.lab." forwarded to unbound server
 
-resource "google_dns_managed_zone" "onprem_forward_to_unbound" {
+resource "google_dns_managed_zone" "onprem_to_onprem" {
   provider    = google-beta
-  name        = "${var.onprem.prefix}forward-to-unbound"
-  dns_name    = "."
-  description = "default local resolver -> unbound"
+  name        = "${var.onprem.prefix}to-onprem"
+  dns_name    = "onprem.lab."
+  description = "for *.lab, forward to onprem unbound server"
   visibility  = "private"
 
   private_visibility_config {
@@ -62,16 +55,13 @@ resource "google_dns_managed_zone" "onprem_forward_to_unbound" {
   }
 }
 
-# resolving cloud.lab via unbound gives error
-# due to interaction of unbound with metadat server
-# so cloud.lab is resolved via remote cloud inbound
-# dns endpoint
+# queries for "lab." forwarded to onprem DNS proxy
 
-resource "google_dns_managed_zone" "onprem_forward_to_cloud" {
+resource "google_dns_managed_zone" "onprem_to_lab" {
   provider    = google-beta
-  name        = "${var.onprem.prefix}forward-to-cloud"
-  dns_name    = "cloud.lab."
-  description = "resolver for cloud.lab -> cloud dns inbound IP"
+  name        = "${var.onprem.prefix}to-lab"
+  dns_name    = "lab."
+  description = "for *.lab, forward to onprem DNS proxy"
   visibility  = "private"
 
   private_visibility_config {
@@ -83,6 +73,28 @@ resource "google_dns_managed_zone" "onprem_forward_to_cloud" {
   forwarding_config {
     target_name_servers {
       ipv4_address = var.onprem.dns_proxy_ip
+    }
+  }
+}
+
+# queries for "." forwarded to onprem unbound server
+
+resource "google_dns_managed_zone" "onprem_to_unbound" {
+  provider    = google-beta
+  name        = "${var.onprem.prefix}to-unbound"
+  dns_name    = "."
+  description = "for all (.), forward to onprem unbound server"
+  visibility  = "private"
+
+  private_visibility_config {
+    networks {
+      network_url = local.onprem.network_self_link
+    }
+  }
+
+  forwarding_config {
+    target_name_servers {
+      ipv4_address = var.onprem.dns_unbound_ip
     }
   }
 }

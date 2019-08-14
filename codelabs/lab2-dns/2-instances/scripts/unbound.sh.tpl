@@ -43,10 +43,6 @@ server:
         local-data: "${DNS_NAME1} A ${DNS_RECORD1}"
 
 forward-zone:
-        name: "${FORWARD_ZONE1}"
-        forward-addr: ${FORWARD_ZONE1_TARGET}
-
-forward-zone:
         name: "."
         forward-addr: 8.8.8.8
         forward-addr: 8.8.4.4
