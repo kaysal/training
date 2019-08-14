@@ -58,9 +58,14 @@ resource "google_compute_router" "cloud_router" {
     advertise_mode    = "CUSTOM"
     advertised_groups = ["ALL_SUBNETS"]
 
-    # restricted google api range
+    # restricted.googleapis.com
     advertised_ip_ranges {
       range = "199.36.153.4/30"
+    }
+
+    # private.googleapis.com
+    advertised_ip_ranges {
+      range = "199.36.153.8/30"
     }
   }
 }

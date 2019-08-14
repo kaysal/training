@@ -7,7 +7,7 @@ export TF_VAR_global='{
 }'
 
 export TF_VAR_onprem='{
-  prefix         = "lab3b-onprem-"
+  prefix         = "lab3-onprem-"
   region         = "europe-west1"
   subnet_cidr    = "172.16.1.0/24"
   vm_ip          = "172.16.1.2"
@@ -19,7 +19,7 @@ export TF_VAR_onprem='{
 }'
 
 export TF_VAR_cloud='{
-  prefix         = "lab3b-cloud-",
+  prefix         = "lab3-cloud-",
   region         = "europe-west1"
   subnet_cidr    = "10.10.1.0/24"
   vm_ip          = "10.10.1.2"
@@ -30,7 +30,7 @@ export TF_VAR_cloud='{
   router_vti2    = "169.254.100.6"
 }'
 
-export TF_VAR_apis='[
+export TF_VAR_restricted_apis='[
   "storage",
   "bigquery",
   "bigtable",

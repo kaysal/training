@@ -74,6 +74,10 @@ server:
         local-data: "logging.googleapis.com CNAME restricted.googleapis.com"
         local-data: "gcr.io CNAME restricted.googleapis.com"
 
+        # redirect all other google apis to private.googleapis.com
+        local-zone: "googleapis.com" redirect
+        local-data: "googleapis.com CNAME private.googleapis.com"
+
 forward-zone:
         name: "."
         forward-addr: 8.8.8.8
