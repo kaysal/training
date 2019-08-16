@@ -31,7 +31,6 @@ locals {
     router  = data.terraform_remote_state.router.outputs.router.onprem.name
     network = data.terraform_remote_state.vpc.outputs.networks.onprem.self_link
   }
-
   cloud = {
     router  = data.terraform_remote_state.router.outputs.router.cloud.name
     network = data.terraform_remote_state.vpc.outputs.networks.cloud.self_link
@@ -85,7 +84,7 @@ module "vpn_onprem_to_cloud" {
   ]
 }
 
-# cloud configuration
+# cloud
 #---------------------------------------------
 
 # vpn gateway

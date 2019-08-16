@@ -17,14 +17,11 @@ data "terraform_remote_state" "vpc" {
 }
 
 locals {
-
   instance_init = templatefile("scripts/instance.sh.tpl", {})
-
   onprem = {
     subnet  = data.terraform_remote_state.vpc.outputs.subnets.onprem.self_link
     network = data.terraform_remote_state.vpc.outputs.networks.onprem.self_link
   }
-
   cloud = {
     subnet  = data.terraform_remote_state.vpc.outputs.subnets.cloud.self_link
     network = data.terraform_remote_state.vpc.outputs.networks.cloud.self_link
@@ -81,7 +78,6 @@ resource "google_compute_instance" "cloud_vm" {
   network_interface {
     subnetwork = local.cloud.subnet
     network_ip = var.cloud.vm_ip
-    access_config {}
   }
 
   service_account {

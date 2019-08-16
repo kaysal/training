@@ -89,10 +89,22 @@ resource "google_compute_network" "cloud_vpc" {
 # subnets
 
 resource "google_compute_subnetwork" "cloud_subnet" {
-  name          = "${var.cloud.prefix}subnet"
-  ip_cidr_range = var.cloud.subnet_cidr
-  region        = var.cloud.region
-  network       = google_compute_network.cloud_vpc.self_link
+  name                     = "${var.cloud.prefix}subnet"
+  ip_cidr_range            = var.cloud.subnet_cidr
+  region                   = var.cloud.region
+  network                  = google_compute_network.cloud_vpc.self_link
+  private_ip_google_access = true
+}
+
+# routes for restricted API IP range
+
+resource "google_compute_route" "cloud_private_googleapis" {
+  name             = "${var.cloud.prefix}private-googleapis"
+  description      = "Route to default gateway for PGA"
+  dest_range       = "199.36.153.4/30"
+  network          = google_compute_network.cloud_vpc.self_link
+  next_hop_gateway = "default-internet-gateway"
+  priority         = 1000
 }
 
 # firewall rules
