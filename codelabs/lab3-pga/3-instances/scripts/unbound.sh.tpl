@@ -4,35 +4,29 @@ apt update
 apt install -y tcpdump unbound dnsutils
 
 rm /etc/unbound/unbound.conf
-touch /var/log/unbound.log
-chmod a+x /var/log/unbound.log
+touch /etc/unbound/unbound.log
+chmod a+x /etc/unbound/unbound.log
 
 cat <<EOF > /etc/unbound/unbound.conf
 
 server:
         log-queries: yes
-        logfile: /var/log/unbound.log
-
+        chroot: "/etc/unbound"
+        logfile: "/etc/unbound/unbound.log"
         verbosity: 3
-        num-threads: 2
 
         port: 53
         do-ip4: yes
         do-udp: yes
         do-tcp: yes
 
-        # Use this only when you downloaded the list of primary root servers!
-        #root-hints: "/var/lib/unbound/root.hints"
-
-        # Ensure kernel buffer is large enough to not lose messages in traffic spikes
-        so-rcvbuf: 1m
-
         interface: 0.0.0.0
 
         access-control: 0.0.0.0 deny
         access-control: 127.0.0.0/8 allow
-        access-control: 172.16.0.0/16 allow
-        access-control: 10.10.1.0/24 allow
+        access-control: 10.0.0.0/8 allow
+        access-control: 192.168.0.0/16 allow
+        access-control: 172.16.0.0/12 allow
         access-control: 35.199.192.0/19 allow
 
         private-address: 10.0.0.0/8
@@ -77,6 +71,10 @@ server:
         # redirect all other google apis to private.googleapis.com
         local-zone: "googleapis.com" redirect
         local-data: "googleapis.com CNAME private.googleapis.com"
+
+forward-zone:
+        name: "lab."
+        forward-addr: 10.10.1.3
 
 forward-zone:
         name: "."
