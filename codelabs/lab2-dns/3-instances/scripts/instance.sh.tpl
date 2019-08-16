@@ -12,8 +12,14 @@ cat <<EOF > /usr/local/bin/scriptz
   echo -e "\ndig +noall +answer vm.onprem.lab"
   dig +noall +answer vm.onprem.lab
 
-  echo -e "\ndig +noall +answer vm.cloud.lab"
-  dig +noall +answer vm.cloud.lab
+  echo -e "\ndig +noall +answer vm.cloud1.lab"
+  dig +noall +answer vm.cloud1.lab
+
+  echo -e "\ndig +noall +answer vm.cloud2.lab"
+  dig +noall +answer vm.cloud2.lab
+
+  echo -e "\ndig +noall +answer vm.cloud3.lab"
+  dig +noall +answer vm.cloud3.lab
 
   echo -e "\ndig +noall +answer storage.googleapis.com"
   dig +noall +answer storage.googleapis.com

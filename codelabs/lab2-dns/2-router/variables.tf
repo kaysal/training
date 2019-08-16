@@ -12,7 +12,7 @@ variable "onprem" {
   type        = map
 }
 
-variable "cloud" {
+variable "cloud1" {
   description = "variable map to hold all cloud VPC config values"
   type        = map
 }

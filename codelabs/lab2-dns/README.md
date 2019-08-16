@@ -1,16 +1,20 @@
-# LAB 2: Hybrid Private DNS
+# LAB 4: Private DNS and DNS Peering
 
-This terraform code deploys a bidirectional DNS setup between an on-premises environment (simulated on GCP) and a cloud environment. The on-premises environment uses unbound DNS. The lab consists of the following:
+This terraform code deploys a Private DNS and DNS Peering demo lab.
+
+Some APIs (e.g. storage.googleapis.com) are routed over VPN to the restricted.googleapis.com; while other APIs (e.g. compute.googleapis.com") are routed over the Internet.
+
+See `LAB 3B` which forms the basis of this lab.
+
+The on-premises environment uses unbound DNS for both private DNS resolution and restricted.googleapis.com IP address range resolution for Private Google Access over the VPN. The lab consists of the following:
 1. On-premises environment simulated in GCP
 2. A GCP Cloud environment
 3. HA VPN between on-premises and GCP
-4. Private DNS on-premises using unbound
-5. Private Cloud DNS in GCP
-6. Resolving on-premises and GCP DNS queries bi-directionally
+4. Private DNS and Private Google Access on-premises using unbound
+5. Private Cloud DNS and Private Google Access in GCP
+6. DNS Peering
 
-![Alt Text](image1.png)
----
-![Alt Text](image2.png)
+![Alt Text](image.png)
 ---
 
 ## Prerequisite
@@ -26,7 +30,7 @@ git clone https://github.com/kaysal/training.git
 
 2. Change to the directory of the cloned repository
 ```sh
-cd ~/training/codelabs/lab2-dns
+cd ~/training/codelabs/lab4-dns-p
 ```
 
 ## Deploy Lab

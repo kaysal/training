@@ -7,7 +7,7 @@ export TF_VAR_global='{
 }'
 
 export TF_VAR_onprem='{
-  prefix         = "lab2-onprem-"
+  prefix         = "lab4-onprem-"
   region         = "europe-west1"
   subnet_cidr    = "172.16.1.0/24"
   vm_ip          = "172.16.1.2"
@@ -18,8 +18,8 @@ export TF_VAR_onprem='{
   router_vti2    = "169.254.100.5"
 }'
 
-export TF_VAR_cloud='{
-  prefix         = "lab2-cloud-"
+export TF_VAR_cloud1='{
+  prefix         = "lab4-cloud1-",
   region         = "europe-west1"
   subnet_cidr    = "10.10.1.0/24"
   vm_ip          = "10.10.1.2"
@@ -29,3 +29,33 @@ export TF_VAR_cloud='{
   router_vti1    = "169.254.100.2"
   router_vti2    = "169.254.100.6"
 }'
+
+export TF_VAR_cloud2='{
+  prefix         = "lab4-cloud2-",
+  region         = "europe-west2"
+  subnet_cidr    = "10.10.2.0/24"
+  vm_ip          = "10.10.2.2"
+}'
+
+export TF_VAR_cloud3='{
+  prefix         = "lab4-cloud3-",
+  region         = "europe-west3"
+  subnet_cidr    = "10.10.3.0/24"
+  vm_ip          = "10.10.3.2"
+}'
+
+export TF_VAR_restricted_apis='[
+  "storage",
+  "bigquery",
+  "bigtable",
+  "dataflow",
+  "dataproc",
+  "cloudkms",
+  "pubsub",
+  "spanner",
+  "containerregistry",
+  "container",
+  "gkeconnect",
+  "gkehub",
+  "logging",
+]'

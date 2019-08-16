@@ -17,17 +17,22 @@ data "terraform_remote_state" "vpc" {
 }
 
 locals {
-
   instance_init = templatefile("scripts/instance.sh.tpl", {})
-
   onprem = {
-    subnet_self_link  = data.terraform_remote_state.vpc.outputs.vpc.onprem.subnets.0.self_link
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
+    subnet  = data.terraform_remote_state.vpc.outputs.subnets.onprem.self_link
+    network = data.terraform_remote_state.vpc.outputs.networks.onprem.self_link
   }
-
-  cloud = {
-    subnet_self_link  = data.terraform_remote_state.vpc.outputs.vpc.cloud.subnets.0.self_link
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
+  cloud1 = {
+    subnet  = data.terraform_remote_state.vpc.outputs.subnets.cloud1.self_link
+    network = data.terraform_remote_state.vpc.outputs.networks.cloud1.self_link
+  }
+  cloud2 = {
+    subnet  = data.terraform_remote_state.vpc.outputs.subnets.cloud2.self_link
+    network = data.terraform_remote_state.vpc.outputs.networks.cloud2.self_link
+  }
+  cloud3 = {
+    subnet  = data.terraform_remote_state.vpc.outputs.subnets.cloud3.self_link
+    network = data.terraform_remote_state.vpc.outputs.networks.cloud3.self_link
   }
 }
 
@@ -50,7 +55,7 @@ resource "google_compute_instance" "onprem_vm" {
   }
 
   network_interface {
-    subnetwork = local.onprem.subnet_self_link
+    subnetwork = local.onprem.subnet
     network_ip = var.onprem.vm_ip
     access_config {}
   }
@@ -67,6 +72,8 @@ locals {
     DNS_NAME1            = "vm.onprem.lab"
     DNS_RECORD1          = var.onprem.vm_ip
     DNS_EGRESS_PROXY     = "35.199.192.0/19"
+    FORWARD_ZONE1        = "cloud1.lab"
+    FORWARD_ZONE1_TARGET = var.cloud1.dns_inbound_ip
   })
 }
 
@@ -84,7 +91,7 @@ resource "google_compute_instance" "onprem_ns" {
   }
 
   network_interface {
-    subnetwork = local.onprem.subnet_self_link
+    subnetwork = local.onprem.subnet
     network_ip = var.onprem.dns_unbound_ip
     access_config {}
   }
@@ -99,7 +106,7 @@ resource "google_compute_instance" "onprem_ns" {
 locals {
   onprem_proxy_init = templatefile("scripts/proxy.sh.tpl", {
     DNS_PROXY_IP  = "${var.onprem.dns_proxy_ip}"
-    REMOTE_DNS_IP = "${var.cloud.dns_inbound_ip}"
+    REMOTE_DNS_IP = "${var.cloud1.dns_inbound_ip}"
   })
 }
 
@@ -118,7 +125,7 @@ resource "google_compute_instance" "onprem_dns_proxy" {
   }
 
   network_interface {
-    subnetwork = local.onprem.subnet_self_link
+    subnetwork = local.onprem.subnet
     network_ip = var.onprem.dns_proxy_ip
     access_config {}
   }
@@ -128,15 +135,15 @@ resource "google_compute_instance" "onprem_dns_proxy" {
   }
 }
 
-# cloud
+# cloud1
 #---------------------------------------------
 
 # vm instance
 
-resource "google_compute_instance" "cloud_vm" {
-  name                      = "${var.cloud.prefix}vm"
+resource "google_compute_instance" "cloud1_vm" {
+  name                      = "${var.cloud1.prefix}vm"
   machine_type              = var.global.machine_type
-  zone                      = "${var.cloud.region}-d"
+  zone                      = "${var.cloud1.region}-d"
   metadata_startup_script   = local.instance_init
   allow_stopping_for_update = true
 
@@ -147,9 +154,8 @@ resource "google_compute_instance" "cloud_vm" {
   }
 
   network_interface {
-    subnetwork = local.cloud.subnet_self_link
-    network_ip = var.cloud.vm_ip
-    access_config {}
+    subnetwork = local.cloud1.subnet
+    network_ip = var.cloud1.vm_ip
   }
 
   service_account {
@@ -160,19 +166,19 @@ resource "google_compute_instance" "cloud_vm" {
 # proxy for forwarding dns queries to on-premises
 
 locals {
-  cloud_proxy_init = templatefile("scripts/proxy.sh.tpl", {
-    DNS_PROXY_IP  = "${var.cloud.dns_proxy_ip}"
+  cloud1_proxy_init = templatefile("scripts/proxy.sh.tpl", {
+    DNS_PROXY_IP  = "${var.cloud1.dns_proxy_ip}"
     REMOTE_DNS_IP = "${var.onprem.dns_unbound_ip}"
   })
 }
 
-resource "google_compute_instance" "cloud_dns_proxy" {
-  name                      = "${var.cloud.prefix}proxy"
+resource "google_compute_instance" "cloud1_dns_proxy" {
+  name                      = "${var.cloud1.prefix}proxy"
   machine_type              = var.global.machine_type
-  zone                      = "${var.cloud.region}-d"
+  zone                      = "${var.cloud1.region}-d"
   can_ip_forward            = true
   allow_stopping_for_update = true
-  metadata_startup_script   = local.cloud_proxy_init
+  metadata_startup_script   = local.cloud1_proxy_init
 
   boot_disk {
     initialize_params {
@@ -181,8 +187,65 @@ resource "google_compute_instance" "cloud_dns_proxy" {
   }
 
   network_interface {
-    subnetwork = local.cloud.subnet_self_link
-    network_ip = var.cloud.dns_proxy_ip
+    subnetwork = local.cloud1.subnet
+    network_ip = var.cloud1.dns_proxy_ip
+  }
+
+  service_account {
+    scopes = ["cloud-platform"]
+  }
+}
+
+# cloud2
+#---------------------------------------------
+
+# vm instance
+
+resource "google_compute_instance" "cloud2_vm" {
+  name                      = "${var.cloud2.prefix}vm"
+  machine_type              = var.global.machine_type
+  zone                      = "${var.cloud2.region}-b"
+  metadata_startup_script   = local.instance_init
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = var.global.image.debian
+    }
+  }
+
+  network_interface {
+    subnetwork = local.cloud2.subnet
+    network_ip = var.cloud2.vm_ip
+    access_config {}
+  }
+
+  service_account {
+    scopes = ["cloud-platform"]
+  }
+}
+
+# cloud3
+#---------------------------------------------
+
+# vm instance
+
+resource "google_compute_instance" "cloud3_vm" {
+  name                      = "${var.cloud3.prefix}vm"
+  machine_type              = var.global.machine_type
+  zone                      = "${var.cloud3.region}-b"
+  metadata_startup_script   = local.instance_init
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = var.global.image.debian
+    }
+  }
+
+  network_interface {
+    subnetwork = local.cloud3.subnet
+    network_ip = var.cloud3.vm_ip
     access_config {}
   }
 
