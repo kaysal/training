@@ -9,7 +9,7 @@ reset=`tput sgr0`
 source variables.txt
 
 terraform_apply() {
-  RESOURCES=(1-vpc 2-router 3-instances 4-vpn 5-dns)
+  RESOURCES=(1-vpc 2-instances 3-router 4-vpn 5-dns)
 
   for i in "${RESOURCES[@]}"
   do

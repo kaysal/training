@@ -22,7 +22,7 @@ data "terraform_remote_state" "router" {
   backend = "local"
 
   config = {
-    path = "../2-router/terraform.tfstate"
+    path = "../3-router/terraform.tfstate"
   }
 }
 

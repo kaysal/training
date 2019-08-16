@@ -21,7 +21,7 @@ data "terraform_remote_state" "ip" {
   backend = "local"
 
   config = {
-    path = "../3-instances/terraform.tfstate"
+    path = "../2-instances/terraform.tfstate"
   }
 }
 
