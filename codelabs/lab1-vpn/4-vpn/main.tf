@@ -28,13 +28,13 @@ data "terraform_remote_state" "router" {
 
 locals {
   onprem = {
-    router            = data.terraform_remote_state.router.outputs.router.onprem.name
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
+    router  = data.terraform_remote_state.router.outputs.router.onprem.name
+    network = data.terraform_remote_state.vpc.outputs.networks.onprem.self_link
   }
 
   cloud = {
-    router            = data.terraform_remote_state.router.outputs.router.cloud.name
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
+    router  = data.terraform_remote_state.router.outputs.router.cloud.name
+    network = data.terraform_remote_state.vpc.outputs.networks.cloud.self_link
   }
 }
 
@@ -51,7 +51,7 @@ resource "google_compute_ha_vpn_gateway" "onprem_vpn_gw" {
   provider = "google-beta"
   region   = var.onprem.region
   name     = "${var.onprem.prefix}vpn-gw"
-  network  = local.onprem.network_self_link
+  network  = local.onprem.network
 }
 
 # vpn tunnel
@@ -59,7 +59,7 @@ resource "google_compute_ha_vpn_gateway" "onprem_vpn_gw" {
 module "vpn_onprem_to_cloud" {
   source           = "../../modules/vpn-ha-gcp"
   project_id       = var.project_id
-  network          = local.onprem.network_self_link
+  network          = local.onprem.network
   region           = var.onprem.region
   vpn_gateway      = google_compute_ha_vpn_gateway.onprem_vpn_gw.self_link
   peer_gcp_gateway = google_compute_ha_vpn_gateway.cloud_vpn_gw.self_link
@@ -94,7 +94,7 @@ resource "google_compute_ha_vpn_gateway" "cloud_vpn_gw" {
   provider = "google-beta"
   region   = var.cloud.region
   name     = "${var.cloud.prefix}vpn-gw"
-  network  = local.cloud.network_self_link
+  network  = local.cloud.network
 }
 
 # vpn tunnel
@@ -102,7 +102,7 @@ resource "google_compute_ha_vpn_gateway" "cloud_vpn_gw" {
 module "vpn_cloud_to_onprem" {
   source           = "../../modules/vpn-ha-gcp"
   project_id       = var.project_id
-  network          = local.cloud.network_self_link
+  network          = local.cloud.network
   region           = var.cloud.region
   vpn_gateway      = google_compute_ha_vpn_gateway.cloud_vpn_gw.self_link
   peer_gcp_gateway = google_compute_ha_vpn_gateway.onprem_vpn_gw.self_link

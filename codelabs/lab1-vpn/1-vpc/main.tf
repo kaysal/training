@@ -12,30 +12,27 @@ provider "google-beta" {
 
 # vpc
 
-module "onprem_vpc" {
-  source       = "../../modules/vpc"
-  network_name = "${var.onprem.prefix}vpc"
-  routing_mode = "REGIONAL"
+resource "google_compute_network" "onprem_vpc" {
+  provider                = google-beta
+  name                    = "${var.onprem.prefix}vpc"
+  routing_mode            = "REGIONAL"
+  auto_create_subnetworks = false
+}
 
-  subnets = [
-    {
-      subnet_name              = "${var.onprem.prefix}subnet"
-      subnet_ip                = var.onprem.subnet_cidr
-      subnet_region            = var.onprem.region
-      private_ip_google_access = false
-    },
-  ]
+# subnets
 
-  secondary_ranges = {
-    "${var.onprem.prefix}subnet" = []
-  }
+resource "google_compute_subnetwork" "onprem_subnet" {
+  name          = "${var.onprem.prefix}subnet"
+  ip_cidr_range = var.onprem.subnet_cidr
+  region        = var.onprem.region
+  network       = google_compute_network.onprem_vpc.self_link
 }
 
 # firewall rules
 
 resource "google_compute_firewall" "onprem_allow_ssh" {
   name    = "${var.onprem.prefix}allow-ssh"
-  network = module.onprem_vpc.network.self_link
+  network = google_compute_network.onprem_vpc.self_link
 
   allow {
     protocol = "tcp"
@@ -47,7 +44,7 @@ resource "google_compute_firewall" "onprem_allow_ssh" {
 
 resource "google_compute_firewall" "onprem_allow_rfc1918" {
   name    = "${var.onprem.prefix}allow-rfc1918"
-  network = module.onprem_vpc.network.self_link
+  network = google_compute_network.onprem_vpc.self_link
 
   allow {
     protocol = "all"
@@ -62,7 +59,7 @@ resource "google_compute_firewall" "onprem_allow_rfc1918" {
 
 resource "google_compute_firewall" "onprem_dns_egress_proxy" {
   name    = "${var.onprem.prefix}dns-egress-proxy"
-  network = module.onprem_vpc.network.self_link
+  network = google_compute_network.onprem_vpc.self_link
 
   allow {
     protocol = "tcp"
@@ -82,30 +79,27 @@ resource "google_compute_firewall" "onprem_dns_egress_proxy" {
 
 # vpc
 
-module "cloud_vpc" {
-  source       = "../../modules/vpc"
-  network_name = "${var.cloud.prefix}vpc"
-  routing_mode = "REGIONAL"
+resource "google_compute_network" "cloud_vpc" {
+  provider                = google-beta
+  name                    = "${var.cloud.prefix}vpc"
+  routing_mode            = "REGIONAL"
+  auto_create_subnetworks = false
+}
 
-  subnets = [
-    {
-      subnet_name              = "${var.cloud.prefix}subnet"
-      subnet_ip                = var.cloud.subnet_cidr
-      subnet_region            = var.cloud.region
-      private_ip_google_access = false
-    },
-  ]
+# subnets
 
-  secondary_ranges = {
-    "${var.cloud.prefix}subnet" = []
-  }
+resource "google_compute_subnetwork" "cloud_subnet" {
+  name          = "${var.cloud.prefix}subnet"
+  ip_cidr_range = var.cloud.subnet_cidr
+  region        = var.cloud.region
+  network       = google_compute_network.cloud_vpc.self_link
 }
 
 # firewall rules
 
 resource "google_compute_firewall" "cloud_allow_ssh" {
   name    = "${var.cloud.prefix}allow-ssh"
-  network = module.cloud_vpc.network.self_link
+  network = google_compute_network.cloud_vpc.self_link
 
   allow {
     protocol = "tcp"
@@ -117,7 +111,7 @@ resource "google_compute_firewall" "cloud_allow_ssh" {
 
 resource "google_compute_firewall" "cloud_allow_rfc1918" {
   name    = "${var.cloud.prefix}allow-rfc1918"
-  network = module.cloud_vpc.network.self_link
+  network = google_compute_network.cloud_vpc.self_link
 
   allow {
     protocol = "all"
@@ -132,7 +126,7 @@ resource "google_compute_firewall" "cloud_allow_rfc1918" {
 
 resource "google_compute_firewall" "cloud_dns_egress_proxy" {
   name    = "${var.cloud.prefix}dns-egress-proxy"
-  network = module.cloud_vpc.network.self_link
+  network = google_compute_network.cloud_vpc.self_link
 
   allow {
     protocol = "tcp"

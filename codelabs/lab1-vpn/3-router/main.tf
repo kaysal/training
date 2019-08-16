@@ -18,11 +18,11 @@ data "terraform_remote_state" "vpc" {
 
 locals {
   onprem = {
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
+    network = data.terraform_remote_state.vpc.outputs.networks.onprem.self_link
   }
 
   cloud = {
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
+    network = data.terraform_remote_state.vpc.outputs.networks.cloud.self_link
   }
 }
 
@@ -33,7 +33,7 @@ locals {
 
 resource "google_compute_router" "onprem_router" {
   name    = "${var.onprem.prefix}router"
-  network = local.onprem.network_self_link
+  network = local.onprem.network
   region  = var.onprem.region
 
   bgp {
@@ -50,7 +50,7 @@ resource "google_compute_router" "onprem_router" {
 
 resource "google_compute_router" "cloud_router" {
   name    = "${var.cloud.prefix}router"
-  network = local.cloud.network_self_link
+  network = local.cloud.network
   region  = var.cloud.region
 
   bgp {

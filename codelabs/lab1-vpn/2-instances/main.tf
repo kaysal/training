@@ -21,13 +21,13 @@ locals {
   instance_init = templatefile("scripts/instance.sh.tpl", {})
 
   onprem = {
-    subnet_self_link  = data.terraform_remote_state.vpc.outputs.vpc.onprem.subnets.0.self_link
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.onprem.network.self_link
+    subnet  = data.terraform_remote_state.vpc.outputs.subnets.onprem.self_link
+    network = data.terraform_remote_state.vpc.outputs.networks.onprem.self_link
   }
 
   cloud = {
-    subnet_self_link  = data.terraform_remote_state.vpc.outputs.vpc.cloud.subnets.0.self_link
-    network_self_link = data.terraform_remote_state.vpc.outputs.vpc.cloud.network.self_link
+    subnet  = data.terraform_remote_state.vpc.outputs.subnets.cloud.self_link
+    network = data.terraform_remote_state.vpc.outputs.networks.cloud.self_link
   }
 }
 
@@ -50,7 +50,7 @@ resource "google_compute_instance" "onprem_vm" {
   }
 
   network_interface {
-    subnetwork = local.onprem.subnet_self_link
+    subnetwork = local.onprem.subnet
     network_ip = var.onprem.vm_ip
     access_config {}
   }
@@ -79,7 +79,7 @@ resource "google_compute_instance" "cloud_vm" {
   }
 
   network_interface {
-    subnetwork = local.cloud.subnet_self_link
+    subnetwork = local.cloud.subnet
     network_ip = var.cloud.vm_ip
     access_config {}
   }
