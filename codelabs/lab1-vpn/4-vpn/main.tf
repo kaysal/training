@@ -56,7 +56,7 @@ resource "google_compute_ha_vpn_gateway" "onprem_vpn_gw" {
 # vpn tunnel
 
 module "vpn_onprem_to_cloud" {
-  source           = "../../modules/vpn-ha-gcp"
+  source           = "../../modules/vpn-gcp"
   project_id       = var.project_id
   network          = local.onprem.network
   region           = var.onprem.region
@@ -99,7 +99,7 @@ resource "google_compute_ha_vpn_gateway" "cloud_vpn_gw" {
 # vpn tunnel
 
 module "vpn_cloud_to_onprem" {
-  source           = "../../modules/vpn-ha-gcp"
+  source           = "../../modules/vpn-gcp"
   project_id       = var.project_id
   network          = local.cloud.network
   region           = var.cloud.region
