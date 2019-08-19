@@ -177,15 +177,15 @@ resource "google_compute_router" "vpc_demo_cr_us_e1" {
 # VPN GW external IP us-central1
 
 resource "google_compute_address" "vpc_demo_vpngw_ip_us_c1" {
-  name    = "${local.prefix}vpc-demo-vpngw-ip-us-c1"
-  region  = "us-central1"
+  name   = "${local.prefix}vpc-demo-vpngw-ip-us-c1"
+  region = "us-central1"
 }
 
 # VPN GW external IP us-east1
 
 resource "google_compute_address" "vpc_demo_vpngw_ip_us_e1" {
-  name    = "${local.prefix}vpc-demo-vpngw-ip-us-e1"
-  region  = "us-east1"
+  name   = "${local.prefix}vpc-demo-vpngw-ip-us-e1"
+  region = "us-east1"
 }
 
 # VPNGW and Tunnel in us-central1
@@ -288,6 +288,7 @@ resource "google_compute_firewall" "vpc_onprem_icmp" {
 # vm instances
 
 module "vpc_onprem_vm_10_10_10" {
+  project                 = var.project_id
   source                  = "../../modules/gce-private"
   name                    = "${local.prefix}vpc-onprem-vm-10-10-10"
   machine_type            = local.machine_type
@@ -318,8 +319,8 @@ resource "google_compute_router" "vpc_onprem_cr_us_c1" {
 #-----------------------------------
 # VPC_onprem VPN GW external IP
 resource "google_compute_address" "vpc_onprem_vpngw_ip_us_c1" {
-  name    = "${local.prefix}vpc-onprem-vpngw-ip-us-c1"
-  region  = "us-central1"
+  name   = "${local.prefix}vpc-onprem-vpngw-ip-us-c1"
+  region = "us-central1"
 }
 
 module "vpc_onprem_vpn_us_c1" {

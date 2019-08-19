@@ -73,7 +73,7 @@ resource "google_compute_subnetwork" "vpc_demo_subnet3" {
 resource "google_compute_firewall" "vpc_demo_allow_rfc1918" {
   provider = google-beta
   name     = "${local.prefix}vpc-demo-allow-rfc1918"
-  network  =  google_compute_network.vpc_demo.self_link
+  network  = google_compute_network.vpc_demo.self_link
 
   allow {
     protocol = "tcp"
@@ -95,7 +95,7 @@ resource "google_compute_firewall" "vpc_demo_allow_rfc1918" {
 resource "google_compute_firewall" "vpc_demo_allow_ssh" {
   provider = google-beta
   name     = "${local.prefix}vpc-demo-allow-ssh"
-  network  =  google_compute_network.vpc_demo.self_link
+  network  = google_compute_network.vpc_demo.self_link
 
   allow {
     protocol = "tcp"
@@ -114,6 +114,7 @@ module "vpc_demo_vm1" {
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet1.self_link
+  tags                    = []
 }
 
 module "vpc_demo_vm2" {
@@ -125,6 +126,7 @@ module "vpc_demo_vm2" {
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet2.self_link
+  tags                    = []
 }
 
 module "vpc_demo_vm3" {
@@ -136,4 +138,5 @@ module "vpc_demo_vm3" {
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet3.self_link
+  tags                    = []
 }

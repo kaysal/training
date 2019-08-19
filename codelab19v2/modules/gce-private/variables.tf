@@ -13,11 +13,30 @@
 # limitations under the License.
 
 variable "name" {
-  description = "vm instance host name"
+  description = "Bastion host name"
 }
 
 variable "project" {
   description = "Project where the instance will be created"
+}
+
+variable "subnetwork_project" {
+  description = "Project where the subnetwork will be created"
+  default = null
+}
+
+variable "machine_type" {
+  description = "machine type"
+  default     = "f1-micro"
+}
+
+variable "zone" {
+  description = "GCE zone"
+}
+
+variable "image" {
+  description = "OS image"
+  default     = "debian-cloud/debian-9"
 }
 
 variable "network" {
@@ -30,25 +49,11 @@ variable "subnetwork" {
   default     = "default"
 }
 
-variable "subnetwork_project" {
-  description = "Project where the subnetwork will be created"
-  default     = null
-}
-
-variable "machine_type" {
-  description = "machine type"
-  default     = "f1-micro"
-}
-
-variable "zone" {
-  description = "vm instance zone"
-}
-
-variable "image" {
-  description = "OS image"
-  default     = "debian-cloud/debian-9"
-}
-
 variable "metadata_startup_script" {
   description = "metadata startup script"
+}
+
+variable "tags" {
+  description = "network tags"
+  default     = []
 }

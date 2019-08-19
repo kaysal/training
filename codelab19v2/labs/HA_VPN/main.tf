@@ -99,6 +99,7 @@ module "vpc_demo_vm_10_1_1" {
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_1_1.self_link
+  tags                    = []
 }
 
 module "vpc_demo_vm_10_3_1" {
@@ -110,6 +111,7 @@ module "vpc_demo_vm_10_3_1" {
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_3_1.self_link
+  tags                    = []
 }
 
 #============================================
@@ -176,4 +178,5 @@ module "vpc_onprem_vm" {
   metadata_startup_script = "${file("scripts/startup.sh")}"
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_onprem_subnet_10_128_1.self_link
+  tags                    = []
 }

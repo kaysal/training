@@ -13,7 +13,7 @@
 # limitations under the License.
 
 variable "name" {
-  description = "vm instance host name"
+  description = "Bastion host name"
 }
 
 variable "project" {
@@ -22,12 +22,7 @@ variable "project" {
 
 variable "subnetwork_project" {
   description = "Project where the subnetwork will be created"
-  default     = null
-}
-
-variable "network" {
-  description = "The VPC where the instance will be created"
-  default     = "default"
+  default = null
 }
 
 variable "machine_type" {
@@ -36,12 +31,17 @@ variable "machine_type" {
 }
 
 variable "zone" {
-  description = "vm instance zone"
+  description = "GCE zone"
 }
 
 variable "image" {
   description = "OS image"
   default     = "debian-cloud/debian-9"
+}
+
+variable "network" {
+  description = "The VPC where the instance will be created"
+  default     = "default"
 }
 
 variable "subnetwork" {
@@ -51,4 +51,10 @@ variable "subnetwork" {
 
 variable "metadata_startup_script" {
   description = "metadata startup script"
+}
+
+variable "tags" {
+  type        = "list"
+  description = "network tags"
+  default     = []
 }

@@ -17,6 +17,7 @@ resource "google_compute_instance" "instance" {
   name         = "${var.name}"
   machine_type = "${var.machine_type}"
   zone         = "${var.zone}"
+  tags         = "${var.tags}"
 
   #allow_stopping_for_update = true
   metadata_startup_script = "${var.metadata_startup_script}"
@@ -30,7 +31,7 @@ resource "google_compute_instance" "instance" {
   network_interface {
     subnetwork_project = "${var.subnetwork_project}"
     subnetwork         = "${var.subnetwork}"
-    access_config {}
+    access_config  {}
   }
 
   service_account {

@@ -115,7 +115,7 @@ resource "google_compute_instance_template" "apache_instance_template" {
   }
 
   network_interface {
-    subnetwork    = google_compute_subnetwork.vpc_demo_subnet_l7_ilb.self_link
+    subnetwork = google_compute_subnetwork.vpc_demo_subnet_l7_ilb.self_link
     access_config {}
   }
 
@@ -138,7 +138,7 @@ resource "google_compute_instance_template" "nginx_instance_template" {
   }
 
   network_interface {
-    subnetwork    = google_compute_subnetwork.vpc_demo_subnet_l7_ilb.self_link
+    subnetwork = google_compute_subnetwork.vpc_demo_subnet_l7_ilb.self_link
     access_config {}
   }
 
