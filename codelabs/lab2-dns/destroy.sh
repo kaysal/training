@@ -8,7 +8,7 @@ reset=`tput sgr0`
 
 source variables.txt
 
-terraform_apply() {
+terraform_destroy() {
   RESOURCES=(5-dns 4-vpn 3-router 2-instances 1-vpc)
 
   for i in "${RESOURCES[@]}"
@@ -27,4 +27,4 @@ terraform_apply() {
   done
 }
 
-time terraform_apply
+time terraform_destroy
