@@ -6,29 +6,17 @@ magenta=`tput setaf 5`
 bold=$(tput bold)
 reset=`tput sgr0`
 
-source variables.txt
-
 export TF_WARN_OUTPUT_ERRORS=1
 export GOOGLE_PROJECT=$(gcloud config get-value project)
 export TF_VAR_project_id=$(gcloud config get-value project)
 
 terraform_apply() {
-  RESOURCES=(1-vpc 2-instances 3-router 4-vpn 5-dns)
-
-  for i in "${RESOURCES[@]}"
-  do
-    echo ""
-    echo "${bold}${magenta}[$i]: deploying...${reset}"
-    pushd $i > /dev/null
-    terraform init && terraform apply -auto-approve
-    if [ $? -eq 0 ]; then
-      echo "${bold}${green}[$i]: deployed!${reset}"
-      popd > /dev/null
-    else
-      echo "${bold}${red}[$i] error!${reset}"
-      popd > /dev/null && break
-    fi
-  done
+  terraform init && terraform apply -auto-approve
+  if [ $? -eq 0 ]; then
+    echo "${bold}${green}[${PWD##*/}]: deployed!${reset}"
+  else
+    echo "${bold}${red}[${PWD##*/}] error!${reset}"
+  fi
 }
 
 time terraform_apply
