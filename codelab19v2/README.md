@@ -12,7 +12,7 @@ git clone https://github.com/kaysal/training.git
 
 2. Change to the directory of the cloned repository
 ```sh
-cd ~/training/codelab19/
+cd ~/training/codelab19v2/
 ```
 
 ### Install Terraform
@@ -24,7 +24,7 @@ In the `training/codelab19/` directory, run the following script:
 ```
 2. Run the following command to reload your `PATH` with terraform:
 ```sh
-source ~/.bashrc
+source ~/.bashrcs
 ```
 That's it! You've installed terraform.
 Next step is to deploy a lab base configuration.
