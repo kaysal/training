@@ -14,7 +14,7 @@ The on-premises environment uses unbound DNS for both private DNS resolution and
 5. Private Cloud DNS and Private Google Access in GCP
 6. DNS Peering
 
-![Alt Text](image.png)
+![Alt Text](image2.png)
 ---
 
 ## Prerequisite
