@@ -45,12 +45,12 @@ sys	0m1.831s
 ./apply.sh
 ```
 ### Remove a Deployed Lab
-To remove the base configuration for a lab, ensure you have removed all other resources created in your Project's VPC; outside of the resources created by Terraform. Then navigate into the directory and run the `destroy.sh` script. For example, to destroy the Security Lab:
+To remove the base configuration for a lab, ensure you have followed the lab instructions to remove all other resources created in your Project's VPC; outside of the resources created by Terraform earlier. Then navigate into the directory and run the `destroy.sh` script. For example, to destroy the Security Lab:
 ```sh
 cd ~/training/codelab19v2/labs/Security/
 ./destroy.sh
 ```
-You will get a notification similar to the following once the lab has been deployed completely:
+You will get a notification similar to the following once the lab has been destroyed completely:
 ```sh
 Destroy complete! Resources: 44 destroyed.
 [Security]: destroyed!
