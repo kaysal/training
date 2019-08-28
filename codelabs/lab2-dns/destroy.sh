@@ -22,7 +22,7 @@ terraform_destroy() {
       popd > /dev/null
     else
       echo "${bold}${red}[$i]: error!${reset}"
-      popd > /dev/null
+      popd > /dev/null && break
     fi
   done
 }
