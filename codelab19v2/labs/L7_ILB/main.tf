@@ -50,6 +50,16 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_l7_ilb" {
   enable_flow_logs         = false
 }
 
+resource "google_compute_subnetwork" "vpc_demo_subnet_l7_ilb_reserved" {
+  provider      = google-beta
+  name          = "${local.prefix}vpc-demo-subnet-l7-ilb-reserved"
+  ip_cidr_range = "10.126.0.0/22"
+  region        = "us-east1"
+  network       = google_compute_network.vpc_demo.self_link
+  purpose       = "INTERNAL_HTTPS_LOAD_BALANCER"
+  role          = "ACTIVE"
+}
+
 # firewall rules
 
 resource "google_compute_firewall" "vpc_demo_allow_internal" {
