@@ -37,7 +37,7 @@ locals {
 
 module "vpc_demo" {
   source  = "terraform-google-modules/network/google"
-  version = "0.6.0"
+  version = "1.2.0"
 
   project_id   = "${var.project_id}"
   network_name = "${local.prefix}vpc-demo"
