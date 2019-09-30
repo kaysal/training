@@ -1,7 +1,5 @@
 # LAB: Network Intelligence Centre
 
-Compute Engine API > VPN Tunnels = 12
-
 This terraform code deploys the architecture shown in the image below:
 ![Alt Text](image.png)
 ---
