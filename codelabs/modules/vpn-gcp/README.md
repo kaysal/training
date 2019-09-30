@@ -3,6 +3,10 @@
 This modules creates a HA VPN from GCP to GCP
 
 ## Inputs
+Compute Engine API
+Cloud DNS API
+
+## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|

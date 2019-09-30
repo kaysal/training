@@ -16,6 +16,7 @@
 
 resource "google_compute_vpn_tunnel" "tunnel" {
   provider         = "google-beta"
+  project          = "${var.project_id}"
   count            = "${length(var.session_config)}"
   name             = "${lookup(var.session_config[count.index], "session_name")}-${count.index}"
   region           = "${var.region}"
@@ -29,6 +30,7 @@ resource "google_compute_vpn_tunnel" "tunnel" {
 
 resource "google_compute_router_interface" "router_interface" {
   provider   = "google-beta"
+  project    = "${var.project_id}"
   count      = "${length(var.session_config)}"
   name       = "${lookup(var.session_config[count.index], "session_name")}-${count.index}"
   router     = "${var.router}"
@@ -39,6 +41,7 @@ resource "google_compute_router_interface" "router_interface" {
 
 resource "google_compute_router_peer" "router_peer" {
   provider                  = "google-beta"
+  project                   = "${var.project_id}"
   count                     = "${length(var.session_config)}"
   name                      = "${lookup(var.session_config[count.index], "session_name")}-${count.index}"
   router                    = "${var.router}"
