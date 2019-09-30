@@ -51,7 +51,16 @@ gcloud beta compute networks peerings create spoke2-to-hub \
 ```
 
 ## Delete Lab
-To destroy the infrastructure, run the following command:
+Delete the VPC peerings:
 ```sh
+gcloud beta compute networks peerings delete spoke2-to-hub
+gcloud beta compute networks peerings delete hub-to-spoke2
+cd ~/training/codelabs/lab9-nic
+./destroy.sh
+```
+
+To destroy the remaining infrastructure, run the following command:
+```sh
+cd ~/training/codelabs/lab9-nic
 ./destroy.sh
 ```
