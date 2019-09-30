@@ -169,6 +169,7 @@ resource "google_compute_instance" "spoke2_vm_asia_2" {
   zone                      = "${var.spoke2.region_asia}-c"
   metadata_startup_script   = local.web_init
   allow_stopping_for_update = true
+  tags                      = [var.spoke2.ilb_tag]
 
   boot_disk {
     initialize_params {
