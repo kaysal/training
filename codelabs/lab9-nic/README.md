@@ -1,8 +1,8 @@
+
 # LAB: Network Intelligence Centre
 
 This terraform code deploys the architecture shown in the image below:
-![Alt Text](image.png)
----
+![alt text](image.png)
 
 ## Prerequisite
 - Terraform 0.12 required.
