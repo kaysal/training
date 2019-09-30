@@ -56,6 +56,10 @@ resource "google_compute_router" "hub_router" {
     }
 
     advertised_ip_ranges {
+      range = local.hub.subnet_asia.ip_cidr_range
+    }
+
+    advertised_ip_ranges {
       range = local.spoke2.subnet_eu.ip_cidr_range
     }
 
