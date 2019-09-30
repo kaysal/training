@@ -114,11 +114,11 @@ resource "google_compute_instance" "spoke1_vm_us" {
 # spoke2
 
 resource "google_compute_instance" "spoke2_vm_eu" {
-  project                   = var.project_id_spoke2
-  name                      = "${var.spoke2.prefix}vm-eu"
-  machine_type              = var.global.machine_type
-  zone                      = "${var.spoke2.region_eu}-b"
-  metadata_startup_script   = local.instance_init
+  project      = var.project_id_spoke2
+  name         = "${var.spoke2.prefix}vm-eu"
+  machine_type = var.global.machine_type
+  zone         = "${var.spoke2.region_eu}-b"
+  #metadata_startup_script   = local.instance_init
   allow_stopping_for_update = true
   tags                      = [var.spoke2.vm_tag]
 
