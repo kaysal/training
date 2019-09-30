@@ -40,7 +40,7 @@ resource "google_compute_instance" "spoke1_vm_eu" {
   zone                      = "${var.spoke1.region_eu}-b"
   metadata_startup_script   = local.web_init
   allow_stopping_for_update = true
-  #tags                      = [var.spoke1.gclb_tag]
+  tags                      = [var.spoke1.gclb_tag]
 
   boot_disk {
     initialize_params {
@@ -66,7 +66,7 @@ resource "google_compute_instance" "spoke1_vm_asia" {
   zone                      = "${var.spoke1.region_asia}-b"
   metadata_startup_script   = local.web_init
   allow_stopping_for_update = true
-  #tags                      = [var.spoke1.gclb_tag]
+  tags                      = [var.spoke1.gclb_tag]
 
   boot_disk {
     initialize_params {
@@ -92,7 +92,7 @@ resource "google_compute_instance" "spoke1_vm_us" {
   zone                      = "${var.spoke1.region_us}-b"
   metadata_startup_script   = local.web_init
   allow_stopping_for_update = true
-  #tags                      = [var.spoke1.gclb_tag]
+  tags                      = [var.spoke1.gclb_tag]
 
   boot_disk {
     initialize_params {
