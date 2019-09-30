@@ -30,10 +30,7 @@ To deploy the infrastructure, run the following command:
 ```sh
 ./apply.sh
 ```
-To destroy the infrastructure, run the following command:
-```sh
-./destroy.sh
-```
+
 
 Configure VPC peering between hub-vpc and spoke2-vpc to import and export custom routes. Replace `[PROJECT_ID_HERE]` with your Project ID in the command below:
 ```sh
@@ -51,4 +48,10 @@ gcloud beta compute networks peerings create spoke2-to-hub \
   --peer-project ${PROJECT_ID} \
   --import-custom-routes \
   --export-custom-routes
+```
+
+## Delete Lab
+To destroy the infrastructure, run the following command:
+```sh
+./destroy.sh
 ```
