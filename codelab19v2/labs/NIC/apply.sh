@@ -7,6 +7,9 @@ bold=$(tput bold)
 reset=`tput sgr0`
 
 source variables.txt
+export TF_WARN_OUTPUT_ERRORS=1
+export GOOGLE_PROJECT=$(gcloud config get-value project)
+export TF_VAR_project_id=$(gcloud config get-value project)
 
 terraform_apply() {
   RESOURCES=(1-vpc 2-instances 3-router 4-vpn 5-gclb 6-ilb 7-probe)
