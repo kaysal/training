@@ -51,7 +51,7 @@ resource "google_compute_ha_vpn_gateway" "hub_ha_vpn" {
 # vpn tunnels
 
 module "vpn_hub_to_spoke1" {
-  source           = "../../modules/vpn-gcp"
+  source           = "../modules/vpn-gcp"
   project_id       = var.project_id_hub
   network          = local.hub.network.self_link
   region           = var.hub.region_eu
@@ -95,7 +95,7 @@ resource "google_compute_ha_vpn_gateway" "spoke1_ha_vpn" {
 # vpn tunnels
 
 module "vpn_spoke1_to_hub" {
-  source           = "../../modules/vpn-gcp"
+  source           = "../modules/vpn-gcp"
   project_id       = var.project_id_spoke1
   network          = local.spoke1.network.self_link
   region           = var.spoke1.region_eu
