@@ -19,6 +19,7 @@
 ## static tunnel
 
 resource "google_compute_vpn_tunnel" "tunnel_static" {
+  count                   = "${var.cr_name == "" ? 1 : 0}"
   project                 = "${var.project_id}"
   region                  = "${var.region}"
   name                    = "${var.tunnel_name}"
@@ -33,13 +34,13 @@ resource "google_compute_vpn_tunnel" "tunnel_static" {
 ## static routes for static tunnels
 
 resource "google_compute_route" "route" {
-  count               = "${length(var.remote_ip_cidr_ranges)}"
+  count               = "${var.cr_name == "" ? length(var.remote_ip_cidr_ranges) : 0}"
   name                = "${var.tunnel_name}-${count.index}"
   project             = "${var.project_id}"
   network             = "${var.network}"
   dest_range          = "${var.remote_ip_cidr_ranges[count.index]}"
   priority            = "${var.static_route_priority}"
-  next_hop_vpn_tunnel = "${google_compute_vpn_tunnel.tunnel_static.self_link}"
+  next_hop_vpn_tunnel = "${google_compute_vpn_tunnel.tunnel_static[0].self_link}"
 }
 
 # dynamic
