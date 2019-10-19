@@ -17,6 +17,7 @@ prerequisites() {
 
 function terraform_remove() {
   rm -rf ${TERRAFORM_CMD}
+  echo "Terraform uninstalled from ${TERRAFORM_CMD}"
 }
 
 main() {
