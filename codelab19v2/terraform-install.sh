@@ -1,19 +1,65 @@
+#!/bin/bash
 
-function terraform-install() {
-  [[ -f ${HOME}/bin/terraform ]] && echo "`${HOME}/bin/terraform version` already installed at ${HOME}/bin/terraform" && return 0
-  OS=$(uname -s)
-  LATEST_VERSION=$(curl -sL https://releases.hashicorp.com/terraform/index.json | jq -r '.versions[].version' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | egrep -v 'alpha|beta|rc' | tail -1)
-  LATEST_URL="https://releases.hashicorp.com/terraform/${LATEST_VERSION}/terraform_${LATEST_VERSION}_${OS,,}_amd64.zip"
-  curl ${LATEST_URL} > /tmp/terraform.zip
+LATEST_VERSION=$(curl -sL https://releases.hashicorp.com/terraform/index.json | jq -r '.versions[].version' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | egrep -v 'alpha|beta|rc' | tail -1)
+DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${LATEST_VERSION}/terraform_${LATEST_VERSION}_linux_amd64.zip"
+DOWNLOAD_DIR=/tmp
+INSTALL_DIR=${HOME}/bin
+
+# Check all prerequisites before installing Terraform
+prerequisites() {
+  local curl_cmd=`which curl`
+  local unzip_cmd=`which unzip`
+  local jq_cmd=`which jq`
+
+  if [ -f ${INSTALL_DIR}/terraform ]; then
+    echo "`${HOME}/bin/terraform version` already installed at ${HOME}/bin/terraform"
+    echo "Latest version is Terraform v${LATEST_VERSION}"
+    exit 1
+  fi
+
+  if [ -z "$curl_cmd" ]; then
+    echo "Please install curl and re-run this script:"
+    echo "  sudo apt-get install curl"
+    exit 1
+  fi
+
+  if [ -z "$unzip_cmd" ]; then
+    echo "Please install unzip and re-run this script:"
+    echo "  sudo apt-get install unzip"
+    exit 1
+  fi
+
+  if [ -z "$jq_cmd" ]; then
+    echo "Please install jq and re-run this script:"
+    echo "  sudo apt-get install jq"
+    exit 1
+  fi
+}
+
+function terraform_install() {
+  curl ${DOWNLOAD_URL} > ${DOWNLOAD_DIR}/terraform.zip
   mkdir -p ${HOME}/bin
-  (cd ${HOME}/bin && unzip /tmp/terraform.zip)
+  echo ""
+  (cd ${INSTALL_DIR} && unzip ${DOWNLOAD_DIR}/terraform.zip)
+
   if [[ -z $(grep 'export PATH=${HOME}/bin:${PATH}' ~/.bashrc 2>/dev/null) ]]; then
         echo 'export PATH=${HOME}/bin:${PATH}' >> ~/.bashrc
   fi
-  echo "Installed: `${HOME}/bin/terraform version`"
+  
+  echo ""
+  echo "Installed: `${INSTALL_DIR}/terraform version`"
+
   cat - << EOF
+
 Run the following to reload your PATH with terraform:
-  source ~/.bashrc
+  source ~/.profile
+
 EOF
 }
-terraform-install
+
+main() {
+  prerequisites
+  terraform_install
+}
+
+main
