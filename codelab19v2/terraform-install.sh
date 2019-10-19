@@ -4,6 +4,7 @@ LATEST_VERSION=$(curl -sL https://releases.hashicorp.com/terraform/index.json | 
 DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${LATEST_VERSION}/terraform_${LATEST_VERSION}_linux_amd64.zip"
 DOWNLOAD_DIR=/tmp
 INSTALL_DIR=${HOME}/bin
+TERRAFORM_CMD=`which terraform`
 
 # Check all prerequisites before installing Terraform
 prerequisites() {
@@ -11,9 +12,10 @@ prerequisites() {
   local unzip_cmd=`which unzip`
   local jq_cmd=`which jq`
 
-  if [ -f ${INSTALL_DIR}/terraform ]; then
-    echo "`${HOME}/bin/terraform version` already installed at ${HOME}/bin/terraform"
-    echo "Latest version is Terraform v${LATEST_VERSION}"
+  if [ ! -z "${TERRAFORM_CMD}" ]; then
+    echo "INFO: `${INSTALL_DIR}/terraform version` already installed at ${TERRAFORM_CMD}"
+    echo "INFO: Latest version is Terraform v${LATEST_VERSION}"
+    echo "INFO: To install latest version, run 'terraform-remove.sh' and then 'terraform-install.sh'"
     exit 1
   fi
 
@@ -45,7 +47,7 @@ function terraform_install() {
   if [[ -z $(grep 'export PATH=${HOME}/bin:${PATH}' ~/.bashrc 2>/dev/null) ]]; then
         echo 'export PATH=${HOME}/bin:${PATH}' >> ~/.bashrc
   fi
-  
+
   echo ""
   echo "Installed: `${INSTALL_DIR}/terraform version`"
 

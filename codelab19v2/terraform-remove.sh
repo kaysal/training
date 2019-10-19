@@ -8,16 +8,17 @@ TERRAFORM_CMD=`which terraform`
 # Check all prerequisites before removing Terraform
 terraform_check() {
   if [ ! -z "${TERRAFORM_CMD}" ]; then
-    echo "Terraform installed at ${TERRAFORM_CMD}"
+    echo "INFO: Terraform located at ${TERRAFORM_CMD}"
   else
-    echo "Terraform is not installed!"
-    echo ""
+    echo "INFO: Terraform is not installed!"
+    exit 1
   fi
 }
 
 function terraform_remove() {
   rm -rf ${TERRAFORM_CMD}
-  echo "Terraform uninstalled from ${TERRAFORM_CMD}"
+  echo "RUN:  rm -rf ${TERRAFORM_CMD}"
+  echo "INFO: Deleted ${TERRAFORM_CMD}"
 }
 
 main() {
