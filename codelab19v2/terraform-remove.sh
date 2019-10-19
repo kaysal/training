@@ -17,7 +17,7 @@ terraform_check() {
 
 function terraform_remove() {
   rm -rf ${TERRAFORM_CMD}
-  echo "RUN:  rm -rf ${TERRAFORM_CMD}"
+  echo "CMD:  rm -rf ${TERRAFORM_CMD}"
   echo "INFO: Deleted ${TERRAFORM_CMD}"
 }
 
