@@ -6,7 +6,7 @@ INSTALL_DIR=${HOME}/bin
 TERRAFORM_CMD=`which terraform`
 
 # Check all prerequisites before removing Terraform
-prerequisites() {
+terraform_check() {
   if [ ! -z "${TERRAFORM_CMD}" ]; then
     echo "Terraform installed at ${TERRAFORM_CMD}"
   else
@@ -21,7 +21,7 @@ function terraform_remove() {
 }
 
 main() {
-  prerequisites
+  terraform_check
   terraform_remove
 }
 
