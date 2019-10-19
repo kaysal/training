@@ -16,9 +16,10 @@ terraform_check() {
 }
 
 function terraform_remove() {
-  rm -rf ${TERRAFORM_CMD}
   echo "CMD:  rm -rf ${TERRAFORM_CMD}"
-  echo "INFO: Deleted ${TERRAFORM_CMD}"
+  echo "INFO: Removing `${TERRAFORM_CMD} version`..."
+  rm -rf ${TERRAFORM_CMD}
+  echo "INFO: Terraform deleted!"
 }
 
 main() {
