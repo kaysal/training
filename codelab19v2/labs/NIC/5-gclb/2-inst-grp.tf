@@ -1,11 +1,11 @@
 
 # unmanaged instance group
 
-resource "google_compute_instance_group" "instance_grp_eu" {
-  project   = var.project_id_spoke1
-  name      = "${var.spoke1.prefix}ig-eu"
-  zone      = "${var.spoke1.region_eu}-b"
-  instances = [local.spoke1.vm_eu.self_link]
+resource "google_compute_instance_group" "eu_ig" {
+  project   = var.project_id_vpc1
+  name      = "${var.vpc1.prefix}eu-ig"
+  zone      = "${var.vpc1.eu.region}-b"
+  instances = [local.vpc1.eu_vm.self_link]
 
   named_port {
     name = "http"
@@ -13,11 +13,11 @@ resource "google_compute_instance_group" "instance_grp_eu" {
   }
 }
 
-resource "google_compute_instance_group" "instance_grp_asia" {
-  project   = var.project_id_spoke1
-  name      = "${var.spoke1.prefix}ig-asia"
-  zone      = "${var.spoke1.region_asia}-b"
-  instances = [local.spoke1.vm_asia.self_link]
+resource "google_compute_instance_group" "asia_ig" {
+  project   = var.project_id_vpc1
+  name      = "${var.vpc1.prefix}asia-ig"
+  zone      = "${var.vpc1.asia.region}-b"
+  instances = [local.vpc1.asia_vm.self_link]
 
   named_port {
     name = "http"
@@ -25,11 +25,11 @@ resource "google_compute_instance_group" "instance_grp_asia" {
   }
 }
 
-resource "google_compute_instance_group" "instance_grp_us" {
-  project   = var.project_id_spoke1
-  name      = "${var.spoke1.prefix}ig-us"
-  zone      = "${var.spoke1.region_us}-b"
-  instances = [local.spoke1.vm_us.self_link]
+resource "google_compute_instance_group" "us_ig" {
+  project   = var.project_id_vpc1
+  name      = "${var.vpc1.prefix}us-ig"
+  zone      = "${var.vpc1.us.region}-b"
+  instances = [local.vpc1.us_vm.self_link]
 
   named_port {
     name = "http"

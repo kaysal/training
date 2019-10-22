@@ -1,6 +1,6 @@
 output "address" {
   value = {
-    spoke1 = {
+    vpc1 = {
       gclb = google_compute_global_address.vip_gclb
     }
   }

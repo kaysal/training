@@ -1,7 +1,7 @@
 # url map
 resource "google_compute_url_map" "url_map" {
-  project         = var.project_id_spoke1
-  name            = "${var.spoke1.prefix}url-map"
+  project         = var.project_id_vpc1
+  name            = "${var.vpc1.prefix}url-map"
   default_service = google_compute_backend_service.be_svc_web.self_link
 
   host_rule {

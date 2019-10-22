@@ -21,13 +21,13 @@ data "terraform_remote_state" "router" {
 }
 
 locals {
-  hub = {
-    network = data.terraform_remote_state.vpc.outputs.networks.hub.network
-    router  = data.terraform_remote_state.router.outputs.routers.hub
+  vpc1 = {
+    network = data.terraform_remote_state.vpc.outputs.networks.vpc1.network
+    router  = data.terraform_remote_state.router.outputs.routers.vpc1
   }
-  spoke1 = {
-    network = data.terraform_remote_state.vpc.outputs.networks.spoke1.network
-    router  = data.terraform_remote_state.router.outputs.routers.spoke1
+  vpc2 = {
+    network = data.terraform_remote_state.vpc.outputs.networks.vpc2.network
+    router  = data.terraform_remote_state.router.outputs.routers.vpc2
   }
 }
 
@@ -35,90 +35,91 @@ resource "random_id" "ipsec_secret" {
   byte_length = 8
 }
 
-# hub
+
+# vpc1
 #---------------------------------------------
 
 # ha vpn gateway
 
-resource "google_compute_ha_vpn_gateway" "hub_ha_vpn" {
+resource "google_compute_ha_vpn_gateway" "vpc1_ha_vpn" {
   provider = "google-beta"
-  project  = var.project_id_hub
-  region   = var.hub.region_eu
-  name     = "${var.hub.prefix}ha-vpn"
-  network  = local.hub.network.self_link
+  project  = var.project_id_vpc1
+  region   = var.vpc1.eu.region
+  name     = "${var.vpc1.prefix}ha-vpn"
+  network  = local.vpc1.network.self_link
 }
 
 # vpn tunnels
 
-module "vpn_hub_to_spoke1" {
-  source           = "../../../modules/vpn-gcp"
-  project_id       = var.project_id_hub
-  network          = local.hub.network.self_link
-  region           = var.hub.region_eu
-  vpn_gateway      = google_compute_ha_vpn_gateway.hub_ha_vpn.self_link
-  peer_gcp_gateway = google_compute_ha_vpn_gateway.spoke1_ha_vpn.self_link
+module "vpn_vpc1_to_vpc2" {
+  source           = "../../modules/vpn-gcp"
+  project_id       = var.project_id_vpc1
+  network          = local.vpc1.network.self_link
+  region           = var.vpc1.eu.region
+  vpn_gateway      = google_compute_ha_vpn_gateway.vpc1_ha_vpn.self_link
+  peer_gcp_gateway = google_compute_ha_vpn_gateway.vpc2_ha_vpn.self_link
   shared_secret    = random_id.ipsec_secret.b64_url
-  router           = local.hub.router.name
+  router           = local.vpc1.router.name
   ike_version      = 2
 
   session_config = [
     {
-      session_name              = "${var.hub.prefix}to-spoke1"
-      peer_asn                  = var.spoke1.asn
-      cr_bgp_session_range      = "${var.hub.router_vti1}/30"
-      remote_bgp_session_ip     = var.spoke1.router_vti1
+      session_name              = "${var.vpc1.prefix}to-vpc2"
+      peer_asn                  = var.vpc2.asn
+      cr_bgp_session_range      = "${var.vpc1.eu.cr_vti1}/30"
+      remote_bgp_session_ip     = var.vpc2.eu.cr_vti1
       advertised_route_priority = 100
     },
     {
-      session_name              = "${var.hub.prefix}to-spoke1"
-      peer_asn                  = var.spoke1.asn
-      cr_bgp_session_range      = "${var.hub.router_vti2}/30"
-      remote_bgp_session_ip     = var.spoke1.router_vti2
-      advertised_route_priority = 200
+      session_name              = "${var.vpc1.prefix}to-vpc2"
+      peer_asn                  = var.vpc2.asn
+      cr_bgp_session_range      = "${var.vpc1.eu.cr_vti2}/30"
+      remote_bgp_session_ip     = var.vpc2.eu.cr_vti2
+      advertised_route_priority = 100
     },
   ]
 }
 
-# spoke1
+# vpc2
 #---------------------------------------------
 
 # ha vpn gateway
 
-resource "google_compute_ha_vpn_gateway" "spoke1_ha_vpn" {
+resource "google_compute_ha_vpn_gateway" "vpc2_ha_vpn" {
   provider = "google-beta"
-  project  = var.project_id_spoke1
-  region   = var.spoke1.region_eu
-  name     = "${var.spoke1.prefix}ha-vpn"
-  network  = local.spoke1.network.self_link
+  project  = var.project_id_vpc2
+  region   = var.vpc2.eu.region
+  name     = "${var.vpc2.prefix}ha-vpn"
+  network  = local.vpc2.network.self_link
 }
 
 # vpn tunnels
 
-module "vpn_spoke1_to_hub" {
-  source           = "../../../modules/vpn-gcp"
-  project_id       = var.project_id_spoke1
-  network          = local.spoke1.network.self_link
-  region           = var.spoke1.region_eu
-  vpn_gateway      = google_compute_ha_vpn_gateway.spoke1_ha_vpn.self_link
-  peer_gcp_gateway = google_compute_ha_vpn_gateway.hub_ha_vpn.self_link
+module "vpn_vpc2_to_vpc1" {
+  source           = "../../modules/vpn-gcp"
+  project_id       = var.project_id_vpc2
+  network          = local.vpc2.network.self_link
+  region           = var.vpc2.eu.region
+  vpn_gateway      = google_compute_ha_vpn_gateway.vpc2_ha_vpn.self_link
+  peer_gcp_gateway = google_compute_ha_vpn_gateway.vpc1_ha_vpn.self_link
   shared_secret    = random_id.ipsec_secret.b64_url
-  router           = local.spoke1.router.name
+  router           = local.vpc2.router.name
   ike_version      = 2
 
   session_config = [
     {
-      session_name              = "${var.spoke1.prefix}to-hub"
-      peer_asn                  = var.hub.asn
-      cr_bgp_session_range      = "${var.spoke1.router_vti1}/30"
-      remote_bgp_session_ip     = var.hub.router_vti1
+      session_name              = "${var.vpc2.prefix}to-vpc1"
+      peer_asn                  = var.vpc1.asn
+      cr_bgp_session_range      = "${var.vpc2.eu.cr_vti1}/30"
+      remote_bgp_session_ip     = var.vpc1.eu.cr_vti1
       advertised_route_priority = 100
     },
     {
-      session_name              = "${var.spoke1.prefix}to-hub"
-      peer_asn                  = var.hub.asn
-      cr_bgp_session_range      = "${var.spoke1.router_vti2}/30"
-      remote_bgp_session_ip     = var.hub.router_vti2
-      advertised_route_priority = 200
+      session_name              = "${var.vpc2.prefix}to-vpc1"
+      peer_asn                  = var.vpc1.asn
+      cr_bgp_session_range      = "${var.vpc2.eu.cr_vti2}/30"
+      remote_bgp_session_ip     = var.vpc1.eu.cr_vti2
+      advertised_route_priority = 100
     },
   ]
 }

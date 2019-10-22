@@ -1,14 +1,9 @@
 output "instances" {
   value = {
-    spoke1 = {
-      vm_eu   = google_compute_instance.spoke1_vm_eu
-      vm_asia = google_compute_instance.spoke1_vm_asia
-      vm_us   = google_compute_instance.spoke1_vm_us
-    }
-    spoke2 = {
-      vm_eu     = google_compute_instance.spoke2_vm_eu
-      vm_asia_1 = google_compute_instance.spoke2_vm_asia_1
-      vm_asia_2 = google_compute_instance.spoke2_vm_asia_2
+    vpc1 = {
+      eu_vm   = google_compute_instance.vpc1_eu_vm
+      asia_vm = google_compute_instance.vpc1_asia_vm
+      us_vm   = google_compute_instance.vpc1_us_vm
     }
   }
   sensitive = true

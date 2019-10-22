@@ -1,14 +1,10 @@
 
-variable "project_id_hub" {
-  description = "The ID of the hub project where this VPC will be created"
+variable "project_id_vpc1" {
+  description = "The ID of the vpc1 project where this VPC will be created"
 }
 
-variable "project_id_spoke1" {
-  description = "The ID of the spoke1 project where this VPC will be created"
-}
-
-variable "project_id_spoke2" {
-  description = "The ID of the spoke2 project where this VPC will be created"
+variable "project_id_vpc2" {
+  description = "The ID of the vpc2 project where this VPC will be created"
 }
 
 variable "global" {
@@ -16,17 +12,12 @@ variable "global" {
   type        = any
 }
 
-variable "hub" {
-  description = "variable map to hold all hub VPC config values"
-  type        = map
+variable "vpc1" {
+  description = "variable map to hold all vpc1 VPC config values"
+  type        = any
 }
 
-variable "spoke1" {
-  description = "variable map to hold all spoke1 VPC config values"
-  type        = map
-}
-
-variable "spoke2" {
-  description = "variable map to hold all spoke2 VPC config values"
-  type        = map
+variable "vpc2" {
+  description = "variable map to hold all vpc2 VPC config values"
+  type        = any
 }

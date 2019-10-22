@@ -12,35 +12,25 @@ data "terraform_remote_state" "vpc" {
 }
 
 locals {
-  instance_init = templatefile("scripts/instance.sh.tpl", {})
-  web_init      = templatefile("scripts/web.sh.tpl", {})
-  hub = {
-    subnet_eu   = data.terraform_remote_state.vpc.outputs.cidrs.hub.subnet_eu
-    subnet_asia = data.terraform_remote_state.vpc.outputs.cidrs.hub.subnet_asia
-    subnet_u2   = data.terraform_remote_state.vpc.outputs.cidrs.hub.subnet_us
-  }
-  spoke1 = {
-    subnet_eu   = data.terraform_remote_state.vpc.outputs.cidrs.spoke1.subnet_eu
-    subnet_asia = data.terraform_remote_state.vpc.outputs.cidrs.spoke1.subnet_asia
-    subnet_us   = data.terraform_remote_state.vpc.outputs.cidrs.spoke1.subnet_us
-  }
-  spoke2 = {
-    subnet_eu   = data.terraform_remote_state.vpc.outputs.cidrs.spoke2.subnet_eu
-    subnet_asia = data.terraform_remote_state.vpc.outputs.cidrs.spoke2.subnet_asia
-    subnet_us   = data.terraform_remote_state.vpc.outputs.cidrs.spoke2.subnet_us
+  web_init = templatefile("scripts/web.sh.tpl", {})
+  vpc1 = {
+    network     = data.terraform_remote_state.vpc.outputs.networks.vpc1.network
+    eu_subnet   = data.terraform_remote_state.vpc.outputs.cidrs.vpc1.eu_subnet
+    asia_subnet = data.terraform_remote_state.vpc.outputs.cidrs.vpc1.asia_subnet
+    us_subnet   = data.terraform_remote_state.vpc.outputs.cidrs.vpc1.us_subnet
   }
 }
 
-# spoke1
+# vpc1
 
-resource "google_compute_instance" "spoke1_vm_eu" {
-  project                   = var.project_id_spoke1
-  name                      = "${var.spoke1.prefix}vm-eu"
+resource "google_compute_instance" "vpc1_eu_vm" {
+  project                   = var.project_id_vpc1
+  name                      = "${var.vpc1.prefix}eu-vm"
   machine_type              = var.global.machine_type
-  zone                      = "${var.spoke1.region_eu}-b"
+  zone                      = "${var.vpc1.eu.region}-b"
   metadata_startup_script   = local.web_init
   allow_stopping_for_update = true
-  tags                      = [var.spoke1.gclb_tag]
+  tags                      = [var.vpc1.hc_tag]
 
   boot_disk {
     initialize_params {
@@ -49,8 +39,8 @@ resource "google_compute_instance" "spoke1_vm_eu" {
   }
 
   network_interface {
-    subnetwork = local.spoke1.subnet_eu.self_link
-    network_ip = var.spoke1.vm_eu_ip
+    subnetwork = local.vpc1.eu_subnet.self_link
+    network_ip = var.vpc1.eu.vm_ip
     access_config {}
   }
 
@@ -59,14 +49,14 @@ resource "google_compute_instance" "spoke1_vm_eu" {
   }
 }
 
-resource "google_compute_instance" "spoke1_vm_asia" {
-  project                   = var.project_id_spoke1
-  name                      = "${var.spoke1.prefix}vm-asia"
+resource "google_compute_instance" "vpc1_asia_vm" {
+  project                   = var.project_id_vpc1
+  name                      = "${var.vpc1.prefix}asia-vm"
   machine_type              = var.global.machine_type
-  zone                      = "${var.spoke1.region_asia}-b"
+  zone                      = "${var.vpc1.asia.region}-b"
   metadata_startup_script   = local.web_init
   allow_stopping_for_update = true
-  tags                      = [var.spoke1.gclb_tag]
+  tags                      = [var.vpc1.hc_tag]
 
   boot_disk {
     initialize_params {
@@ -75,8 +65,8 @@ resource "google_compute_instance" "spoke1_vm_asia" {
   }
 
   network_interface {
-    subnetwork = local.spoke1.subnet_asia.self_link
-    network_ip = var.spoke1.vm_asia_ip
+    subnetwork = local.vpc1.asia_subnet.self_link
+    network_ip = var.vpc1.asia.vm_ip
     access_config {}
   }
 
@@ -85,14 +75,14 @@ resource "google_compute_instance" "spoke1_vm_asia" {
   }
 }
 
-resource "google_compute_instance" "spoke1_vm_us" {
-  project                   = var.project_id_spoke1
-  name                      = "${var.spoke1.prefix}vm-us"
+resource "google_compute_instance" "vpc1_us_vm" {
+  project                   = var.project_id_vpc1
+  name                      = "${var.vpc1.prefix}us-vm"
   machine_type              = var.global.machine_type
-  zone                      = "${var.spoke1.region_us}-b"
+  zone                      = "${var.vpc1.us.region}-b"
   metadata_startup_script   = local.web_init
   allow_stopping_for_update = true
-  tags                      = [var.spoke1.gclb_tag]
+  tags                      = [var.vpc1.hc_tag]
 
   boot_disk {
     initialize_params {
@@ -101,84 +91,9 @@ resource "google_compute_instance" "spoke1_vm_us" {
   }
 
   network_interface {
-    subnetwork = local.spoke1.subnet_us.self_link
-    network_ip = var.spoke1.vm_us_ip
+    subnetwork = local.vpc1.us_subnet.self_link
+    network_ip = var.vpc1.us.vm_ip
     access_config {}
-  }
-
-  service_account {
-    scopes = ["cloud-platform"]
-  }
-}
-
-# spoke2
-
-resource "google_compute_instance" "spoke2_vm_eu" {
-  project      = var.project_id_spoke2
-  name         = "${var.spoke2.prefix}vm-eu"
-  machine_type = var.global.machine_type
-  zone         = "${var.spoke2.region_eu}-b"
-  #metadata_startup_script   = local.instance_init
-  allow_stopping_for_update = true
-  tags                      = [var.spoke2.vm_tag]
-
-  boot_disk {
-    initialize_params {
-      image = var.global.image.debian
-    }
-  }
-
-  network_interface {
-    subnetwork = local.spoke2.subnet_eu.self_link
-    network_ip = var.spoke2.vm_eu_ip
-  }
-
-  service_account {
-    scopes = ["cloud-platform"]
-  }
-}
-
-resource "google_compute_instance" "spoke2_vm_asia_1" {
-  project                   = var.project_id_spoke2
-  name                      = "${var.spoke2.prefix}vm-asia-1"
-  machine_type              = var.global.machine_type
-  zone                      = "${var.spoke2.region_asia}-b"
-  metadata_startup_script   = local.web_init
-  allow_stopping_for_update = true
-  tags                      = [var.spoke2.ilb_tag]
-
-  boot_disk {
-    initialize_params {
-      image = var.global.image.debian
-    }
-  }
-
-  network_interface {
-    subnetwork = local.spoke2.subnet_asia.self_link
-  }
-
-  service_account {
-    scopes = ["cloud-platform"]
-  }
-}
-
-resource "google_compute_instance" "spoke2_vm_asia_2" {
-  project                   = var.project_id_spoke2
-  name                      = "${var.spoke2.prefix}vm-asia-2"
-  machine_type              = var.global.machine_type
-  zone                      = "${var.spoke2.region_asia}-c"
-  metadata_startup_script   = local.web_init
-  allow_stopping_for_update = true
-  tags                      = [var.spoke2.ilb_tag]
-
-  boot_disk {
-    initialize_params {
-      image = var.global.image.debian
-    }
-  }
-
-  network_interface {
-    subnetwork = local.spoke2.subnet_asia.self_link
   }
 
   service_account {

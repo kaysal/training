@@ -7,53 +7,50 @@ export TF_VAR_global='{
   }
 }'
 
-export TF_VAR_hub='{
-  prefix      = "hub-"
-  region_eu   = "europe-west2"
-  region_asia = "asia-east2"
-  region_us   = "us-east4"
-  subnet_eu   = "10.10.1.0/24"
-  subnet_asia = "10.10.2.0/24"
-  subnet_us   = "10.10.3.0/24"
-  vm_eu_ip    = "10.10.1.2"
-  vm_asia_ip  = "10.10.2.2"
-  vm_us_ip    = "10.10.3.2"
-  asn         = "65002"
-  router_vti1 = "169.254.100.1"
-  router_vti2 = "169.254.100.5"
-  vm_tag      = "hub-vm"
+export TF_VAR_vpc1='{
+  prefix = "vpc1-"
+  asn    = "65001"
+  hc_tag = "allow-hc"
+  vm_tag = "vpc1-vm"
+  eu = {
+    region  = "europe-west2"
+    subnet  = "10.1.1.0/24"
+    vm_ip   = "10.1.1.2"
+    cr_vti1 = "169.254.100.2"
+    cr_vti2 = "169.254.100.6"
+  }
+  asia = {
+    region = "asia-east2"
+    subnet = "10.1.2.0/24"
+    vm_ip  = "10.1.2.2"
+  }
+  us = {
+    region = "us-east4"
+    subnet = "10.1.3.0/24"
+    vm_ip  = "10.1.3.2"
+  }
 }'
 
-export TF_VAR_spoke1='{
-  prefix      = "spoke1-"
-  region_eu   = "europe-west2"
-  region_asia = "asia-east2"
-  region_us   = "us-east4"
-  subnet_eu   = "10.1.1.0/24"
-  subnet_asia = "10.1.2.0/24"
-  subnet_us   = "10.1.3.0/24"
-  vm_eu_ip    = "10.1.1.2"
-  vm_asia_ip  = "10.1.2.2"
-  vm_us_ip    = "10.1.3.2"
-  asn         = "65001"
-  router_vti1 = "169.254.100.2"
-  router_vti2 = "169.254.100.6"
-  gclb_tag    = "spoke1-gclb"
-  vm_tag      = "spoke1-vm"
-}'
-
-export TF_VAR_spoke2='{
-  prefix      = "spoke2-"
-  region_eu   = "europe-west2"
-  region_asia = "asia-east2"
-  region_us   = "us-east4"
-  subnet_eu   = "10.2.1.0/24"
-  subnet_asia = "10.2.2.0/24"
-  subnet_us   = "10.2.3.0/24"
-  vm_eu_ip    = "10.2.1.2"
-  vm_asia_ip  = "10.2.2.2"
-  vm_us_ip    = "10.2.3.2"
-  ilb_vip     = "10.2.2.99"
-  ilb_tag     = "spoke2-ilb"
-  vm_tag      = "spoke2-vm"
+export TF_VAR_vpc2='{
+  prefix    = "vpc2-"
+  asn       = "65002"
+  vm_tag    = "vpc2-vm"
+  proxy_tag = "vpc2-proxy"
+  eu = {
+    region  = "europe-west2"
+    subnet  = "10.2.1.0/24"
+    vm_ip   = "10.2.1.2"
+    cr_vti1 = "169.254.100.1"
+    cr_vti2 = "169.254.100.5"
+  }
+  asia = {
+    region = "asia-east2"
+    subnet = "10.2.2.0/24"
+    vm_ip  = "10.2.2.2"
+  }
+  us = {
+    region = "us-east4"
+    subnet = "10.2.3.0/24"
+    vm_ip  = "10.2.3.2"
+  }
 }'

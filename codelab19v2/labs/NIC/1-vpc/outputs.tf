@@ -1,13 +1,10 @@
 output "networks" {
   value = {
-    hub = {
-      network = google_compute_network.hub_vpc
+    vpc1 = {
+      network = google_compute_network.vpc1_vpc
     }
-    spoke1 = {
-      network = google_compute_network.spoke1_vpc
-    }
-    spoke2 = {
-      network = google_compute_network.spoke2_vpc
+    vpc2 = {
+      network = google_compute_network.vpc2_vpc
     }
   }
   sensitive = true
@@ -15,20 +12,15 @@ output "networks" {
 
 output "cidrs" {
   value = {
-    hub = {
-      subnet_eu   = google_compute_subnetwork.hub_subnet_eu
-      subnet_asia = google_compute_subnetwork.hub_subnet_asia
-      subnet_us   = google_compute_subnetwork.hub_subnet_us
+    vpc1 = {
+      eu_subnet   = google_compute_subnetwork.vpc1_eu_subnet
+      asia_subnet = google_compute_subnetwork.vpc1_asia_subnet
+      us_subnet   = google_compute_subnetwork.vpc1_us_subnet
     }
-    spoke1 = {
-      subnet_eu   = google_compute_subnetwork.spoke1_subnet_eu
-      subnet_asia = google_compute_subnetwork.spoke1_subnet_asia
-      subnet_us   = google_compute_subnetwork.spoke1_subnet_us
-    }
-    spoke2 = {
-      subnet_eu   = google_compute_subnetwork.spoke2_subnet_eu
-      subnet_asia = google_compute_subnetwork.spoke2_subnet_asia
-      subnet_us   = google_compute_subnetwork.spoke2_subnet_us
+    vpc2 = {
+      eu_subnet   = google_compute_subnetwork.vpc2_eu_subnet
+      asia_subnet = google_compute_subnetwork.vpc2_asia_subnet
+      us_subnet   = google_compute_subnetwork.vpc2_us_subnet
     }
   }
   sensitive = true

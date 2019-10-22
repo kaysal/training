@@ -10,54 +10,27 @@ This terraform code deploys the architecture shown in the image below:
 
 ### Clone Lab
 Open a Cloud Shell terminal and run the following command:
-1. Clone the Git Repository for the labs
-```sh
-git clone https://github.com/kaysal/training.git
-```
 
-2. Change to the directory of the cloned repository
+Clone the Git Repository for the labs
 ```sh
-cd ~/training/codelabs/lab9-nic
+git clone https://gitvpc2.com/kaysal/training.git
 ```
 
 ## Deploy Lab
 
 Set your project ID as an environment variable. Replace `[PROJECT_ID_HERE]` with your Project ID in the command below:
 ```sh
-export TF_VAR_project_id=[PROJECT_ID_HERE]
+export TF_VAR_project_id_vpc1=[PROJECT_ID_HERE]
+export TF_VAR_project_id_vpc2=[PROJECT_ID_HERE]
 ```
 To deploy the infrastructure, run the following command:
 ```sh
+cd ~/training/codelabs/lab9-nic
 ./apply.sh
 ```
 
-
-Configure VPC peering between hub-vpc and spoke2-vpc to import and export custom routes. Replace `[PROJECT_ID_HERE]` with your Project ID in the command below:
-```sh
-export PROJECT_ID=[PROJECT_ID_HERE]
-gcloud beta compute networks peerings create hub-to-spoke2 \
-  --network hub-vpc \
-  --peer-network spoke2-vpc \
-  --peer-project ${PROJECT_ID} \
-  --import-custom-routes \
-  --export-custom-routes
-
-gcloud beta compute networks peerings create spoke2-to-hub \
-  --network spoke2-vpc \
-  --peer-network hub-vpc \
-  --peer-project ${PROJECT_ID} \
-  --import-custom-routes \
-  --export-custom-routes
-```
-
 ## Delete Lab
-Delete the VPC peerings:
-```sh
-gcloud beta compute networks peerings delete spoke2-to-hub
-gcloud beta compute networks peerings delete hub-to-spoke2
-```
-
-To destroy the remaining infrastructure, run the following command:
+To destroy the infrastructure, run the following command:
 ```sh
 cd ~/training/codelabs/lab9-nic
 ./destroy.sh
