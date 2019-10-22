@@ -52,7 +52,7 @@ resource "google_compute_ha_vpn_gateway" "vpc1_ha_vpn" {
 # vpn tunnels
 
 module "vpn_vpc1_to_vpc2" {
-  source           = "../../modules/vpn-gcp"
+  source           = "../../../modules/vpn-gcp"
   project_id       = var.project_id_vpc1
   network          = local.vpc1.network.self_link
   region           = var.vpc1.eu.region
@@ -96,7 +96,7 @@ resource "google_compute_ha_vpn_gateway" "vpc2_ha_vpn" {
 # vpn tunnels
 
 module "vpn_vpc2_to_vpc1" {
-  source           = "../../modules/vpn-gcp"
+  source           = "../../../modules/vpn-gcp"
   project_id       = var.project_id_vpc2
   network          = local.vpc2.network.self_link
   region           = var.vpc2.eu.region
