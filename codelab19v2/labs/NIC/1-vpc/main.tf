@@ -73,10 +73,10 @@ resource "google_compute_firewall" "vpc1_allow_rfc1918" {
   source_ranges = ["10.0.0.0/8"]
 }
 
-resource "google_compute_firewall" "vpc1_gfe_http_ssl_tcp_internal" {
+resource "google_compute_firewall" "vpc1_allow_health_checks" {
   provider    = google-beta
   project     = var.project_id_vpc1
-  name        = "${var.vpc1.prefix}gfe-http-ssl-tcp-internal"
+  name        = "${var.vpc1.prefix}allow-health-checks"
   description = "gfe http ssl tcp internal"
   network     = google_compute_network.vpc1_vpc.self_link
 
