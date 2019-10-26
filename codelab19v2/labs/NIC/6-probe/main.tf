@@ -52,7 +52,7 @@ resource "google_compute_instance" "vpc2_eu_vm" {
   zone                      = "${var.vpc2.eu.region}-b"
   metadata_startup_script   = local.eu_probe_init
   allow_stopping_for_update = true
-  tags                      = [var.vpc2.vm_tag, var.vpc2.proxy_tag]
+  tags                      = [var.vpc2.vm_tag]
 
   boot_disk {
     initialize_params {
@@ -104,7 +104,7 @@ resource "google_compute_instance" "vpc2_us_vm" {
   zone                      = "${var.vpc2.us.region}-b"
   metadata_startup_script   = local.us_probe_init
   allow_stopping_for_update = true
-  tags                      = [var.vpc2.vm_tag, var.vpc2.proxy_tag]
+  tags                      = [var.vpc2.vm_tag]
 
   boot_disk {
     initialize_params {
