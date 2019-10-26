@@ -35,7 +35,6 @@ export TF_VAR_vpc2='{
   prefix    = "vpc2-"
   asn       = "65002"
   vm_tag    = "vpc2-vm"
-  proxy_tag = "vpc2-proxy"
   eu = {
     region  = "europe-west2"
     subnet  = "10.2.1.0/24"
