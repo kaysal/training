@@ -1,0 +1,103 @@
+
+export TF_VAR_global='{
+  prefix       = "lab7-"
+  machine_type = "f1-micro",
+  image = {
+    debian = "debian-cloud/debian-9"
+  }
+}'
+
+export TF_VAR_onprem='{
+  prefix = "lab7-onprem-"
+  asn    = "65001"
+  vm_tag = "onprem-vm"
+  eu = {
+    west1 = {
+      region        = "europe-west1"
+      cidr          = "172.16.1.0/24"
+      vm            = "172.16.1.2"
+      dns_proxy_ip  = "172.16.1.100"
+      dns_server_ip = "172.16.1.99"
+      router_vti1   = "169.254.100.1"
+      router_vti2   = "169.254.100.5"
+    }
+    west2 = {
+      region      = "europe-west2"
+      cidr        = "172.16.2.0/24"
+      vm          = "172.16.2.2"
+      router_vti1 = "169.254.100.9"
+      router_vti2 = "169.254.100.13"
+    }
+  }
+}'
+
+export TF_VAR_hub='{
+  prefix = "lab7-hub-"
+  asn    = "65002"
+  vm_tag = "hub-vm"
+  eu = {
+    west1 = {
+      region         = "europe-west1"
+      cidr           = "10.10.10.0/24"
+      dns_proxy_ip   = "10.10.10.100"
+      dns_inbound_ip = "10.10.10.2"
+      router_vti1    = "169.254.100.2"
+      router_vti2    = "169.254.100.6"
+    }
+    west2 = {
+      region         = "europe-west2"
+      cidr           = "10.20.20.0/24"
+      dns_inbound_ip = "10.20.20.2"
+      router_vti1    = "169.254.100.10"
+      router_vti2    = "169.254.100.14
+    }
+  }
+}'
+
+export TF_VAR_spoke1='{
+  prefix = "lab7-spoke1-"
+  eu = {
+    west1 = {
+      region = "europe-west1"
+      cidr   = "10.1.1.0/24"
+      vm     = "10.1.1.2"
+    }
+    west2 = {
+      region = "europe-west2"
+      cidr   = "10.1.2.0/24"
+      vm     = "10.1.2.2"
+    }
+  }
+}'
+
+export TF_VAR_spoke2='{
+  prefix = "lab7-spoke2-"
+  eu = {
+    west1 = {
+      region = "europe-west1"
+      cidr   = "10.2.1.0/24"
+      vm     = "10.2.1.2"
+    }
+    west2 = {
+      region = "europe-west2"
+      cidr   = "10.2.2.0/24"
+      vm     = "10.2.2.2"
+    }
+  }
+}'
+
+export TF_VAR_restricted_apis='[
+  "storage",
+  "bigquery",
+  "bigtable",
+  "dataflow",
+  "dataproc",
+  "cloudkms",
+  "pubsub",
+  "spanner",
+  "containerregistry",
+  "container",
+  "gkeconnect",
+  "gkehub",
+  "logging",
+]'
