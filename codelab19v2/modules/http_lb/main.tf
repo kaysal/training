@@ -49,9 +49,12 @@ resource "google_compute_region_instance_group_manager" "mig" {
   project            = "${var.project_id}"
   name               = "${var.instance_group_name}"
   base_instance_name = "${var.instance_group_name}"
-  instance_template  = "${google_compute_instance_template.instance_template.self_link}"
   region             = "${var.region}"
   target_size        = "${var.target_size}"
+
+  version {
+    instance_template  = "${google_compute_instance_template.instance_template.self_link}"
+  }
 
   named_port {
     name = "http"
