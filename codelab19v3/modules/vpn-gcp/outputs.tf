@@ -16,15 +16,16 @@
 
 output "vpn_gateway" {
   description = "The Gateway resource with all attributes"
-  value       = "${var.vpn_gateway}"
+  value       = var.vpn_gateway
 }
 
 output "vpn_tunnels" {
   description = "The VPN tunnel resource and with all attributes"
-  value       = "${google_compute_vpn_tunnel.tunnel.*}"
+  value       = google_compute_vpn_tunnel.tunnel.*
 }
 
 output "router_interface" {
   description = "The router interface names"
-  value       = "${google_compute_router_interface.router_interface.*}"
+  value       = google_compute_router_interface.router_interface.*
 }
+

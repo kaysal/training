@@ -54,6 +54,6 @@ variable "ike_version" {
 }
 
 variable "session_config" {
-  type        = "list"
+  type        = any
   description = "The list of configurations of the vpn tunnels and bgp sessions being created"
 }
