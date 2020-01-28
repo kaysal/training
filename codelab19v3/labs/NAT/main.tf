@@ -108,7 +108,7 @@ module "vpc_demo_vm1" {
   name                    = "${local.prefix}vpc-demo-vm1"
   machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet1.self_link
   tags                    = []
@@ -120,7 +120,7 @@ module "vpc_demo_vm2" {
   name                    = "${local.prefix}vpc-demo-vm2"
   machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet2.self_link
   tags                    = []
@@ -132,7 +132,7 @@ module "vpc_demo_vm3" {
   name                    = "${local.prefix}vpc-demo-vm3"
   machine_type            = local.machine_type
   zone                    = "us-east1-b"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet3.self_link
   tags                    = []
