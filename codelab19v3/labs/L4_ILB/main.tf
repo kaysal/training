@@ -47,7 +47,6 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_10_1_1" {
   region                   = "us-central1"
   network                  = google_compute_network.vpc_demo.self_link
   private_ip_google_access = false
-  enable_flow_logs         = false
 }
 
 # firewall rules
@@ -109,7 +108,7 @@ module "vm_primary_a" {
   name                    = "${local.prefix}vm-primary-a"
   machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_1_1.self_link
   tags                    = ["allow-hc"]
@@ -121,7 +120,7 @@ module "vm_primary_b" {
   name                    = "${local.prefix}vm-primary-b"
   machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_1_1.self_link
   tags                    = ["allow-hc"]
@@ -133,7 +132,7 @@ module "vm_backup" {
   name                    = "${local.prefix}vm-backup"
   machine_type            = local.machine_type
   zone                    = "us-central1-c"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_1_1.self_link
   tags                    = ["allow-hc"]
@@ -145,7 +144,7 @@ module "vm_client" {
   name                    = "${local.prefix}vm-client"
   machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/client.sh")}"
+  metadata_startup_script = file("scripts/client.sh")
   image                   = local.image
   subnetwork_project      = var.project_id
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_1_1.self_link
