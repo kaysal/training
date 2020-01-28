@@ -47,7 +47,10 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_10_1_1" {
   region                   = "us-central1"
   network                  = google_compute_network.vpc_demo.self_link
   private_ip_google_access = true
-  enable_flow_logs         = true
+
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+  }
 }
 
 resource "google_compute_subnetwork" "vpc_demo_subnet_10_3_1" {
@@ -56,7 +59,10 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_10_3_1" {
   region                   = "us-east1"
   network                  = google_compute_network.vpc_demo.self_link
   private_ip_google_access = true
-  enable_flow_logs         = true
+
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+  }
 }
 
 # firewall rules
@@ -96,7 +102,7 @@ module "vpc_demo_vm_10_1_1" {
   name                    = "${local.prefix}vpc-demo-vm-10-1-1"
   machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_1_1.self_link
   tags                    = []
@@ -108,7 +114,7 @@ module "vpc_demo_vm_10_3_1" {
   name                    = "${local.prefix}vpc-demo-vm-10-3-1"
   machine_type            = local.machine_type
   zone                    = "us-east1-b"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_3_1.self_link
   tags                    = []
@@ -135,7 +141,10 @@ resource "google_compute_subnetwork" "vpc_onprem_subnet_10_128_1" {
   region                   = "us-central1"
   network                  = google_compute_network.vpc_onprem.self_link
   private_ip_google_access = false
-  enable_flow_logs         = false
+
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+  }
 }
 
 # firewall rules
@@ -175,7 +184,7 @@ module "vpc_onprem_vm" {
   name                    = "${local.prefix}vpc-onprem-vm"
   machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_onprem_subnet_10_128_1.self_link
   tags                    = []
