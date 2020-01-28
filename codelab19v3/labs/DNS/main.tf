@@ -42,12 +42,17 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_10_1_1" {
   ip_cidr_range            = "10.1.1.0/24"
   region                   = "us-central1"
   network                  = google_compute_network.vpc_demo.self_link
-  enable_flow_logs         = true
   private_ip_google_access = true
+
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+    #flow_sampling        = 0.5
+    #metadata             = "INCLUDE_ALL_METADATA"
+  }
 }
 
 resource "google_compute_firewall" "vpc_demo_fw_rule" {
-  provider    = "google-beta"
+  provider    = google-beta
   name        = "${local.prefix}vpc-demo-fw-rule"
   description = "VPC demo FW rules"
   network     = google_compute_network.vpc_demo.self_link
@@ -69,12 +74,12 @@ resource "google_compute_firewall" "vpc_demo_fw_rule" {
 #-----------------------------------
 module "vpc_demo_vm1_10_1_1" {
   source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
+  project                 = var.project_id
   name                    = "${local.prefix}vpc-demo-vm1-10-1-1"
-  machine_type            = "${local.machine_type}"
+  machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
+  metadata_startup_script = file("scripts/startup.sh")
+  image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_1_1.self_link
 }
 
@@ -82,11 +87,11 @@ module "vpc_demo_vm1_10_1_1" {
 #-----------------------------------
 module "vpc_demo_vm2_10_1_1" {
   source                  = "../../modules/gce-public"
-  project                 = "${var.project_id}"
+  project                 = var.project_id
   name                    = "${local.prefix}vpc-demo-vm2-10-1-1"
-  machine_type            = "${local.machine_type}"
+  machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
-  image                   = "${local.image}"
+  metadata_startup_script = file("scripts/startup.sh")
+  image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_1_1.self_link
 }
