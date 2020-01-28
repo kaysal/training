@@ -47,7 +47,6 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_l7_ilb" {
   region                   = "us-east1"
   network                  = google_compute_network.vpc_demo.self_link
   private_ip_google_access = false
-  enable_flow_logs         = false
 }
 
 resource "google_compute_subnetwork" "vpc_demo_subnet_l7_ilb_reserved" {
@@ -129,7 +128,7 @@ resource "google_compute_instance_template" "apache_instance_template" {
     access_config {}
   }
 
-  metadata_startup_script = "${file("scripts/apache.sh")}"
+  metadata_startup_script = file("scripts/apache.sh")
 
   service_account {
     scopes = ["cloud-platform"]
@@ -152,7 +151,7 @@ resource "google_compute_instance_template" "nginx_instance_template" {
     access_config {}
   }
 
-  metadata_startup_script = "${file("scripts/nginx.sh")}"
+  metadata_startup_script = file("scripts/nginx.sh")
 
   service_account {
     scopes = ["cloud-platform"]
