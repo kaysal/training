@@ -1,0 +1,16 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: td-url-host
+  annotations:
+    cloud.google.com/neg: '{"exposed_ports":{"80":{}}}'
+spec:
+  type: ClusterIP
+  selector:
+    app: phpapp
+  ports:
+  - name: port-8080
+    protocol: TCP
+    port: 80
+    targetPort: 8080

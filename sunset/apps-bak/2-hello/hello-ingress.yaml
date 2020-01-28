@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: hello-ingress
+  name: hello-ingress-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-ingress
+  template:
+    metadata:
+      labels:
+        app: hello-ingress
+    spec:
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: app-key
+      containers:
+      - image: gcr.io/gke-service-project-1b/hello-app:v3
+        name: hello-ingress-container
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
+      dnsPolicy: ClusterFirst
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hello-ingress
+  name: hello-ingress-svc
+spec:
+  ports:
+  - nodePort: 30077
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: hello-ingress
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: hello-ingress
+  name: hello-ingress
+spec:
+  backend:
+    serviceName: hello-ingress-svc
+    servicePort: 8080

@@ -1,0 +1,72 @@
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: php-dpl
+  labels:
+    app: phpapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: phpapp
+  template:
+    metadata:
+      labels:
+        app: phpapp
+    spec:
+      containers:
+      - name: php-container
+        image: phpapp
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        - name: pod-info
+          mountPath: /etc/podinfo
+          readOnly: false
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: SERVICE_ACCOUNT_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
+      volumes:
+      - name: pod-info
+        downwardAPI:
+          items:
+            - path: "name"
+              fieldRef:
+                fieldPath: metadata.name
+            - path: "namespace"
+              fieldRef:
+                fieldPath: metadata.namespace
+            - path: "uid"
+              fieldRef:
+                fieldPath: metadata.uid
+            - path: "labels"
+              fieldRef:
+                fieldPath: metadata.labels
+            - path: "annotations"
+              fieldRef:
+                fieldPath: metadata.annotations
+      dnsPolicy: ClusterFirst

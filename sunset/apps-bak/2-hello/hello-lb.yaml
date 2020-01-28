@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: hello-lb
+  name: hello-lb-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-lb
+  template:
+    metadata:
+      labels:
+        app: hello-lb
+    spec:
+      containers:
+      - image: gcr.io/gke-service-project-1b/hello-app:v2
+        name: hello-lb-container
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+      dnsPolicy: ClusterFirst
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hello-lb
+  name: hello-lb-svc
+spec:
+  ports:
+  - nodePort: 30066
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: hello-lb
+  sessionAffinity: None
+  type: LoadBalancer

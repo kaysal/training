@@ -1,0 +1,54 @@
+
+export TF_VAR_global='{
+  prefix       = ""
+  machine_type = "f1-micro",
+  image = {
+    debian = "debian-cloud/debian-9"
+  }
+}'
+
+export TF_VAR_onprem='{
+  prefix          = "onprem-"
+  region_a        = "europe-west1"
+  region_b        = "europe-west2"
+  location_a_cidr = "172.16.1.0/24"
+  location_b_cidr = "172.16.2.0/24"
+  vm_a_ip         = "172.16.1.2"
+  vm_b_ip         = "172.16.2.2"
+  asn             = "65001"
+  router_a_vti1   = "169.254.100.1"
+  router_a_vti2   = "169.254.100.5"
+  router_b_vti1   = "169.254.100.9"
+  router_b_vti2   = "169.254.100.13"
+}'
+
+export TF_VAR_hub='{
+  prefix      = "hub-"
+  region_a    = "europe-west1"
+  region_b    = "europe-west2"
+  asn         = "65002"
+  router_a_vti1 = "169.254.100.2"
+  router_a_vti2 = "169.254.100.6"
+  router_b_vti1 = "169.254.100.10"
+  router_b_vti2 = "169.254.100.14"
+}'
+
+export TF_VAR_spoke1='{
+  prefix        = "spoke1-"
+  region_a      = "europe-west1"
+  region_b      = "europe-west2"
+  region_a_cidr = "10.1.1.0/24"
+  region_b_cidr = "10.1.2.0/24"
+  vm_a_ip       = "10.1.1.2"
+  vm_b_ip       = "10.1.2.2"
+}'
+
+export TF_VAR_spoke2='{
+  prefix        = "spoke2-"
+  region_a      = "europe-west1"
+  region_b      = "europe-west2"
+  region_a_cidr = "10.2.1.0/24"
+  region_b_cidr = "10.2.2.0/24"
+  vm_a_ip       = "10.2.1.2"
+  vm_b_ip       = "10.2.2.2"
+}'

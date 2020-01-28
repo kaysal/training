@@ -1,0 +1,26 @@
+
+export TF_VAR_global='{
+  prefix             = "lab4-"
+  machine_type       = "f1-micro"
+  public_key_path    = "~/.ssh/gcp.pub"
+
+  image = {
+    debian      = "debian-cloud/debian-9"
+    pfsense_244 = "https://storage.googleapis.com/salawu-gcs/gcp/pfsense/pfSense-CE-memstick-serial-2.4.4-RELEASE-p1-amd64.img.tar.gz"
+  }
+}'
+
+export TF_VAR_vpc1='{
+  prefix           = "lab4-vpc1-"
+  region           = "europe-west1"
+  subnet_collector = "10.0.1.0/24"
+  subnet_mirror    = "10.0.2.0/24"
+  pfsense_ip       = "10.0.1.2"
+}'
+
+export TF_VAR_vpc2='{
+  prefix        = "lab4-vpc2-"
+  region        = "europe-west2"
+  subnet_mirror = "10.0.3.0/24"
+  pfsense_ip    = "10.0.3.2"
+}'

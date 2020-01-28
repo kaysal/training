@@ -1,0 +1,19 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: bb-allow-to-web
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      app: client
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: web
+  - to:
+    ports:
+    - protocol: UDP
+      port: 53

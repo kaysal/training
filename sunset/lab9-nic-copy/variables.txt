@@ -1,0 +1,74 @@
+
+export TF_VAR_global='{
+  prefix       = ""
+  machine_type = "f1-micro",
+  image = {
+    debian = "debian-cloud/debian-9"
+  }
+}'
+
+export TF_VAR_onprem='{
+  prefix         = "onprem-"
+  region         = "europe-west2"
+  subnet1        = "172.16.1.0/24"
+  subnet2        = "172.16.2.0/24"
+  subnet3        = "172.16.3.0/24"
+  vm1_ip         = "172.16.1.2"
+  vm2_ip         = "172.16.2.2"
+  dns_unbound_ip = "172.16.3.99"
+  dns_proxy_ip   = "172.16.3.100"
+  asn            = "65001"
+  router_vti1    = "169.254.100.1"
+  router_vti2    = "169.254.100.5"
+}'
+
+export TF_VAR_hub='{
+  prefix           = "hub-"
+  region_a         = "europe-west2"
+  region_b         = "europe-west1"
+  subnet1          = "10.10.10.0/24"
+  subnet2          = "10.20.20.0/24"
+  dns_proxy_ip     = "10.20.20.99"
+  dns_inbound_ip_a = "10.10.10.2"
+  dns_inbound_ip_b = "10.20.20.2"
+  asn              = "65002"
+  router_vti1      = "169.254.100.2"
+  router_vti2      = "169.254.100.6"
+}'
+
+export TF_VAR_spoke1='{
+  prefix          = "spoke1-"
+  region         = "europe-west2"
+  subnet1 = "10.1.1.0/24"
+  subnet2 = "10.1.2.0/24"
+  vm1_ip       = "10.1.1.2"
+  vm2_ip       = "10.1.2.2"
+  gclb_tag        = "gclb"
+}'
+
+export TF_VAR_spoke2='{
+  prefix    = "spoke2-"
+  region  = "europe-west1"
+  subnet1 = "10.2.2.0/24"
+  subnet2 = "10.2.3.0/24"
+  vm1_ip  = "10.2.2.2"
+  vm2_ip  = "10.2.3.2"
+  ilb_vip   = "10.2.2.99"
+  ilb_tag   = "ilb"
+}'
+
+export TF_VAR_restricted_apis='[
+  "storage",
+  "bigquery",
+  "bigtable",
+  "dataflow",
+  "dataproc",
+  "cloudkms",
+  "pubsub",
+  "spanner",
+  "containerregistry",
+  "container",
+  "gkeconnect",
+  "gkehub",
+  "logging",
+]'

@@ -1,0 +1,23 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client2
+  labels:
+    app: client2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client2
+  template:
+    metadata:
+      labels:
+        app: client2
+    spec:
+      containers:
+      - image: client
+        name: client2
+        command:
+          - sleep
+          - "3600"

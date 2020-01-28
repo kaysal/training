@@ -1,0 +1,11 @@
+schemaVersion: 2.0.0
+
+fileExistenceTests:
+  - name: '- index.html'
+    path: '/var/www/html/index.html'
+    shouldExist: false
+  - name: '+ index.php'
+    path: '/var/www/html/index.php'
+    shouldExist: true
+metadataTest:
+  exposedPorts: ["8080"]

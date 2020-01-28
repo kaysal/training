@@ -57,6 +57,16 @@ resource "google_compute_router" "cloud1_router" {
     advertise_mode    = "CUSTOM"
     advertised_groups = ["ALL_SUBNETS"]
 
+    # cloud2 subnet
+    advertised_ip_ranges {
+      range = "10.10.2.0/24"
+    }
+
+    # cloud3 subnet
+    advertised_ip_ranges {
+      range = "10.10.3.0/24"
+    }
+
     # restricted.googleapis.com
     advertised_ip_ranges {
       range = "199.36.153.4/30"

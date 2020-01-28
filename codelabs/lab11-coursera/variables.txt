@@ -1,0 +1,37 @@
+
+export TF_VAR_global='{
+  prefix       = ""
+  machine_type = "f1-micro",
+  image = {
+    debian = "debian-cloud/debian-9"
+  }
+}'
+
+export TF_VAR_orange='{
+  prefix = ""
+  asn = 65009
+  eu1 = {
+    region = "europe-west1"
+    cidr = {
+      gce = "10.9.50.0/24"
+      gke = {
+        node = "10.9.7.0/28"
+        svc  = "10.9.8.0/24"
+        pod  = "10.9.9.0/24"
+        api  = "172.16.0.32/28"
+      }
+    }
+  }
+  eu2 = {
+    region = "europe-west2"
+    cidr = {
+      gce = "10.9.51.0/24"
+      gke = {
+        node = "10.9.7.16/28"
+        svc  = "10.9.10.0/24"
+        pod  = "10.9.11.0/24"
+        api  = "172.16.0.48/28"
+      }
+    }
+  }
+}'

@@ -1,0 +1,27 @@
+
+export TF_VAR_global='{
+  prefix       = ""
+  machine_type = "g1-small",
+  image = {
+    debian = "debian-cloud/debian-9"
+  }
+}'
+
+export TF_VAR_default='{
+  us = {
+    region = "us-central1"
+  }
+  eu = {
+    region = "europe-west1"
+  }
+  asia = {
+    region = "asia-east1"
+  }
+}'
+
+export TF_VAR_peering='{
+  us = {
+    prefix = "us-"
+    region = "us-central1"
+  }
+}'

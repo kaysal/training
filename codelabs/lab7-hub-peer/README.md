@@ -1,4 +1,4 @@
-# LAB 1: HA VPN from GCP to GCP
+# LAB 7: Hub and Spoke with VPC Peering
 
 Compute Engine API > VPN Tunnels = 12
 

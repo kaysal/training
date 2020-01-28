@@ -1,0 +1,56 @@
+
+export TF_VAR_global='{
+  prefix       = ""
+  machine_type = "f1-micro",
+  image = {
+    debian = "debian-cloud/debian-9"
+  }
+}'
+
+export TF_VAR_cloud='{
+  prefix = "cloud-"
+  vm_tag = "cloud-vm"
+  asn    = "65500"
+  eu = {
+    region  = "europe-west2"
+    subnet  = "10.1.1.0/24"
+    vm_ip   = "10.1.1.2"
+    zone1 = {
+      interconnect      = "ic-3"
+      vlan_id           = "100"
+      candidate_subnets = "169.254.30.0/29"
+      ip_range          = "169.254.30.1/29"
+      peer_ip_address   = "169.254.30.2"
+      peer_asn          = "64500"
+      advertised_route_priority = "100"
+    }
+    zone2 = {
+      interconnect      = "ic-4"
+      vlan_id           = "100"
+      candidate_subnets = "169.254.40.0/29"
+      ip_range          = "169.254.40.1/29"
+      peer_ip_address   = "169.254.40.2"
+      peer_asn          = "64500"
+      advertised_route_priority = "100"
+    }
+  }
+  asia = {
+    region = "asia-east2"
+    subnet = "10.1.2.0/24"
+    vm_ip  = "10.1.2.2"
+  }
+  us = {
+    region = "us-east4"
+    subnet = "10.1.3.0/24"
+    vm_ip  = "10.1.3.2"
+  }
+}'
+
+export TF_VAR_onprem='{
+  prefix    = "onprem-"
+  asn       = "64500"
+  eu = {
+    cidr  = "172.16.0.0/16"
+    vm_ip   = "172.16.16.16"
+  }
+}'

@@ -34,4 +34,6 @@ pkg/
 .skaffold-*.yaml
 .kubernetes-manifests-*/
 _run.*
-_del.*
+_dev.*
+_delete.*
+_env.txt

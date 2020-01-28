@@ -1,0 +1,60 @@
+
+export TF_VAR_global='{
+  prefix             = "lab3-"
+  machine_type       = "f1-micro"
+  machine_type_fw    = "n1-standard-4"
+  min_machine_cpu_fw = "Intel Skylake"
+  public_key_path    = "~/.ssh/gcp.pub"
+
+  image = {
+    debian = "debian-cloud/debian-9"
+    pan = "https://www.googleapis.com/compute/v1/projects/paloaltonetworksgcp-public/global/images/vmseries-bundle1-810"
+  }
+
+  tags = {
+    pan = "pan-ilb"
+  }
+}'
+
+export TF_VAR_onprem='{
+  prefix         = "lab3-onprem-"
+  region         = "europe-west1"
+  subnet_cidr    = "172.16.1.0/24"
+  natgw_ip   = "172.16.1.99"
+  asn            = "65001"
+  router_vti1    = "169.254.100.1"
+  router_vti2    = "169.254.100.5"
+}'
+
+export TF_VAR_untrust='{
+  prefix         = "lab3-untrust-"
+  region         = "europe-west1"
+  subnet_cidr    = "10.0.1.0/24"
+  asn            = "65002"
+  router_vti1    = "169.254.100.2"
+  router_vti2    = "169.254.100.6"
+  panb_ip          = "10.0.1.2"
+  panc_ip          = "10.0.1.3"
+}'
+
+export TF_VAR_trust='{
+  prefix         = "lab3-trust-"
+  region         = "europe-west1"
+  subnet_cidr    = "10.0.2.0/24"
+  panb_ip          = "10.0.2.2"
+  panc_ip          = "10.0.2.3"
+}'
+
+export TF_VAR_mgt='{
+  prefix         = "lab3-mgt-"
+  region         = "europe-west1"
+  subnet_cidr    = "10.0.0.0/24"
+  panb_ip          = "10.0.0.2"
+  panc_ip          = "10.0.0.3"
+}'
+
+export TF_VAR_zone1='{
+  prefix         = "lab3-zone1-"
+  region         = "europe-west2"
+  subnet_cidr    = "10.200.20.0/24"
+}'

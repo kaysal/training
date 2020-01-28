@@ -1,0 +1,237 @@
+
+export TF_VAR_global='{
+  prefix           = ""
+  small_machine    = "g1-small",
+  standard_machine = "n1-standard-1",
+  host             = "network.ic"
+  image = {
+    debian = "debian-cloud/debian-9"
+  }
+}'
+
+export TF_VAR_aws='{
+  tokyo = {
+    region      = "ap-northeast-1"
+    zone        = "ap-northeast-1a"
+    vpc_cidr    = "10.99.0.0/16"
+    subnet_cidr = "10.99.1.0/24"
+  }
+  ohio = {
+    region      = "us-east-2"
+    zone        = "us-east-2a"
+    vpc_cidr    = "10.99.0.0/16"
+    subnet_cidr = "10.99.1.0/24"
+  }
+  london = {
+    region      = "eu-west-2"
+    zone        = "eu-west-2a"
+    vpc_cidr    = "10.99.0.0/16"
+    subnet_cidr = "10.99.1.0/24"
+  }
+  singapore = {
+    region      = "ap-southeast-1"
+    zone        = "ap-southeast-1a"
+    vpc_cidr    = "10.99.0.0/16"
+    subnet_cidr = "10.99.1.0/24"
+  }
+  canada = {
+    region      = "ca-central-1"
+    zone        = "ca-central-1a"
+    vpc_cidr    = "10.99.0.0/16"
+    subnet_cidr = "10.99.1.0/24"
+  }
+}'
+
+export TF_VAR_hub='{
+  vpc1 = {
+    prefix = "hub-"
+    asn = 65304
+    asia = {
+      region = "asia-east1"
+      cidr = {
+        browse   = "10.1.1.0/24"
+        cart     = "10.1.2.0/24"
+        checkout = "10.1.3.0/24"
+        db       = "10.1.4.0/24"
+      }
+      ip = {
+        db = "10.1.4.99"
+      }
+    }
+    eu = {
+      region = "europe-west1"
+      cidr = {
+        browse   = "10.2.1.0/24"
+        cart     = "10.2.2.0/24"
+        checkout = "10.2.3.0/24"
+        db       = "10.2.4.0/24"
+        batch    = "10.2.5.0/24"
+        nic      = "10.2.6.0/24"
+      }
+      ip = {
+        db    = "10.2.4.99"
+        batch = "10.2.5.99"
+        nic   = "10.2.6.99"
+        natgw = "10.2.6.3"
+      }
+      zone1 = {
+        interconnect      = "ic-3"
+        vlan_id           = "304"
+        candidate_subnets = "169.254.30.0/29"
+        ip_range          = "169.254.30.1/29"
+        peer_ip_address   = "169.254.30.2"
+        peer_asn          = "64500"
+        advertised_route_priority = "100"
+      }
+      zone2 = {
+        interconnect      = "ic-4"
+        vlan_id           = "304"
+        candidate_subnets = "169.254.40.0/29"
+        ip_range          = "169.254.40.1/29"
+        peer_ip_address   = "169.254.40.2"
+        peer_asn          = "64500"
+        advertised_route_priority = "100"
+      }
+      megaport = {
+        peer_asn          = "64511"
+        advertised_route_priority = "100"
+      }
+      vpn = {
+        asn     = "65100"
+        cr_vti1 = "169.254.100.1"
+        cr_vti2 = "169.254.100.5"
+      }
+    }
+    us = {
+      region      = "us-central1"
+      cidr = {
+        browse   = "10.3.1.0/24"
+        cart     = "10.3.2.0/24"
+        checkout = "10.3.3.0/24"
+        db       = "10.3.4.0/24"
+        mqtt     = "10.3.5.0/24"
+        nic      = "10.3.6.0/24"
+        probe    = "10.3.7.0/24"
+        payment  = "10.3.8.0/24"
+      }
+      ip = {
+        db    = "10.3.4.99"
+        nic   = "10.3.6.99"
+        probe = "10.3.7.99"
+        ilb   = "10.3.8.99"
+      }
+    }
+  }
+  vpc2 = {
+    asn = 65400
+    eu = {
+      region  = "europe-west1"
+      cidr = {
+        nic = "10.4.1.0/24"
+      }
+      ip = {
+        nic = "10.4.1.2"
+      }
+      vpn = {
+        asn     = "65200"
+        cr_vti1 = "169.254.100.2"
+        cr_vti2 = "169.254.100.6"
+      }
+    }
+    us = {
+      region  = "us-central1"
+      cidr = {
+        data = "10.5.1.0/24"
+      }
+      ip  = {
+        data = "10.5.1.2"
+      }
+    }
+  }
+  vpc_trust = {
+    prefix = "trust-"
+    asn    = 65324
+    eu = {
+      region = "europe-west2"
+      cidr = {
+        natgw = "10.8.1.0/24"
+        dgw   = "10.8.1.1"
+      }
+      ip = {
+        natgw = "10.8.1.2"
+      }
+      zone1 = {
+        interconnect      = "ic-3"
+        vlan_id           = "324"
+        candidate_subnets = "169.254.32.0/29"
+        ip_range          = "169.254.32.1/29"
+        peer_ip_address   = "169.254.32.2"
+        peer_asn          = "64500"
+        advertised_route_priority = "100"
+      }
+      zone2 = {
+        interconnect      = "ic-4"
+        vlan_id           = "324"
+        candidate_subnets = "169.254.42.0/29"
+        ip_range          = "169.254.42.1/29"
+        peer_ip_address   = "169.254.42.2"
+        peer_asn          = "64500"
+        advertised_route_priority = "100"
+      }
+    }
+  }
+  vpc_untrust = {
+    eu = {
+      region = "europe-west2"
+      cidr = {
+        natgw = "10.7.1.0/24"
+      }
+      ip = {
+        natgw = "10.7.1.2"
+      }
+    }
+  }
+  vpc_anthos = {
+    prefix = "anthos-"
+    asn    = 65314
+    eu = {
+      region = "europe-west2"
+      cidr = {
+        anthos = "10.9.1.0/24"
+      }
+      zone1 = {
+        interconnect      = "ic-3"
+        vlan_id           = "314"
+        candidate_subnets = "169.254.31.0/29"
+        ip_range          = "169.254.31.1/29"
+        peer_ip_address   = "169.254.31.2"
+        peer_asn          = "64500"
+        advertised_route_priority = "100"
+      }
+      zone2 = {
+        interconnect      = "ic-4"
+        vlan_id           = "314"
+        candidate_subnets = "169.254.41.0/29"
+        ip_range          = "169.254.41.1/29"
+        peer_ip_address   = "169.254.41.2"
+        peer_asn          = "64500"
+        advertised_route_priority = "100"
+      }
+    }
+  }
+}'
+
+export TF_VAR_spoke='{
+  vpc_spoke1 = {
+    asn = 65400
+    eu = {
+      region    = "europe-west1"
+      cidr = {
+        ext_db = "10.6.1.0/24"
+      }
+      ip = {
+        ext_db = "10.6.1.2"
+      }
+    }
+  }
+}'

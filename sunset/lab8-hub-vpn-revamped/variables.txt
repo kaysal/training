@@ -1,0 +1,93 @@
+
+TF_VAR_global='{
+  prefix       = "lab8-"
+  machine_type = "f1-micro",
+  image = {
+    debian = "debian-cloud/debian-9"
+  }
+}'
+
+TF_VAR_onprem='{
+  prefix = "lab8-onprem-"
+  asn    = "65001"
+  belgium = {
+    region       = "europe-west1"
+    subnet       = "172.16.1.0/24"
+    vm_ip        = "172.16.1.2"
+    proxy_ip     = "172.16.1.100"
+    ns_ip        = "172.16.1.99"
+    router_vti1  = "169.254.100.1"
+    router_vti2  = "169.254.100.5"
+  }
+  london = {
+    region      = "europe-west2"
+    subnet      = "172.16.2.0/24"
+    vm_ip       = "172.16.2.2"
+    router_vti1 = "169.254.100.9"
+    router_vti2 = "169.254.100.13"
+  }
+}'
+
+TF_VAR_hub='{
+  prefix = "lab8-hub-"
+  asn    = "65002"
+  belgium = {
+    region           = "europe-west1"
+    subnet           = "10.10.10.0/24"
+    vm_ip            = "172.16.1.2"
+    proxy_ip         = "10.10.10.100"
+    dns_inbound_ip   = "10.10.10.2"
+    router_vti1      = "169.254.100.2"
+    router_vti2      = "169.254.100.6"
+  }
+  london = {
+    region         = "europe-west2"
+    subnet         = "10.20.20.0/24"
+    dns_inbound_ip = "10.20.20.2"
+    router_vti1    = "169.254.100.10"
+    router_vti2    = "169.254.100.14"
+  }
+}'
+
+TF_VAR_spoke1='{west2
+  prefix = "lab8-spoke1-"
+  belgium = {
+    region = "europe-west1"
+    subnet = "10.1.1.0/24"
+    vm_ip  = "10.1.1.2"
+  london = {
+    region = "europe-west2"
+    subnet = "10.1.2.0/24"
+    vm_ip  = "10.1.2.2"
+  }
+}'
+
+TF_VAR_spoke2='{
+  prefix = "lab8-spoke2-"
+  belgium = {
+    region = "europe-west1"
+    subnet = "10.2.1.0/24"
+    vm_ip  = "10.2.1.2"
+  }
+  london = {
+    region = "europe-west2"
+    subnet = "10.2.2.0/24"
+    vm_ip  = "10.2.2.2"
+  }
+}'
+
+TF_VAR_restricted_apis='[
+  "storage",
+  "bigquery",
+  "bigtable",
+  "dataflow",
+  "dataproc",
+  "cloudkms",
+  "pubsub",
+  "spanner",
+  "containerregistry",
+  "container",
+  "gkeconnect",
+  "gkehub",
+  "logging",
+]'

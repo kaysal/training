@@ -1,0 +1,215 @@
+
+export TF_VAR_global='{
+  prefix       = ""
+  machine_type = "f1-micro",
+  image = {
+    debian = "debian-cloud/debian-9"
+  }
+}'
+
+export TF_VAR_onprem='{
+  prefix = "onprem-"
+  asn    = "65001"
+  eu = {
+    region         = "europe-west2"
+    cidr           = "172.16.1.0/24"
+    alias          = "172.16.100.0/24"
+    vm_ip          = "172.16.1.2"
+    proxy_ip       = "172.16.1.99"
+    unbound_ip     = "172.16.1.100"
+    proxy_eu1_ip   = "172.16.100.10"
+    proxy_asia1_ip = "172.16.100.20"
+    proxy_us1_ip   = "172.16.100.30"
+    cr_vti1        = "169.254.100.1"
+    cr_vti2        = "169.254.100.5"
+  }
+  asia = {
+    region  = "asia-east2"
+    cidr    = "172.16.2.0/24"
+    vm_ip   = "172.16.2.2"
+    cr_vti1 = "169.254.100.9"
+    cr_vti2 = "169.254.100.13"
+  }
+  us = {
+    region  = "us-east4"
+    cidr    = "172.16.3.0/24"
+    vm_ip   = "172.16.3.2"
+    cr_vti1 = "169.254.100.17"
+    cr_vti2 = "169.254.100.21"
+  }
+}'
+
+export TF_VAR_hub='{
+  prefix = "hub-"
+  asn    = "65002"
+  eu1 = {
+    region         = "europe-west1"
+    cidr           = "10.1.1.0/24"
+    cidrx          = "10.1.3.0/24"
+    dgw_ipx        = "10.1.3.1"
+    proxy_ip       = "10.1.1.2"
+    proxy_ipx      = "10.1.3.2"
+    dns_inbound_ip = "10.1.1.3"
+    cr_vti         = "169.254.100.2"
+  }
+  eu2 = {
+    region         = "europe-west2"
+    cidr           = "10.1.2.0/24"
+    cidrx          = "10.1.4.0/24"
+    dgw_ipx        = "10.1.4.1"
+    proxy_ip       = "10.1.2.2"
+    proxy_ipx      = "10.1.4.2"
+    dns_inbound_ip = "10.1.2.3"
+    cr_vti         = "169.254.100.6"
+  }
+  asia1 = {
+    region         = "asia-southeast1"
+    cidr           = "10.2.1.0/24"
+    cidrx          = "10.2.3.0/24"
+    dgw_ipx        = "10.2.3.1"
+    proxy_ip       = "10.2.1.2"
+    proxy_ipx      = "10.2.3.2"
+    dns_inbound_ip = "10.2.1.3"
+    cr_vti         = "169.254.100.10"
+  }
+  asia2 = {
+    region         = "asia-east2"
+    cidr           = "10.2.2.0/24"
+    cidrx          = "10.2.4.0/24"
+    dgw_ipx        = "10.2.4.1"
+    proxy_ip       = "10.2.2.2"
+    proxy_ipx      = "10.2.4.2"
+    dns_inbound_ip = "10.2.2.3"
+    cr_vti         = "169.254.100.14"
+  }
+  us1 = {
+    region         = "us-central1"
+    cidr           = "10.3.1.0/24"
+    cidrx          = "10.3.3.0/24"
+    dgw_ipx        = "10.3.3.1"
+    proxy_ip       = "10.3.1.2"
+    proxy_ipx      = "10.3.3.2"
+    dns_inbound_ip = "10.3.1.3"
+    cr_vti         = "169.254.100.18"
+  }
+  us2 = {
+    region         = "us-east4"
+    cidr           = "10.3.2.0/24"
+    cidrx          = "10.3.4.0/24"
+    dgw_ipx        = "10.3.4.1"
+    proxy_ip       = "10.3.2.2"
+    proxy_ipx      = "10.3.4.2"
+    dns_inbound_ip = "10.3.2.4"
+    cr_vti         = "169.254.100.22"
+  }
+}'
+
+export TF_VAR_svc='{
+  prefix = "svc-"
+  asn    = "65003"
+  eu1 = {
+    region = "europe-west1"
+    cidr   = "10.9.1.0/24"
+    vm_ip  = "10.9.1.2"
+  }
+  eu2 = {
+    region = "europe-west2"
+    cidr   = "10.9.2.0/24"
+    vm_ip  = "10.9.2.2"
+  }
+  asia1 = {
+    region = "asia-southeast1"
+    cidr   = "10.9.3.0/24"
+    vm_ip  = "10.9.3.2"
+  }
+  asia2 = {
+    region = "asia-east2"
+    cidr   = "10.9.4.0/24"
+    vm_ip  = "10.9.4.2"
+  }
+  us1 = {
+    region = "us-central1"
+    cidr   = "10.9.5.0/24"
+    vm_ip  = "10.9.5.2"
+  }
+  us2 = {
+    region = "us-east4"
+    cidr   = "10.9.6.0/24"
+    vm_ip  = "10.9.6.2"
+  }
+}'
+
+export TF_VAR_restricted_apis='[
+  "storage",
+  "bigquery",
+  "bigtable",
+  "dataflow",
+  "dataproc",
+  "cloudkms",
+  "pubsub",
+  "spanner",
+  "containerregistry",
+  "container",
+  "gkeconnect",
+  "gkehub",
+  "logging",
+]'
+
+export TF_VAR_onprem_zones='[
+  ".",
+  "onprem.lab.",
+  "hub.lab.",
+  "svc.lab.",
+]'
+
+export TF_VAR_onprem_forward_ns='[
+  "172.16.1.100",
+  "172.16.1.100",
+  "172.16.100.10",
+  "172.16.100.10",
+]'
+
+export TF_VAR_hub_zones='[
+  "eu1.hub.lab.",
+  "eu2.hub.lab.",
+  "asia1.hub.lab.",
+  "asia2.hub.lab.",
+  "us1.hub.lab.",
+  "us2.hub.lab.",
+  "eu1.svc.lab.",
+  "eu2.svc.lab.",
+  "asia1.svc.lab.",
+  "asia2.svc.lab.",
+  "us1.svc.lab.",
+  "us2.svc.lab.",
+]'
+
+export TF_VAR_hub_dns='[
+  "proxy.eu1.hub.lab.",
+  "proxy.eu2.hub.lab.",
+  "proxy.asia1.hub.lab.",
+  "proxy.asia2.hub.lab.",
+  "proxy.us1.hub.lab.",
+  "proxy.us2.hub.lab.",
+  "vm.eu1.svc.lab.",
+  "vm.eu2.svc.lab.",
+  "vm.asia1.svc.lab.",
+  "vm.asia2.svc.lab.",
+  "vm.us1.svc.lab.",
+  "vm.us2.svc.lab.",
+]'
+
+export TF_VAR_hub_records='[
+  "10.1.1.2",
+  "10.1.2.2",
+  "10.2.1.2",
+  "10.2.2.2",
+  "10.3.1.2",
+  "10.3.2.2",
+  "10.9.1.2",
+  "10.9.2.2",
+  "10.9.3.2",
+  "10.9.4.2",
+  "10.9.5.2",
+  "10.9.6.2",
+]'
