@@ -44,7 +44,7 @@ variable "tunnel_name_prefix" {
 }
 
 variable "peer_ips" {
-  type        = "list"
+  type        = list
   description = "IP address of remote-peer/gateway"
 }
 
@@ -57,17 +57,17 @@ variable "cr_name" {
 }
 
 variable "peer_asn" {
-  type        = "list"
+  type        = list
   description = "Please enter the ASN of the BGP peer that cloud router will use"
 }
 
 variable "bgp_cr_session_range" {
-  type        = "list"
+  type        = list
   description = "Please enter the cloud-router interface IP/Session IP"
 }
 
 variable "bgp_remote_session_range" {
-  type        = "list"
+  type        = list
   description = "Please enter the remote environments BGP Session IP"
 }
 

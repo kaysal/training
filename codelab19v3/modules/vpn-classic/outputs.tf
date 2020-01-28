@@ -14,5 +14,6 @@
 
 output "vpn_tunnels" {
   description = "The VPN tunnel attributes"
-  value       = "${google_compute_vpn_tunnel.tunnel.*}"
+  value       = google_compute_vpn_tunnel.tunnel.*
 }
+
