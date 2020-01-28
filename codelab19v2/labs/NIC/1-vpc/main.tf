@@ -89,8 +89,8 @@ resource "google_compute_firewall" "vpc1_allow_health_checks" {
   }
 
   source_ranges = data.google_compute_lb_ip_ranges.ranges.http_ssl_tcp_internal
-  #target_tags   = [var.vpc1.hc_tag]
-  target_tags = ["some-tag"]
+  target_tags   = [var.vpc1.hc_tag]
+  #target_tags = ["some-tag"]
 }
 
 # vpc2
@@ -160,9 +160,10 @@ resource "google_compute_firewall" "vpc2_allow_rfc1918" {
 }
 
 resource "google_compute_firewall" "deny_http" {
-  project = var.project_id_vpc2
-  name    = "${var.vpc2.prefix}deny-http"
-  network = google_compute_network.vpc2_vpc.self_link
+  project  = var.project_id_vpc2
+  name     = "${var.vpc2.prefix}deny-http"
+  network  = google_compute_network.vpc2_vpc.self_link
+  disabled = true
 
   deny {
     protocol = "tcp"

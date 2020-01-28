@@ -41,7 +41,7 @@ resource "google_compute_router" "vpc1_router_eu" {
     advertise_mode = "CUSTOM"
     advertised_ip_ranges { range = local.vpc1.eu_subnet.ip_cidr_range }
     advertised_ip_ranges { range = local.vpc1.asia_subnet.ip_cidr_range }
-    #advertised_ip_ranges { range = local.vpc1.us_subnet.ip_cidr_range }
+    advertised_ip_ranges { range = local.vpc1.us_subnet.ip_cidr_range }
   }
 }
 
