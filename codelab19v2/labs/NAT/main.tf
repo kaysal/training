@@ -47,7 +47,6 @@ resource "google_compute_subnetwork" "vpc_demo_subnet1" {
   region                   = "us-central1"
   network                  = google_compute_network.vpc_demo.self_link
   private_ip_google_access = false
-  enable_flow_logs         = false
 }
 
 resource "google_compute_subnetwork" "vpc_demo_subnet2" {
@@ -56,7 +55,6 @@ resource "google_compute_subnetwork" "vpc_demo_subnet2" {
   region                   = "us-central1"
   network                  = google_compute_network.vpc_demo.self_link
   private_ip_google_access = false
-  enable_flow_logs         = false
 }
 
 resource "google_compute_subnetwork" "vpc_demo_subnet3" {
@@ -65,7 +63,6 @@ resource "google_compute_subnetwork" "vpc_demo_subnet3" {
   region                   = "us-east1"
   network                  = google_compute_network.vpc_demo.self_link
   private_ip_google_access = false
-  enable_flow_logs         = false
 }
 
 # firewall rules
