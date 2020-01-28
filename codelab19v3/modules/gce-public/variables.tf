@@ -54,7 +54,7 @@ variable "metadata_startup_script" {
 }
 
 variable "tags" {
-  type        = "list"
+  type        = list
   description = "network tags"
   default     = []
 }

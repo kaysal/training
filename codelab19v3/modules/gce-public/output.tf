@@ -14,5 +14,5 @@
 
 output "instance" {
   description = "instance resource with all attributes"
-  value       = "${google_compute_instance.instance}"
+  value       = google_compute_instance.instance
 }
