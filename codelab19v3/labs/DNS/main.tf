@@ -46,8 +46,6 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_10_1_1" {
 
   log_config {
     aggregation_interval = "INTERVAL_5_SEC"
-    #flow_sampling        = 0.5
-    #metadata             = "INCLUDE_ALL_METADATA"
   }
 }
 
