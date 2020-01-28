@@ -96,7 +96,7 @@ module "http_lb" {
   machine_type                      = local.machine_type
   image                             = local.image
   subnetwork                        = google_compute_subnetwork.vpc_demo_subnet1.self_link
-  metadata_startup_script           = "${file("scripts/startup.sh")}"
+  metadata_startup_script           = file("scripts/startup.sh")
   instance_group_name               = "cdn-mig"
   target_size                       = 1
   autoscaler_max_replicas           = 3
