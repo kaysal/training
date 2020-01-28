@@ -13,5 +13,6 @@
 # limitations under the License.
 
 output "cdn_ip" {
-  value = "${google_compute_global_address.address.address}"
+  value = google_compute_global_address.address.address
 }
+
