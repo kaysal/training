@@ -64,7 +64,7 @@ resource "google_compute_router" "vpc_demo_cr_us_c1" {
 # vpn gateway
 
 resource "google_compute_ha_vpn_gateway" "vpc_demo_vpngw_us_c1" {
-  provider = "google-beta"
+  provider = google-beta
   region   = "us-central1"
   name     = "${local.prefix}vpc-demo-vpngw-us-c1"
   network  = google_compute_network.vpc_demo.self_link
@@ -108,7 +108,7 @@ module "vpn_demo_to_onprem" {
 # vpc
 
 resource "google_compute_network" "vpc_onprem" {
-  provider                = "google-beta"
+  provider                = google-beta
   name                    = "${local.prefix}vpc-onprem"
   auto_create_subnetworks = "false"
   routing_mode            = "GLOBAL"
@@ -131,7 +131,7 @@ resource "google_compute_router" "vpc_onprem_cr_us_c1" {
 # vpn gateway
 
 resource "google_compute_ha_vpn_gateway" "vpc_onprem_vpngw_us_c1" {
-  provider = "google-beta"
+  provider = google-beta
   region   = "us-central1"
   name     = "${local.prefix}vpc-onprem-vpngw-us-c1"
   network  = google_compute_network.vpc_onprem.self_link
