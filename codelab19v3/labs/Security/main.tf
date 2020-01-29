@@ -46,8 +46,7 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_10_1_1" {
   ip_cidr_range            = "10.1.1.0/24"
   region                   = "us-central1"
   network                  = google_compute_network.vpc_demo.self_link
-  private_ip_google_access = true
-  enable_flow_logs         = true
+  private_ip_google_access = "true"
 
   secondary_ip_range {
     range_name    = "pod-range"
@@ -58,6 +57,10 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_10_1_1" {
     range_name    = "svc-range"
     ip_cidr_range = "10.5.1.0/24"
   }
+
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+  }
 }
 
 resource "google_compute_subnetwork" "vpc_demo_subnet_10_2_1" {
@@ -65,8 +68,11 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_10_2_1" {
   ip_cidr_range            = "10.2.1.0/24"
   region                   = "us-central1"
   network                  = google_compute_network.vpc_demo.self_link
-  private_ip_google_access = false
-  enable_flow_logs         = true
+  private_ip_google_access = "false"
+
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+  }
 }
 
 resource "google_compute_subnetwork" "vpc_demo_subnet_10_3_1" {
@@ -74,8 +80,11 @@ resource "google_compute_subnetwork" "vpc_demo_subnet_10_3_1" {
   ip_cidr_range            = "10.3.1.0/24"
   region                   = "us-east1"
   network                  = google_compute_network.vpc_demo.self_link
-  private_ip_google_access = true
-  enable_flow_logs         = true
+  private_ip_google_access = "true"
+
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+  }
 }
 
 # firewall rules
@@ -115,7 +124,7 @@ module "vpc_demo_vm_10_1_1" {
   name                    = "${local.prefix}vpc-demo-vm-10-1-1"
   machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_1_1.self_link
 }
@@ -126,7 +135,7 @@ module "vpc_demo_vm_10_2_1" {
   name                    = "${local.prefix}vpc-demo-vm-10-2-1"
   machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_2_1.self_link
 }
@@ -137,7 +146,7 @@ module "vpc_demo_vm_10_3_1" {
   name                    = "${local.prefix}vpc-demo-vm-10-3-1"
   machine_type            = local.machine_type
   zone                    = "us-east1-b"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_demo_subnet_10_3_1.self_link
 }
@@ -253,13 +262,12 @@ resource "google_compute_subnetwork" "vpc_onprem_subnet_10_10_10" {
   region                   = "us-central1"
   network                  = google_compute_network.vpc_onprem.self_link
   private_ip_google_access = false
-  enable_flow_logs         = false
 }
 
 # firewall rules
 
 resource "google_compute_firewall" "vpc_onprem_ssh" {
-  provider    = "google-beta"
+  provider    = google-beta
   name        = "${local.prefix}vpc-onprem-ssh"
   description = "VPC onprem SSH FW rule"
   network     = google_compute_network.vpc_onprem.self_link
@@ -273,7 +281,7 @@ resource "google_compute_firewall" "vpc_onprem_ssh" {
 }
 
 resource "google_compute_firewall" "vpc_onprem_icmp" {
-  provider    = "google-beta"
+  provider    = google-beta
   name        = "${local.prefix}vpc-onprem-icmp"
   description = "VPC onprem ICMP FW rule"
   network     = google_compute_network.vpc_onprem.self_link
@@ -293,7 +301,7 @@ module "vpc_onprem_vm_10_10_10" {
   name                    = "${local.prefix}vpc-onprem-vm-10-10-10"
   machine_type            = local.machine_type
   zone                    = "us-central1-a"
-  metadata_startup_script = "${file("scripts/startup.sh")}"
+  metadata_startup_script = file("scripts/startup.sh")
   image                   = local.image
   subnetwork              = google_compute_subnetwork.vpc_onprem_subnet_10_10_10.self_link
 }
