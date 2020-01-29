@@ -16,7 +16,7 @@ provider "google" {
   project = var.project_id
 }
 
-provider "google-beta" {
+provider google-beta {
   project = var.project_id
 }
 
@@ -58,7 +58,7 @@ resource "google_compute_subnetwork" "vpc_demo_subnet2" {
 # firewall rules
 
 resource "google_compute_firewall" "vpc_demo_allow_rfc1918" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-demo-allow-rfc1918"
   network  = google_compute_network.vpc_demo.self_link
 
@@ -80,7 +80,7 @@ resource "google_compute_firewall" "vpc_demo_allow_rfc1918" {
 }
 
 resource "google_compute_firewall" "vpc_demo_allow_ssh" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-demo-allow-ssh"
   network  = google_compute_network.vpc_demo.self_link
 
@@ -172,7 +172,7 @@ resource "google_compute_subnetwork" "onprem_subnet2" {
 # firewall rules
 
 resource "google_compute_firewall" "vpc_onprem_allow_rfc1918" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-onprem-allow-rfc1918"
   network  = google_compute_network.vpc_onprem.self_link
 
@@ -194,7 +194,7 @@ resource "google_compute_firewall" "vpc_onprem_allow_rfc1918" {
 }
 
 resource "google_compute_firewall" "vpc_onprem_allow_ssh" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-onprem-allow-ssh"
   network  = google_compute_network.vpc_onprem.self_link
 
@@ -272,7 +272,7 @@ resource "google_compute_subnetwork" "vpc_demo_2_subnet1" {
 # firewall rules
 
 resource "google_compute_firewall" "vpc_demo_2_allow_rfc1918" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-demo-2-allow-rfc1918"
   network  = google_compute_network.vpc_demo_2.self_link
 
@@ -294,7 +294,7 @@ resource "google_compute_firewall" "vpc_demo_2_allow_rfc1918" {
 }
 
 resource "google_compute_firewall" "vpc_demo_2_allow_ssh" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "${local.prefix}vpc-demo-2-allow-ssh"
   network  = google_compute_network.vpc_demo_2.self_link
 
