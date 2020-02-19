@@ -1,8 +1,10 @@
-# Cloudnet19v2
+# Cloudnet19v3
+
 ### Prerequisites
 1. Create a Google Cloud Project.
 2. Activate `Compute Engine API` and `Kubernetes Engine API` if not already enabled.
 3. Launch a `Cloud Shell` terminal to be used for the remaining steps.
+
 ### Clone GitHub Repository for Codelabs
 Open a Cloud Shell terminal and run the following command:
 1. Clone the Git Repository for the Labs
@@ -12,14 +14,14 @@ git clone https://github.com/kaysal/training.git
 
 2. Change to the directory of the cloned repository
 ```sh
-cd ~/training/codelab19v2/
+cd ~/training/codelab19v3/
 ```
 
 ### Install Terraform
-1. Install Terraform if it is not already installed (visit [terraform.io](https://terraform.io) for other distributions).
-In the `training/codelab19/` directory, run the following script:
+1. Install Terraform if it is not already installed
 
 ```sh
+cd ~/training/codelab19v3
 ./terraform-install.sh
 ```
 2. Run the following command to reload your `PATH` with terraform:
