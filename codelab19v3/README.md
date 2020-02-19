@@ -53,7 +53,8 @@ user    0m6.565s
 sys     0m0.896s
 ```
 ### Remove a Deployed Lab
-To remove the base configuration for a lab, ensure you have followed the lab instructions to remove all other resources created in your Project's VPC; outside of the resources created by Terraform earlier. Then navigate into the directory and run the `destroy.sh` script. For example, to destroy the CDN Lab:
+To remove the base configuration for a lab, ensure you have followed the lab instructions to remove all other resources created in your Project's VPC; outside of the resources created by Terraform earlier. Then navigate into the directory and run the `destroy.sh` script.
+For example, to destroy the `CDN` Lab:
 ```sh
 cd ~/training/codelab19v3/labs/CDN/
 ./destroy.sh
